@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner3"
+        tools:entries="@array/moods_array"
+        android:layout_below="@+id/textView6"
+        android:layout_alignStart="@+id/editText3"
+        android:layout_alignEnd="@+id/editText3" />
+
+    <TextView
+        android:text="Mood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView6"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/textView7"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Social Situation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:id="@+id/textView8" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner4"
+        android:layout_below="@+id/textView8"
+        android:layout_alignStart="@+id/spinner3"
+        android:layout_alignEnd="@+id/spinner3" />
+
+    <TextView
+        android:text="Reason Why"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView11"
+        android:layout_below="@+id/spinner4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editText3"
+        android:layout_below="@+id/textView11"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Add an image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText3"
+        android:id="@+id/button4"
+        android:layout_alignEnd="@+id/editText3"
+        android:layout_alignStart="@+id/editText3"
+        android:textStyle="normal|italic"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <CheckBox
+        android:text="Attach my location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox"
+        android:duplicateParentState="false"
+        android:checked="true"
+        android:textIsSelectable="false"
+        android:layout_below="@+id/button4"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Publish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button6"
+        android:layout_below="@+id/checkBox"
+        android:layout_alignStart="@+id/button4"
+        android:layout_alignEnd="@+id/button4" />
+
+    <TextView
+        android:text="Add a mood:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView7"
+        android:textStyle="normal|italic"
+        android:textSize="24sp"
+        android:layout_marginTop="73dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
