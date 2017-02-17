@@ -5,15 +5,6 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner3"
-        tools:entries="@array/moods_array"
-        android:layout_below="@+id/textView6"
-        android:layout_alignStart="@+id/editText3"
-        android:layout_alignEnd="@+id/editText3" />
-
     <TextView
         android:text="Mood"
         android:layout_width="wrap_content"
@@ -99,5 +90,14 @@
         android:layout_marginTop="73dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner3"
+        tools:entries="@array/moods_array"
+        android:layout_below="@+id/textView6"
+        android:layout_alignLeft="@+id/editText3"
+        android:layout_alignStart="@+id/editText3" />
 
 </RelativeLayout>
