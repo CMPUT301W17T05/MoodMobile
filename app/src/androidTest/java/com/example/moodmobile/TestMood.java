@@ -8,6 +8,8 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
 
+import java.util.ArrayList;
+
 
 public class TestMood extends ActivityInstrumentationTestCase2{
 
@@ -16,29 +18,7 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         super(activityClass);
     }
 
-    public void testGetType(){
 
-    }
-
-    public void testGetSituation(){
-
-    }
-
-    public void testGetReason(){
-
-    }
-
-    public void testGetImage(){
-
-    }
-
-    public void testGetTime(){
-
-    }
-
-    public void testGetLocation(){
-
-    }
 
     public void testSetType(){
         Mood mood = new Mood();
@@ -114,5 +94,73 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         location = mood.getLocation();
         assertEquals(location, "PokeStop");
     }
+
+    public void testGetCurrentMood(){
+        Mood mood = new Mood();
+
+        Mood.updateCurrentMood("Happy");
+        String currentMood = Mood.getCurrentMood();
+        assertEquals(currentMood, "Happy");
+
+        Mood.updateCurrentMood("Salty");
+        currentMood = Mood.getCurrentMood();
+        assertEquals(currentMood, "Salty");
+    }
+
+    public void testUpdateMood(){
+        Moodlist moodlist = new Moodlist();
+        Mood mood = new Mood();
+
+        mood.setMood("Happy");
+        mood.setReason("Finished Assignment");
+
+        moodlist.add(mood);
+
+        Mood newmood = moodlist.get(0);
+
+        mood.setMood("Sad");
+        mood.setReason("Out of money");
+
+        assertNotSame(newmood.getMood(), "Sad");
+        assertNotSame(newmood.getReason(), "Out of money");
+
+        moodlist.updateMood();
+
+        newmood = moodlist.get(0);
+        assertSame(newmood.getMood(), "Sad");
+        assertSame(newmood.getReason(), "Out of money");
+    }
+
+    public void testPostMood(){
+        Moodlist moodlist = new Moodlist();
+
+        Mood mood = new Mood();
+
+        mood.setMood("Happy");
+
+        assertEquals(moodlist.size(), 0);
+        assertTrue(moodlist.postMood(mood)); //Should return true of posted successfully4
+        assertTrue(moodlist.size(), 1);
+
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
