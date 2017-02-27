@@ -46,6 +46,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testSetUsername(){
+        Account account = new Account();
         account.setUsername("PokeTrainer");
 
         String username = account.getUsername();
@@ -58,6 +59,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testSetDeviceIMEI(){
+        Account account = new Account();
         account.setDeviceIMEI("IMEIstringNUMBERS1234567890");
 
         String IMEI = account.getDeviceIMEI();
@@ -71,6 +73,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testSetNickname(){
+        Account account = new Account();
         account.setNickname("Ash Ketchum");
 
         String nickname = account.getNickname();
@@ -84,6 +87,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testSetGender(){
+        Account account = new Account();
         account.setGender("female");
 
         String gender = account.getGender();
@@ -97,6 +101,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testSetRegion(){
+        Account account = new Account();
         account.setRegion("Kanto");
 
         String region = account.getRegion();
