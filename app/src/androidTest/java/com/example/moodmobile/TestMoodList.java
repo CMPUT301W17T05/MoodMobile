@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import junit.framework.Assert;
 
-public class TestFollowingList extends ActivityInstrumentationTestCase2 {
-    public TestFollowingList() {
+public class TestMoodList extends ActivityInstrumentationTestCase2 {
+    public TestMoodList() {
         super(MainPageActivity.class);
     }
     
@@ -89,7 +89,7 @@ public class TestFollowingList extends ActivityInstrumentationTestCase2 {
     	moods.addNewMood(newMood2);
     	
     	MoodList filtered = moods.filterRecentWeek();
-    	assertTrue(filtered.size() = 0);    	
+    	assertTrue(filtered.size() = 0); 
     }
     
     public void testFilterByType(){
@@ -164,6 +164,7 @@ public class TestFollowingList extends ActivityInstrumentationTestCase2 {
     	Mood filteredMood = filtered.index(1);
     	assertTrue(filteredMood = newMood2);
     	assertFalse(filteredMood = newMood1);
+    	
     }
     
     public void testFilterWithWord(){
@@ -231,7 +232,6 @@ public class TestFollowingList extends ActivityInstrumentationTestCase2 {
     	//return 0
     	MoodList filtered = moods.filterWithWord("false");
     	assertTrue(filtered.size() = 0);
-    	
     }
     
     public void testDeleteMood(){
