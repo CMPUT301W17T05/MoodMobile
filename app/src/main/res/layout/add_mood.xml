@@ -97,7 +97,7 @@
         android:id="@+id/spinner3"
         tools:entries="@array/moods_array"
         android:layout_below="@+id/textView6"
-        android:layout_alignLeft="@+id/editText3"
-        android:layout_alignStart="@+id/editText3" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
