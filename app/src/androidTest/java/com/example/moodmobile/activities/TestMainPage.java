@@ -2,16 +2,18 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
 
+import java.util.Date;
+
 public class TestMainPage extends ActivityInstrumentationTestCase2 {
     public TestMainPage() {
         super(MainPageActivity.class);
     }
     
     public void testAddMood(){
-    	MoodList moods = new MoodList;
+    	MoodList moods = new MoodList();
     	//TODO CHECK MOOD CONSTRUCTOR FUNCTIONALITY.
     	//setup mood
-    	Mood newMood1 = new Mood;
+    	Mood newMood1 = new Mood();
     	String newType1 = "Happy";
     	String newSituation1 = "Alone";
     	String newReason1 = "test word: one";
@@ -24,15 +26,15 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	
     	//check
     	Mood filteredMood = filtered.index(0);
-    	assertTrue(filteredMood = newMood1);
+    	assertTrue(filteredMood == newMood1);
     }
     
     //TODO CHECK FILTERRECENTWEEK FUNCTIONALITY
     public void testFilterRecentWeek(){
-    	MoodList moods = new MoodList;
+    	MoodList moods = new MoodList();
     	//TODO CHECK MOOD CONSTRUCTOR FUNCTIONALITY.
     	//setup moods
-    	Mood newMood1 = new Mood;
+    	Mood newMood1 = new Mood();
     	String newType1 = "Happy";
     	String newSituation1 = "Alone";
     	String newReason1 = "test word: one";
@@ -40,7 +42,7 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	newMood1.setSituation = newSituation1;
     	newMood1.setReason = newReason1;
     	
-    	Mood newMood2 = new Mood;    	
+    	Mood newMood2 = new Mood();
     	String newType2 = "Sad";
     	String newSituation2 = "Crowd";
     	String newReason2 = "test word: two";
@@ -63,16 +65,16 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	MoodList filtered = filterRecentWeek();
     	assertTrue(filtered.size() = 1);
     	Mood filteredMood = filtered.index(0);
-    	assertTrue(filteredMood = newMood1);
-    	assertFalse(filteredMood = newMood2);
+    	assertTrue(filteredMood == newMood1);
+    	assertFalse(filteredMood == newMood2);
     }
     
     //TODO CHECK FILTERBYTYPE FUNCTIONALITY.
     public void testFilterByType(){
-    	MoodList moods = new MoodList;
+    	MoodList moods = new MoodList();
     	//TODO CHECK MOOD CONSTRUCTOR FUNCTIONALITY.
     	//setup moods
-    	Mood newMood1 = new Mood;
+    	Mood newMood1 = new Mood();
     	String newType1 = "Happy";
     	String newSituation1 = "Alone";
     	String newReason1 = "test word: one";
@@ -80,7 +82,7 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	newMood1.setSituation = newSituation1;
     	newMood1.setReason = newReason1;
     	
-    	Mood newMood2 = new Mood;    	
+    	Mood newMood2 = new Mood();
     	String newType2 = "Sad";
     	String newSituation2 = "Crowd";
     	String newReason2 = "test word: two";
@@ -96,16 +98,16 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	MoodList filtered = filterByType("Happy");
     	assertTrue(filtered.size() = 1);
     	Mood filteredMood = filtered.index(0);
-    	assertTrue(filteredMood = newMood1);
-    	assertFalse(filteredMood = newMood2);
+    	assertTrue(filteredMood == newMood1);
+    	assertFalse(filteredMood == newMood2);
     }
     
     //TODO CHECK FILTERWITHWORD FUNCTIONALITY.
     public void testFilterWithWord(){
-    	MoodList moods = new MoodList;
+    	MoodList moods = new MoodList();
     	//TODO CHECK MOOD CONSTRUCTOR FUNCTIONALITY.
     	//setup moods
-    	Mood newMood1 = new Mood;
+    	Mood newMood1 = new Mood();
     	String newType1 = "Happy";
     	String newSituation1 = "Alone";
     	String newReason1 = "test word: one";
@@ -113,7 +115,7 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	newMood1.setSituation = newSituation1;
     	newMood1.setReason = newReason1;
     	
-    	Mood newMood2 = new Mood;    	
+    	Mood newMood2 = new Mood();
     	String newType2 = "Sad";
     	String newSituation2 = "Crowd";
     	String newReason2 = "test word: two";
@@ -129,8 +131,8 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	MoodList filtered = filterWithWord("one");
     	assertTrue(filtered.size() = 1);
     	Mood filteredMood = filtered.index(0);
-    	assertTrue(filteredMood = newMood1);
-    	assertFalse(filteredMood = newMood2);
+    	assertTrue(filteredMood == newMood1);
+    	assertFalse(filteredMood == newMood2);
     	
     }
     
@@ -140,10 +142,10 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     }
     
     public void testDeleteMood(){
-    	MoodList moods = new MoodList;
+    	MoodList moods = new MoodList();
     	//TODO CHECK MOOD CONSTRUCTOR FUNCTIONALITY.
     	//setup moods
-    	Mood newMood1 = new Mood;
+    	Mood newMood1 = new Mood();
     	String newType1 = "Happy";
     	String newSituation1 = "Alone";
     	String newReason1 = "test word: one";
@@ -151,7 +153,7 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	newMood1.setSituation = newSituation1;
     	newMood1.setReason = newReason1;
     	
-    	Mood newMood2 = new Mood;    	
+    	Mood newMood2 = new Mood();
     	String newType2 = "Sad";
     	String newSituation2 = "Crowd";
     	String newReason2 = "test word: two";
@@ -169,8 +171,8 @@ public class TestMainPage extends ActivityInstrumentationTestCase2 {
     	
     	//TODO CHANGE VARIABLE NAMES.
     	Mood filteredMood = moods.index(0);
-    	assertTrue(filteredMood = newMood1);
-    	assertFalse(filteredMood = newMood2);
+    	assertTrue(filteredMood == newMood1);
+    	assertFalse(filteredMood == newMood2);
     }
     
     //TODO CHECK EDITPROFILE FUNCTIONALITY.
