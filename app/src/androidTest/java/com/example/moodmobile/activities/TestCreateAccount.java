@@ -1,4 +1,4 @@
-public class TestCreateAccount extends ActivityInstrumentationTestCase2 {
+/*public class TestCreateAccount extends ActivityInstrumentationTestCase2 {
     public TestCreateAccount() {
     	super(CreateAccountActivity.class);
     }
@@ -16,3 +16,5 @@ public class TestCreateAccount extends ActivityInstrumentationTestCase2 {
    	} 
    	
 }
+
+*/
