@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText3"
+        android:id="@+id/reason"
         android:gravity="center_horizontal"
         tools:text="Edmonton"
         android:layout_below="@+id/textView9"

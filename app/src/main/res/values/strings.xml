@@ -1,4 +1,21 @@
 <resources>
     <string name="app_name">MoodMobile</string>
     <string name="title_activity_login">Sign in</string>
+    <string-array name="mood_array">
+        <item>Angry</item>
+        <item>Confused</item>
+        <item>Disgusting</item>
+        <item>Fear</item>
+        <item>Happy</item>
+        <item>Surprised</item>
+        <item>Shame</item>
+        <item>Sad</item>
+    </string-array>
+
+    <string-array name="situation_array">
+        <item>Alone</item>
+        <item>With one other person</item>
+        <item>With multiple people</item>
+        <item>With a crowd</item>
+    </string-array>
 </resources>
