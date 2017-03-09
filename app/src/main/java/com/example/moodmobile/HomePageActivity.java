@@ -35,4 +35,33 @@ public class HomePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
     }
+    
+    /*
+    //Checks if internet connection exists
+    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+                if (isConnected == true){
+                    //setContentView(R.layout.activity_main1);
+                    textView1.setText("Connected");
+                }
+                else{
+                    //setContentView(R.layout.activity_main2);
+                    textView1.setText("Disconnected");
+    
+    
+    //taken from http://stackoverflow.com/questions/9570237/android-check-internet-connection
+    //check that there is connection to the internet and not just some network
+    //ex. home router is working but web connection is down.
+    public boolean internetAvaliable(){
+        try{
+            InetAddress inetAddress = InetAdress.getByName("google.com);
+            return !inetAddress.equals("");
+        } catch (Exception e){
+            return false;
+        }
+    }    
+        
+    
+    */
 }
