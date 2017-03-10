@@ -14,64 +14,70 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 
 public class UserProfile extends AppCompatActivity {
 
-    private static int RESULT_LOAD_IMAGE = 1;
+    public static final int IMAGE_REQUEST = 20;
     private ImageView imageView;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
-        imageView = (ImageView) findViewById(android.R.id.profileImage);
+        imageView = (ImageView) findViewById(R.id.profileImage);
     }
 
 
+    public void photo(View v) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
 
+        File pictureDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        String path = pictureDir.getPath();
+
+        Uri data = Uri.parse(path);
+
+        intent.setDataAndType(data,"image/*");
+
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Bitmap bitmap = getPath(data.getData());
-            imageView.setImageBitmap(bitmap);
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+        if (resultCode == RESULT_OK){
+            if (requestCode == IMAGE_REQUEST) {
+                Uri imageUri = data.getData();
+
+                InputStream inputStream;
+
+                try {
+                    inputStream = getContentResolver().openInputStream(imageUri);
+
+                    Bitmap image =  BitmapFactory.decodeStream(inputStream);
+
+                    imageView.setImageBitmap(image);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this,"Unable to open image", Toast.LENGTH_LONG).show();
+                }
+            }
         }
+
     }
-
-    private Bitmap getPath(Uri uri) {
-
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String filePath = cursor.getString(column_index);
-        // cursor.close();
-        // Convert file path into bitmap image using below line.
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-
-        return bitmap;
-    }
-
-    private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), RESULT_LOAD_IMAGE);
-    }
-
-
 
 
 }
