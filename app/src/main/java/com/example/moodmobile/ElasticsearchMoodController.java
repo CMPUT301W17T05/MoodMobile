@@ -30,13 +30,13 @@ public class ElasticsearchMoodController {
             verifySettings();
 
             for (Mood mood : moods) {
-                Index index = new Index.Builder(mood).index("testing").type("tweet").build();
+                Index index = new Index.Builder(mood).index("cmput301w17t5").type("moods").build();
 
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
-                        Mood.setId(result.getId());
+                        mood.setId(result.getId());
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the tweet.");
@@ -70,8 +70,8 @@ public class ElasticsearchMoodController {
 
             // TODO Build the query
             Search search = new Search.Builder(MoodQuery)
-                    .addIndex("testing")
-                    .addType("tweet")
+                    .addIndex("cmput301w17t5")
+                    .addType("moods")
                     .build();
 
             try {

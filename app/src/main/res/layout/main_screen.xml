@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_above="@id/button3">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -29,10 +28,10 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/moodList"
         android:layout_width="match_parent"
         android:layout_alignParentStart="true"
         android:listSelector="@android:drawable/list_selector_background"
-        android:layout_below="@+id/linearLayout2"
         android:layout_above="@+id/addMood"
         android:layout_height="250dp" />
 
@@ -53,8 +52,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:layout_alignTop="@+id/button8">
+        android:gravity="bottom">
 
         <Button
             android:layout_width="wrap_content"
@@ -88,7 +86,6 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="42dp"
         android:id="@+id/textView14"
-        android:layout_below="@+id/linearLayout3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
