@@ -59,18 +59,19 @@
         android:layout_alignEnd="@+id/reason"
         android:layout_alignStart="@+id/reason"
         android:textStyle="normal|italic"
+        android:onClick="addImage"
         style="?android:attr/borderlessButtonStyle" />
 
     <CheckBox
-        android:text="Attach my location"
+        android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
-        android:duplicateParentState="false"
-        android:checked="true"
-        android:textIsSelectable="false"
         android:layout_below="@+id/addImage"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:checked="false"
+        android:duplicateParentState="false"
+        android:text="Attach my location"
+        android:textIsSelectable="false" />
 
     <Button
         android:text="Publish"

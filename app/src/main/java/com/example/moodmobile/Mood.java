@@ -1,5 +1,6 @@
 package com.example.moodmobile;
 
+import android.location.Location;
 import android.media.Image;
 
 import java.util.Date;
@@ -14,19 +15,22 @@ public class Mood implements Moodable{
     private String feeling;
     private String socialSituation;
     private Image moodImage;
-    private String location;
+    private Location location;
 
 
-    public Mood(String message){
-        this.message = message;
+    public Mood(String feeling){
+        this.message = null;
+        this.feeling = feeling;
         this.location = null;
         this.moodImage = null;
         this.socialSituation = null;
         this.date = new Date();
     }
 
-    public Mood(String moodMessage, String location, Image moodImage, String socialSituation) {
+    public Mood(String feeling, String moodMessage
+            , Location location, Image moodImage, String socialSituation) {
         this.message = moodMessage;
+        this.feeling = feeling;
         this.date = new Date();
         this.location = location;
         this.moodImage = moodImage;
@@ -82,11 +86,11 @@ public class Mood implements Moodable{
         this.moodImage = moodImage;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 }
