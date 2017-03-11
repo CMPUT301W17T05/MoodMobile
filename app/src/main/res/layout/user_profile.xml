@@ -15,8 +15,8 @@
         android:id="@+id/editText2"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/spinner2"
-        android:layout_alignStart="@+id/spinner2"
+        android:layout_alignLeft="@+id/gender"
+        android:layout_alignStart="@+id/gender"
         android:layout_below="@+id/textView7"
         android:layout_marginTop="17dp"
         android:ems="10"
@@ -27,8 +27,8 @@
         android:id="@+id/editText3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/spinner2"
-        android:layout_alignStart="@+id/spinner2"
+        android:layout_alignLeft="@+id/gender"
+        android:layout_alignStart="@+id/gender"
         android:layout_below="@+id/textView9"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -43,7 +43,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:inputType="textPersonName"
         android:layout_below="@+id/textView10"
-        android:layout_alignStart="@+id/spinner2" />
+        android:layout_alignStart="@+id/gender" />
 
     <TextView
         android:text="username"
@@ -76,7 +76,7 @@
 
     <Spinner
         android:layout_height="wrap_content"
-        android:id="@+id/spinner2"
+        android:id="@+id/gender"
         android:layout_width="200dp"
         android:layout_below="@+id/textView8"
         android:layout_centerHorizontal="true"
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
         android:id="@+id/textView9"
-        android:layout_below="@+id/spinner2"
+        android:layout_below="@+id/gender"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -101,12 +101,12 @@
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="31dp"
-        android:padding="15dp"/>
+        android:padding="15dp" />
 
 
     <Button

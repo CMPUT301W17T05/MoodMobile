@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">MoodMobile</string>
     <string name="title_activity_login">Sign in</string>
+
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>
+

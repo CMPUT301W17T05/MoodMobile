@@ -8,21 +8,18 @@
 
 package com.example.moodmobile;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import android.widget.Spinner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -32,12 +29,23 @@ public class UserProfile extends AppCompatActivity {
 
     public static final int IMAGE_REQUEST = 20;
     private ImageView imageView;
+    private Spinner genderSpinner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         imageView = (ImageView) findViewById(R.id.profileImage);
+        genderSpinner = (Spinner) findViewById(R.id.gender);
+
+
+        // Create an ArrayAdapter using the mood_array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, android.R.layout.simple_spinner_dropdown_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        genderSpinner.setAdapter(adapter);
     }
 
 
