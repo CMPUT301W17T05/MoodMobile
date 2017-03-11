@@ -45,7 +45,7 @@ public class AddMood extends AppCompatActivity {
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private CheckBox locationCheckBox;
-    private String CurrentMood;
+    private String Feeling;
     private String socialSituation;
     private Mood currentMood;
     private String reason;
@@ -54,13 +54,14 @@ public class AddMood extends AppCompatActivity {
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
 
+
     protected static final String TAG = "AddMood";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
-
+        final Mood currentMood = new Mood(null);
 
         reasonText = (EditText) findViewById(R.id.reason);
         publishButton = (Button) findViewById(R.id.publish);
@@ -132,13 +133,15 @@ public class AddMood extends AppCompatActivity {
 
             public void onClick(View v) {
 
-                CurrentMood = moodSpinner.getSelectedItem().toString();
+                Feeling = moodSpinner.getSelectedItem().toString();
+                currentMood.setFeeling(Feeling);
+
                 socialSituation = ssSpinner.getSelectedItem().toString();
 
                  //This is for checking the value of CurrentMood and socialSituation
 
                 Context context = getApplicationContext();
-                CharSequence text = "Selected Mood: "+CurrentMood+"\nSocialSituation: "+socialSituation;
+                CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
