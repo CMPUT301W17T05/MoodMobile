@@ -11,10 +11,10 @@
         android:weightSum="1">
 
         <TextView
-            android:text="Steve :)"
+            android:text="Welcome User!"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
+            android:id="@+id/userView"
             android:textSize="24sp"
             android:textStyle="normal|italic"
             android:paddingLeft="10dp"
@@ -79,73 +79,73 @@
     </LinearLayout>
 
     <TextView
-        android:text="-show moods"
+        android:text="Filter Moods By:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="42dp"
-        android:id="@+id/textView14"
+        android:id="@+id/filterTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="-In recent week"
+        android:text="Past week:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView15"
+        android:id="@+id/weekFilter"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:layout_below="@+id/textView14"
-        android:layout_alignLeft="@+id/textView14"
-        android:layout_alignStart="@+id/textView14" />
+        android:layout_below="@+id/filterTitle"
+        android:layout_alignLeft="@+id/filterTitle"
+        android:layout_alignStart="@+id/filterTitle" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox3"
-        android:layout_alignBaseline="@+id/textView15"
-        android:layout_alignBottom="@+id/textView15"
-        android:layout_toRightOf="@+id/textView15"
-        android:layout_toEndOf="@+id/textView15" />
+        android:id="@+id/weekBox"
+        android:layout_alignBaseline="@+id/weekFilter"
+        android:layout_alignBottom="@+id/weekFilter"
+        android:layout_toRightOf="@+id/weekFilter"
+        android:layout_toEndOf="@+id/weekFilter" />
 
     <TextView
-        android:text="-By type:"
+        android:text="Emotion:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView16"
-        android:layout_below="@+id/checkBox3"
-        android:layout_alignLeft="@+id/textView15"
-        android:layout_alignStart="@+id/textView15" />
+        android:id="@+id/emotionFilter"
+        android:layout_below="@+id/weekBox"
+        android:layout_alignLeft="@+id/weekFilter"
+        android:layout_alignStart="@+id/weekFilter" />
 
     <Spinner
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/spinner5"
-        android:layout_below="@+id/textView15"
-        android:layout_toRightOf="@+id/textView16"
-        android:layout_toEndOf="@+id/textView16" />
+        android:layout_below="@+id/weekFilter"
+        android:layout_toRightOf="@+id/emotionFilter"
+        android:layout_toEndOf="@+id/emotionFilter" />
 
     <TextView
-        android:text="-With word:"
+        android:text="Reason Contains:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView17"
         android:layout_below="@+id/spinner5"
-        android:layout_alignLeft="@+id/textView16"
-        android:layout_alignStart="@+id/textView16" />
+        android:layout_alignLeft="@+id/emotionFilter"
+        android:layout_alignStart="@+id/emotionFilter" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="lol"
         android:ems="10"
-        android:layout_below="@+id/textView16"
+        android:layout_below="@+id/emotionFilter"
         android:layout_toRightOf="@+id/textView17"
         android:layout_toEndOf="@+id/textView17"
         android:layout_marginLeft="11dp"
         android:layout_marginStart="11dp"
-        android:id="@+id/editText4" />
+        android:id="@+id/editText4"
+        android:textSize="18sp" />
 
 </RelativeLayout>
