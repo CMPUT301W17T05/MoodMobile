@@ -8,7 +8,8 @@ import java.util.Date;
 import io.searchbox.annotations.JestId;
 
 /**
- * Created by Jia on 2017-03-07.
+ * Created by Repka on 2017-03-07.
+   Modified by Jia on 2017-03-12.
  */
 
 public class Mood implements Moodable{
@@ -93,15 +94,12 @@ public class Mood implements Moodable{
 /*    public Image getMoodImage() {
         return moodImage;
     }
-
     public void setMoodImage(Image moodImage) {
         this.moodImage = moodImage;
     }
-
     public Location getLocation() {
         return location;
     }
-
     public void setLocation(Location location) {
         this.location = location;
     }*/

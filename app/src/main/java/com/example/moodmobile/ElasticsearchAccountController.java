@@ -16,35 +16,35 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 /**
- * Modified by Jia on 2017-03-12.
  * Created by Derek.R on 2017-03-07.
  */
 
-public class ElasticsearchMoodController {
+public class ElasticsearchAccountController {
     private static JestDroidClient client;
 
-    // TODO we need a function which adds mood to elastic search
-    public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
+
+    // TODO we need a function which adds Account to elastic search
+    public static class AddUser extends AsyncTask<Account, Void, Void> {
 
         @Override
-        protected Void doInBackground(Mood... moods) {
+        protected Void doInBackground(Account... accounts) {
             verifySettings();
 
-            for (Mood mood : moods) {
-                Index index = new Index.Builder(mood).index("cmput301w17t5").type("moods").build();
+            for (Account account : accounts) {
+                Index index = new Index.Builder(account).index("cmput301w17t5").type("users").build();
 
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
-                        mood.setId(result.getId());
+                        account.setId(result.getId());
                     }
                     else{
-                        Log.i("Error", "ElasticSearch was not able to add the mood.");
+                        Log.i("Error", "ElasticSearch was not able to add the tweet.");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the mood");
+                    Log.i("Error", "The application failed to build and send the tweets");
                 }
 
             }
@@ -52,47 +52,51 @@ public class ElasticsearchMoodController {
         }
     }
 
-    // TODO we need a function which gets mood from elastic search
-    public static class GetMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
+
+    public static class GetUser extends AsyncTask<String, Void, ArrayList<Account>> {
         @Override
-        protected ArrayList<Mood> doInBackground(String... search_parameters) {
+        protected ArrayList<Account> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Account> accounts = new ArrayList<Account>();
             //Search string here
-            String MoodQuery;
+            String UserQuery;
             if (search_parameters[0].equals("")){
-                MoodQuery = search_parameters[0];
+                UserQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
+                UserQuery = "{\"query\": {\"match\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
 
 
             // TODO Build the query
-            Search search = new Search.Builder(MoodQuery)
+            Search search = new Search.Builder(UserQuery)
                     .addIndex("cmput301w17t5")
-                    .addType("moods")
+                    .addType("users")
                     .build();
 
             try {
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()){
-                    List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
-                    moods.addAll(foundMoods);
+                    List<Account> foundUsers = result.getSourceAsObjectList(Account.class);
+                    accounts.addAll(foundUsers);
                 }
                 else{
-                    Log.i("Error", "The search query failed to find any mood that matched");
+                    Log.i("Error", "The search query failed to find any tweets that matched");
                 }
             }
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
-            return moods;
+            return accounts;
         }
     }
+
+
+
+
 
 
 
