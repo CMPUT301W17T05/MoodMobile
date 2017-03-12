@@ -15,27 +15,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_above="@+id/editText2"
+        android:layout_above="@+id/username"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:text="Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/loginBot"
         android:layout_alignParentBottom="true"
         style="@android:style/Widget.Holo.Light.Button"
-        android:layout_alignEnd="@+id/editText2"
-        android:layout_alignStart="@+id/button2" />
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/SaveBot" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/SaveBot"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button"
-        android:layout_alignEnd="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
+        android:layout_above="@+id/loginBot"
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/username"
         android:onClick="createAccount"
         android:text="*Create an account*"
         android:textStyle="normal|italic" />
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_above="@+id/button2"
+        android:id="@+id/username"
+        android:layout_above="@+id/SaveBot"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

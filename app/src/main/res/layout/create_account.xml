@@ -16,17 +16,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_above="@+id/editText2"
+        android:layout_above="@+id/username"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/SaveBot"
         style="@android:style/Widget.Holo.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editText2"
+        android:layout_alignEnd="@+id/username"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/editText2"
+        android:layout_alignStart="@+id/username"
+        android:onClick="create"
         android:text="Save Account"
         android:textStyle="normal|italic" />
 
@@ -35,8 +36,8 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_above="@+id/button2"
+        android:id="@+id/username"
+        android:layout_above="@+id/SaveBot"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -57,4 +58,13 @@
         android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="140dp" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:text="TextView"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

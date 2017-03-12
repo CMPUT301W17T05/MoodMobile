@@ -20,7 +20,7 @@
     <Button
         android:text="Add a New Friend"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/loginBot"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

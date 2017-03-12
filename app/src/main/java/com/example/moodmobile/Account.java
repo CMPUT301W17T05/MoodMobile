@@ -4,18 +4,33 @@ import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
-public class Account {
-    private Date nickname;
+/**
+ * Created by Derek.R on 2017-03-07.
+ */
+
+public class Account{
+    private String username;
+    private String nickname;
     private String gender;
     private String region;
 
     @JestId
-    private String username;
-
+    private String id;
 
     public Account(String username) {
         this.username = username;
     }
+
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
 
     public String getUsername() {
         return username;
@@ -25,11 +40,11 @@ public class Account {
         this.username = username;
     }
 
-    public Date getNickname() {
+    public String getNickname() {
         return nickname;
     }
 
-    public void setNickname(Date nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
