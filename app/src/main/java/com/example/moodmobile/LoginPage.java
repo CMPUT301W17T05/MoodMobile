@@ -30,7 +30,7 @@ public class LoginPage extends AppCompatActivity {
                 setResult(RESULT_OK);
                 Account newUser = new Account(username.getText().toString());
 
-                ElasticsearchMoodController.GetUser getUser = new ElasticsearchMoodController.GetUser();
+                ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
                 getUser.execute(username.getText().toString());
 
 

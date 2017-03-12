@@ -36,7 +36,7 @@ public class CreateAccount extends AppCompatActivity {
                 setResult(RESULT_OK);
                 Account newUser = new Account(newUserName.getText().toString());
 
-                ElasticsearchMoodController.GetUser getUser = new ElasticsearchMoodController.GetUser();
+                ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
                 getUser.execute(newUserName.getText().toString());
 
 
@@ -49,7 +49,7 @@ public class CreateAccount extends AppCompatActivity {
                 //Context context = getApplicationContext();
                 //Toast.makeText(context, accountList.get(0).getUsername(), Toast.LENGTH_SHORT).show();
                 if (accountList.size() == 0) {
-                    ElasticsearchMoodController.AddUser addUser = new ElasticsearchMoodController.AddUser();
+                    ElasticsearchAccountController.AddUser addUser = new ElasticsearchAccountController.AddUser();
                     addUser.execute(newUser);
                     Context context = getApplicationContext();
                     Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show();
