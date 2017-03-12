@@ -165,7 +165,7 @@ public class AddMood extends AppCompatActivity {
                 currentMood.setSituation(socialSituation);
 
                 addMoodTask.execute(currentMood);
-                
+
 
             }
 
