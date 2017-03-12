@@ -5,6 +5,8 @@ import android.media.Image;
 
 import java.util.Date;
 
+import io.searchbox.annotations.JestId;
+
 /**
  * Created by Jia on 2017-03-07.
  */
@@ -14,15 +16,25 @@ public class Mood implements Moodable{
     private Date date;
     private String feeling;
     private String socialSituation;
-    private Image moodImage;
-    private Location location;
+//    private Image moodImage;
+//    private Location location;
 
+
+    @JestId
+    private String id;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Mood(String feeling){
         this.message = null;
         this.feeling = feeling;
-        this.location = null;
-        this.moodImage = null;
+//        this.location = null;
+//        this.moodImage = null;
         this.socialSituation = null;
         this.date = new Date();
     }
@@ -32,8 +44,8 @@ public class Mood implements Moodable{
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
-        this.location = location;
-        this.moodImage = moodImage;
+  //      this.location = location;
+    //    this.moodImage = moodImage;
         this.socialSituation = socialSituation;
     }
 
@@ -78,7 +90,7 @@ public class Mood implements Moodable{
         return socialSituation;
     }
 
-    public Image getMoodImage() {
+/*    public Image getMoodImage() {
         return moodImage;
     }
 
@@ -92,5 +104,5 @@ public class Mood implements Moodable{
 
     public void setLocation(Location location) {
         this.location = location;
-    }
+    }*/
 }

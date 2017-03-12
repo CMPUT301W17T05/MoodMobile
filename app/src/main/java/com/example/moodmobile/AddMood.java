@@ -106,7 +106,8 @@ public class AddMood extends AppCompatActivity {
                     toast.show();
                 }
                 else{
-                    currentMood.setLocation(null);
+                    //currentMood.setLocation(null);
+
                     //Unchecked test
                     Context context = getApplicationContext();
                     CharSequence text = "Unchecked";
@@ -133,6 +134,9 @@ public class AddMood extends AppCompatActivity {
 
             public void onClick(View v) {
 
+                ElasticsearchMoodController.AddMoodsTask addMoodTask =
+                        new ElasticsearchMoodController.AddMoodsTask();
+
                 Feeling = moodSpinner.getSelectedItem().toString();
                 currentMood.setFeeling(Feeling);
 
@@ -143,8 +147,8 @@ public class AddMood extends AppCompatActivity {
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
                 int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+//                Toast toast = Toast.makeText(context, text, duration);
+//                toast.show();
 
 
                 reason = reasonText.getText().toString();
@@ -156,9 +160,13 @@ public class AddMood extends AppCompatActivity {
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
                     Toast toast2 = Toast.makeText(context, text, duration);
-                    toast.show();
+                    toast2.show();
                 };
                 currentMood.setSituation(socialSituation);
+
+                addMoodTask.execute(currentMood);
+                
+
             }
 
         });
@@ -192,7 +200,13 @@ public class AddMood extends AppCompatActivity {
             }
         }
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        mGoogleApiClient.connect();
 
+
+    }
 
 }
 
@@ -204,11 +218,6 @@ public class AddMood extends AppCompatActivity {
 //                .build();
 //    }
 //
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        mGoogleApiClient.connect();
-//    }
 //
 //    @Override
 //    protected void onStop() {
