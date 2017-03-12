@@ -17,6 +17,7 @@ import io.searchbox.core.SearchResult;
 
 /**
  * Modified by Jia on 2017-03-12.
+ * Created by Derek.R on 2017-03-07.
  */
 
 public class ElasticsearchMoodController {

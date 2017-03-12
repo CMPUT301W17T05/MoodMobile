@@ -31,9 +31,7 @@
         android:layout_alignLeft="@+id/gender"
         android:layout_alignStart="@+id/gender"
         android:layout_below="@+id/textView9"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:inputType="textPersonName" />
+        android:ems="10" />
 
     <EditText
         android:id="@+id/editText5"

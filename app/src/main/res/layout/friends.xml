@@ -33,5 +33,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="17dp"
-        android:id="@+id/button4" />
+        android:id="@+id/addImage" />
 </RelativeLayout>

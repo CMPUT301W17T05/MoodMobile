@@ -142,7 +142,7 @@ public class AddMood extends AppCompatActivity {
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
 
-                //This is for checking the value of CurrentMood and socialSituation
+                 //This is for checking the value of CurrentMood and socialSituation
 
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
@@ -156,7 +156,8 @@ public class AddMood extends AppCompatActivity {
                 setResult(RESULT_OK);
                 try {currentMood.setMessage(reason);
                 } catch (ReasonTooLongException e) {
-                    //                   Context context = getApplicationContext();
+
+ //                   Context context = getApplicationContext();
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
                     Toast toast2 = Toast.makeText(context, text, duration);
@@ -254,4 +255,6 @@ public class AddMood extends AppCompatActivity {
 //        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
 //        // onConnectionFailed.
 //        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+
 //    }
+

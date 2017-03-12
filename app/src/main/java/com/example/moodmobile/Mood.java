@@ -45,8 +45,8 @@ public class Mood implements Moodable{
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
-        //      this.location = location;
-        //    this.moodImage = moodImage;
+  //      this.location = location;
+    //    this.moodImage = moodImage;
         this.socialSituation = socialSituation;
     }
 
