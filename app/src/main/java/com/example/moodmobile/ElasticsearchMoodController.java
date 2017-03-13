@@ -102,6 +102,29 @@ public class ElasticsearchMoodController {
         }
     }
 
+    public static class DeleteMoodsTask extends AsyncTask<Mood, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Mood... moods) {
+            verifySettings();
+
+            for (Mood mood : moods) {
+
+                try {client.execute(new Delete.Builder(mood.getId())
+                        .index("cmput301w17t5")
+                        .type("moods")
+                        .build());
+
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to delete the mood");
+                }
+
+
+            }
+            return null;
+        }
+    }
+
     // TODO we need a function which gets mood from elastic search
     public static class GetMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override

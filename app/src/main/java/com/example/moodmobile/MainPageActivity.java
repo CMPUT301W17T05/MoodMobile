@@ -168,6 +168,10 @@ public class MainPageActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
+
+                ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
+
+                deletemood.execute(moodsList.get(index));
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
