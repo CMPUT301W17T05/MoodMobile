@@ -6,11 +6,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -35,6 +37,8 @@ public class ViewEditMood extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_edit_mood);
 
+        ArrayList<Mood> moodList = new ArrayList<>();
+
         moodEdittext = (EditText) findViewById(R.id.moodEdittext);
         moodSituationEdittext = (EditText) findViewById(R.id.moodSituationEdittext);
         moodReasonEdittext = (EditText) findViewById(R.id.moodReasonEdittext);
@@ -42,9 +46,24 @@ public class ViewEditMood extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.moodSaveButton);
 
         //Mood mood = new Mood("Happy"); // Change this to the mood passed by intent
-        mood = (Mood) getIntent().getSerializableExtra("moodToEdit");
+        //mood = (Mood) getIntent().getSerializableExtra("moodToEdit");
+        mood = new Mood("Happy");
+        //moodList.add(new Mood("asd"));
 
-        moodEdittext.setText(mood.getMessage());
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute("");
+
+        try {
+            moodList.addAll(getMoodsTask.get());
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+
+
+        mood = moodList.get(0);
+
+        //moodEdittext.setText(mood.getMessage());
+        moodEdittext.setText(mood.getId());
         moodSituationEdittext.setText(mood.getSituation());
         moodReasonEdittext.setText(mood.getFeeling());
 
@@ -54,13 +73,16 @@ public class ViewEditMood extends AppCompatActivity {
 
                 if (!moodEdittext.getText().toString().trim().equals("")){
 
-                    ElasticsearchMoodController.AddMoodsTask addMoodTask =
-                            new ElasticsearchMoodController.AddMoodsTask();
+                    ElasticsearchMoodController.UpdateMoodsTask updateMoodTask =
+                            new ElasticsearchMoodController.UpdateMoodsTask();
+                    mood = new Mood("qwerty");
 
                     /** Setting new values **/
                     mood.setMessage(moodEdittext.getText().toString());
+                    //mood.setMessage("qwerty");
                     mood.setSituation(moodSituationEdittext.getText().toString());
                     mood.setFeeling(moodReasonEdittext.getText().toString());
+                    //mood.setFeeling("IS IT WORKING YET?");
                     mood.setDate(new Date());
 
 
@@ -70,8 +92,8 @@ public class ViewEditMood extends AppCompatActivity {
                      *
                      * **/
                     //setResult(RESULT_OK, intent);
-                    addMoodTask.execute(currentMood);
-                    finish();
+                    updateMoodTask.execute(mood);
+                    //finish();
 
                 } else {
                     Context context = getApplicationContext();

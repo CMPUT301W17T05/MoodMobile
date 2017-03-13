@@ -1,3 +1,4 @@
+/*
 package com.example.moodmobile;
 
 import android.content.Context;
@@ -41,17 +42,21 @@ public class MainPageActivity extends AppCompatActivity {
                 Intent profileIntent = new Intent(this, EditProfileActivity.class);
                 startActivity(profileIntent);
                 //TO-DO Start Edit Profile Activity
-                /*String text = bodyText.getText().toString();
+                */
+/*String text = bodyText.getText().toString();
                 NormalTweet newTweet = new NormalTweet(text);
                 tweetList.add(newTweet);
                 adapter.notifyDataSetChanged();
                 ElasticsearchTweetController.AddTweetsTask addTweetsTask = new ElasticsearchTweetController.AddTweetsTask();
-                addTweetsTask.execute(newTweet);*/
+                addTweetsTask.execute(newTweet);*//*
+
             }
         });
 
-        /** Listener to detect a mood that has been clicked.
-         *  This will also launch the ViewEditMood activity*/
+        */
+/** Listener to detect a mood that has been clicked.
+         *  This will also launch the ViewEditMood activity*//*
+
         oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
@@ -66,9 +71,11 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
-        /** Long clock listener for the mood list.
+        */
+/** Long clock listener for the mood list.
          *  Will delete a long-clicked mood.
-         */
+         *//*
+
         oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
@@ -77,17 +84,21 @@ public class MainPageActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
 
-                /** TODO
+                */
+/** TODO
                  *  NOTIFY ELASTICSEARCH THAT A MOOD HAS BEEN DELETED
                  *
                  *  Is it actually nessessary?
-                 */
+                 *//*
 
 
 
-                /**
+
+                */
+/**
                  * Display a user message that the selected person was deleted
-                 */
+                 *//*
+
                 Context context = getApplicationContext();
                 String text = "Mood Deleted";
                 int duration = Toast.LENGTH_SHORT;
@@ -105,7 +116,8 @@ public class MainPageActivity extends AppCompatActivity {
                 Intent newMoodIntent = new Intent(this, NewMoodActivity.class);
                 startActivity(newMoodIntent);
                 //TO-DO Start New Mood Activity
-                /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
+                */
+/*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
                 String message = bodyText.getText().toString();
                 getTweetsTask.execute(message);
                 try {
@@ -114,7 +126,8 @@ public class MainPageActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.i("Error", "Failed to get the tweets out of the async object");
                 }
-                adapter.notifyDataSetChanged();*/
+                adapter.notifyDataSetChanged();*//*
+
             }
         });
 
@@ -156,4 +169,4 @@ public class MainPageActivity extends AppCompatActivity {
                 R.layout.list_item, moodsList);
         oldMoodsList.setAdapter(adapter);
     }
-}
+}*/

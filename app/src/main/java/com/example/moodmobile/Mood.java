@@ -9,7 +9,7 @@ import io.searchbox.annotations.JestId;
  * Created by Derek.R on 2017-03-07.
  */
 
-public class Mood implements Moodable, Serializable{
+public class Mood implements Serializable{
     private String message;
     private Date date;
     private String feeling;
@@ -33,10 +33,10 @@ public class Mood implements Moodable, Serializable{
         this.id = id;
     }
 
-    public void setMessage(String message) throws ReasonTooLongException {
+    public void setMessage(String message){//} throws ReasonTooLongException {
         if (message.length() > 20){
             //Do Something!
-            throw new ReasonTooLongException();
+            //throw new ReasonTooLongException();
         }
         this.message = message;
     }
