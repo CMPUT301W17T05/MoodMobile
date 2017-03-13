@@ -58,8 +58,6 @@ public class ElasticsearchMoodController {
      * Updates a mood by deleting it, and then completely rebuilding it.
      * using Update.Builder() didn't work.
      *
-     * The mood ID changes each time this is called, but I don't think that matters/
-     * cant seem to fix it
      */
     public static class UpdateMoodsTask extends AsyncTask<Mood, Void, Void> {
 
@@ -118,6 +116,47 @@ public class ElasticsearchMoodController {
             }
             else{
                 MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
+            }
+
+
+            // TODO Build the query
+            Search search = new Search.Builder(MoodQuery)
+                    .addIndex("cmput301w17t5")
+                    .addType("moods")
+                    .build();
+
+            try {
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+                    List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
+                    moods.addAll(foundMoods);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any mood that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return moods;
+        }
+    }
+
+    public static class GetMoodsTaskByID extends AsyncTask<String, Void, ArrayList<Mood>> {
+        @Override
+        protected ArrayList<Mood> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<Mood> moods = new ArrayList<Mood>();
+            //Search string here
+            String MoodQuery;
+            if (search_parameters[0].equals("")){
+                MoodQuery = search_parameters[0];
+            }
+            else{
+                MoodQuery = "{\"query\": {\"term\" : { \"_id\" : \"" + search_parameters[0] + "\" }}}";
             }
 
 

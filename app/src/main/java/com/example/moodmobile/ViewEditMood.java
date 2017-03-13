@@ -45,13 +45,10 @@ public class ViewEditMood extends AppCompatActivity {
 
         saveButton = (Button) findViewById(R.id.moodSaveButton);
 
-        //Mood mood = new Mood("Happy"); // Change this to the mood passed by intent
-        //mood = (Mood) getIntent().getSerializableExtra("moodToEdit");
-        mood = new Mood("Happy");
-        //moodList.add(new Mood("asd"));
+        String moodID = getIntent().getStringExtra("moodID");
 
-        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        ElasticsearchMoodController.GetMoodsTaskByID getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByID();
+        getMoodsTask.execute(moodID);
 
         try {
             moodList.addAll(getMoodsTask.get());
@@ -59,14 +56,14 @@ public class ViewEditMood extends AppCompatActivity {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
 
-
+        /** Will throw error if moodlist is empty,
+         * but non-emptyness should be guaranteed.
+         */
         mood = moodList.get(0);
 
-        //moodEdittext.setText(mood.getMessage());
-        moodEdittext.setText(mood.getId());
+        moodEdittext.setText(mood.getMessage());
         moodSituationEdittext.setText(mood.getSituation());
         moodReasonEdittext.setText(mood.getFeeling());
-
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
@@ -75,14 +72,12 @@ public class ViewEditMood extends AppCompatActivity {
 
                     ElasticsearchMoodController.UpdateMoodsTask updateMoodTask =
                             new ElasticsearchMoodController.UpdateMoodsTask();
-                    mood = new Mood("qwerty");
+                    //mood = new Mood("qwerty"); //This is why it wasnt working
 
                     /** Setting new values **/
                     mood.setMessage(moodEdittext.getText().toString());
-                    //mood.setMessage("qwerty");
                     mood.setSituation(moodSituationEdittext.getText().toString());
                     mood.setFeeling(moodReasonEdittext.getText().toString());
-                    //mood.setFeeling("IS IT WORKING YET?");
                     mood.setDate(new Date());
 
 
@@ -93,7 +88,7 @@ public class ViewEditMood extends AppCompatActivity {
                      * **/
                     //setResult(RESULT_OK, intent);
                     updateMoodTask.execute(mood);
-                    //finish();
+                    finish();
 
                 } else {
                     Context context = getApplicationContext();
