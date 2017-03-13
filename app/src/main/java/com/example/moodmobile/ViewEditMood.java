@@ -75,10 +75,24 @@ public class ViewEditMood extends AppCompatActivity {
                     //mood = new Mood("qwerty"); //This is why it wasnt working
 
                     /** Setting new values **/
+                    try{
+
                     mood.setMessage(moodEdittext.getText().toString());
                     mood.setSituation(moodSituationEdittext.getText().toString());
                     mood.setFeeling(moodReasonEdittext.getText().toString());
-                    mood.setDate(new Date());
+                    mood.setDate(new Date());}
+                    catch (ReasonTooLongException e) {
+
+                        Context context = getApplicationContext();
+
+                        CharSequence text = "Reason must be less than 20 characters";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }
+
+
 
 
                     /** save data to server
