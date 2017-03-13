@@ -54,6 +54,9 @@ public class ViewEditMood extends AppCompatActivity {
 
                 if (!moodEdittext.getText().toString().trim().equals("")){
 
+                    ElasticsearchMoodController.AddMoodsTask addMoodTask =
+                            new ElasticsearchMoodController.AddMoodsTask();
+
                     /** Setting new values **/
                     mood.setMessage(moodEdittext.getText().toString());
                     mood.setSituation(moodSituationEdittext.getText().toString());
@@ -67,6 +70,7 @@ public class ViewEditMood extends AppCompatActivity {
                      *
                      * **/
                     //setResult(RESULT_OK, intent);
+                    addMoodTask.execute(currentMood);
                     finish();
 
                 } else {
