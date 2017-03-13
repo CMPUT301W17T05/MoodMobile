@@ -1,5 +1,6 @@
 package com.example.moodmobile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,6 +142,51 @@ public class MainPageActivity extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });*/
+
+        /* Listener to detect a mood that has been clicked.
+                *  This will also launch the ViewEditMood activity**/
+
+        oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
+                setResult(RESULT_OK);
+
+                Mood moodToEdit = moodsList.get(index);
+
+                Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
+                intent.putExtra("moodID", moodToEdit.getId());
+
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        /** Long click listener for the mood list.
+                *  Will delete a long-clicked mood.**/
+
+
+        oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
+                setResult(RESULT_OK);
+                moodsList.remove(index);
+
+                adapter.notifyDataSetChanged();
+                /** TODO notify elasticsearch**/
+
+
+                /**
+                 Display a user message that the selected person was deleted
+                 **/
+
+                Context context = getApplicationContext();
+                String text = "Mood Deleted";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                return false;
+            }
+        });
 
     }
 

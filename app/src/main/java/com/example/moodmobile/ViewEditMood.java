@@ -52,6 +52,7 @@ public class ViewEditMood extends AppCompatActivity {
 
         try {
             moodList.addAll(getMoodsTask.get());
+            mood = moodList.get(0);
         } catch (Exception e) {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
@@ -59,7 +60,7 @@ public class ViewEditMood extends AppCompatActivity {
         /** Will throw error if moodlist is empty,
          * but non-emptyness should be guaranteed.
          */
-        mood = moodList.get(0);
+
 
         moodEdittext.setText(mood.getMessage());
         moodSituationEdittext.setText(mood.getSituation());
