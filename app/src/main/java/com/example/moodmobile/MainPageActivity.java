@@ -79,7 +79,10 @@ public class MainPageActivity extends AppCompatActivity {
 
                 /** TODO
                  *  NOTIFY ELASTICSEARCH THAT A MOOD HAS BEEN DELETED
+                 *
+                 *  Is it actually nessessary?
                  */
+
 
 
                 /**
