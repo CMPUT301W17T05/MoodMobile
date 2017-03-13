@@ -94,6 +94,7 @@ public class MainPageActivity extends AppCompatActivity {
                 setResult(RESULT_OK);
                 Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
                 startActivity(profileIntent);
+                finish();
                 //TO-DO Start Edit Profile Activity
                 /*String text = bodyText.getText().toString();
                 NormalTweet newTweet = new NormalTweet(text);
@@ -110,6 +111,7 @@ public class MainPageActivity extends AppCompatActivity {
                 setResult(RESULT_OK);
                 Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
                 startActivity(newMoodIntent);
+                finish();
                 //TO-DO Start New Mood Activity
                 /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
                 String message = bodyText.getText().toString();
