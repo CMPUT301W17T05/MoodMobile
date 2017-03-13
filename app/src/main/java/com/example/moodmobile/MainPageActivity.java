@@ -92,7 +92,7 @@ public class MainPageActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent profileIntent = new Intent(v.getContext(), EditProfileActivity.class);
+                Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
                 startActivity(profileIntent);
                 //TO-DO Start Edit Profile Activity
                 /*String text = bodyText.getText().toString();
