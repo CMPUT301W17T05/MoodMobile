@@ -167,6 +167,10 @@ public class AddMood extends AppCompatActivity {
 
                 addMoodTask.execute(currentMood);
 
+                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
+                startActivity(MainpageIntent);
+                finish();
+
 
             }
 
