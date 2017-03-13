@@ -10,4 +10,5 @@ public interface Moodable {
     public String getMessage();
 
     public Date getDate();
+
 }

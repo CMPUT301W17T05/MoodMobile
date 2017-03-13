@@ -1,4 +1,4 @@
-import android.test.ActivityInstrumentationTestCase2;
+/*import android.test.ActivityInstrumentationTestCase2;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -300,3 +300,4 @@ public class TestMoodList extends ActivityInstrumentationTestCase2 {
     	assertTrue(moods.size() == 2);
     }
 }
+*/

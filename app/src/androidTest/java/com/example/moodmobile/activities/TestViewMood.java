@@ -1,4 +1,4 @@
-import android.test.ActivityInstrumentationTestCase2;
+/*import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
 
@@ -69,3 +69,4 @@ public class TestViewMood extends ActivityInstrumentationTestCase2 {
     	assertFalse(selectedMood.getReason() == selectedReason);
     }
 }
+*/

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MoodMobile.iml" filepath="$PROJECT_DIR$/MoodMobile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MoodMobile 11.38.10 PM.iml" filepath="$PROJECT_DIR$/MoodMobile 11.38.10 PM.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

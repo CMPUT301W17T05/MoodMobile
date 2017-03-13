@@ -121,7 +121,7 @@
     <Spinner
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner5"
+        android:id="@+id/sitSpinner"
         android:layout_below="@+id/weekFilter"
         android:layout_toRightOf="@+id/emotionFilter"
         android:layout_toEndOf="@+id/emotionFilter" />
@@ -131,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView17"
-        android:layout_below="@+id/spinner5"
+        android:layout_below="@+id/sitSpinner"
         android:layout_alignLeft="@+id/emotionFilter"
         android:layout_alignStart="@+id/emotionFilter" />
 
@@ -145,7 +145,7 @@
         android:layout_toEndOf="@+id/textView17"
         android:layout_marginLeft="11dp"
         android:layout_marginStart="11dp"
-        android:id="@+id/editText4"
+        android:id="@+id/reasonText"
         android:textSize="18sp" />
 
 </RelativeLayout>

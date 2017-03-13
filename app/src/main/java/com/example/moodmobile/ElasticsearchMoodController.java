@@ -22,7 +22,6 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchMoodController {
     private static JestDroidClient client;
 
-    // TODO we need a function which adds tweets to elastic search
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
 
         @Override
@@ -33,16 +32,39 @@ public class ElasticsearchMoodController {
                 Index index = new Index.Builder(mood).index("cmput301w17t5").type("moods").build();
 
                 try {
-                    // where is the client?
                     DocumentResult result = client.execute(index);
-                    if (result.isSucceeded()){
+                    if (result.isSucceeded()) {
                         mood.setId(result.getId());
-                    }
-                    else{
+                    } else {
                         Log.i("Error", "ElasticSearch was not able to add the tweet.");
                     }
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the tweets");
                 }
-                catch (Exception e) {
+            }
+            return null;
+        }
+    }
+
+    // TODO we need a function which adds Account to elastic search
+    public static class AddUser extends AsyncTask<Account, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Account... accounts) {
+            verifySettings();
+
+            for (Account account : accounts) {
+                Index index = new Index.Builder(account).index("cmput301w17t5").type("users").build();
+
+                try {
+                    // where is the client?
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        account.setId(result.getId());
+                    } else {
+                        Log.i("Error", "ElasticSearch was not able to add the tweet.");
+                    }
+                } catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the tweets");
                 }
 
@@ -51,7 +73,6 @@ public class ElasticsearchMoodController {
         }
     }
 
-    // TODO we need a function which gets tweets from elastic search
     public static class GetMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
@@ -60,15 +81,12 @@ public class ElasticsearchMoodController {
             ArrayList<Mood> moods = new ArrayList<Mood>();
             //Search string here
             String MoodQuery;
-            if (search_parameters[0].equals("")){
+            if (search_parameters[0].equals("")) {
                 MoodQuery = search_parameters[0];
-            }
-            else{
+            } else {
                 MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
             }
 
-
-            // TODO Build the query
             Search search = new Search.Builder(MoodQuery)
                     .addIndex("cmput301w17t5")
                     .addType("moods")
@@ -77,15 +95,13 @@ public class ElasticsearchMoodController {
             try {
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
-                if (result.isSucceeded()){
+                if (result.isSucceeded()) {
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
-                }
-                else{
+                } else {
                     Log.i("Error", "The search query failed to find any tweets that matched");
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
@@ -93,8 +109,40 @@ public class ElasticsearchMoodController {
         }
     }
 
+    public static class GetUser extends AsyncTask<String, Void, ArrayList<Account>> {
+        @Override
+        protected ArrayList<Account> doInBackground(String... search_parameters) {
+            verifySettings();
 
+            ArrayList<Account> accounts = new ArrayList<Account>();
+            //Search string here
+            String UserQuery;
+            if (search_parameters[0].equals("")) {
+                UserQuery = search_parameters[0];
+            } else {
+                UserQuery = "{\"query\": {\"match\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
+            }
 
+            Search search = new Search.Builder(UserQuery)
+                    .addIndex("cmput301w17t5")
+                    .addType("users")
+                    .build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Account> foundUsers = result.getSourceAsObjectList(Account.class);
+                    accounts.addAll(foundUsers);
+                } else {
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return accounts;
+        }
+    }
 
     public static void verifySettings() {
         if (client == null) {

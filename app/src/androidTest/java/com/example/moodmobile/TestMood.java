@@ -3,7 +3,7 @@ package com.example.moodmobile;
 /**
  * Created by juice on 27/02/17.
  */
-
+/*
 import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
@@ -68,7 +68,6 @@ public class TestMood extends ActivityInstrumentationTestCase2{
     public void testSetImage(){
         Mood mood = new Mood();
 
-        /**TODO*/
     }
 
     public void testSetTime(){
@@ -147,7 +146,7 @@ public class TestMood extends ActivityInstrumentationTestCase2{
 }
 
 
-
+*/
 
 
 

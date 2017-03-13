@@ -8,7 +8,7 @@ import io.searchbox.annotations.JestId;
  * Created by Derek.R on 2017-03-07.
  */
 
-public class Mood implements Moodable{
+public class Mood implements Moodable {
     private String message;
     private Date date;
     private String feeling;
@@ -17,14 +17,14 @@ public class Mood implements Moodable{
     @JestId
     private String id;
 
-    public Mood(String message){
+    public Mood(String message) {
         this.message = message;
 
         this.date = new Date();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return message;
     }
 
@@ -33,7 +33,7 @@ public class Mood implements Moodable{
     }
 
     public void setMessage(String message) throws ReasonTooLongException {
-        if (message.length() > 20){
+        if (message.length() > 20) {
             //Do Something!
             throw new ReasonTooLongException();
         }
@@ -71,5 +71,5 @@ public class Mood implements Moodable{
     public String getSituation() {
         return situation;
     }
-}
 
+}
