@@ -31,7 +31,6 @@
             android:name=".AddMood"
             android:exported="true" />
         <activity android:name=".MainPageActivity" />
-        <activity android:name=".EditProfileActivity"></activity>
         <activity android:name=".ViewEditMood"></activity>
 
 

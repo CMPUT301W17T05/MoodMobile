@@ -101,7 +101,7 @@ public class MainPageActivity extends AppCompatActivity {
                 profileIntent.putExtra("username", username);
 
                 startActivity(profileIntent);
-                finish();
+                //finish();
                 //TO-DO Start Edit Profile Activity
                 /*String text = bodyText.getText().toString();
                 NormalTweet newTweet = new NormalTweet(text);

@@ -8,6 +8,7 @@
 
 package com.example.moodmobile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class UserProfile extends AppCompatActivity {
@@ -42,6 +45,7 @@ public class UserProfile extends AppCompatActivity {
     private EditText regionTxt;
     private Spinner genderSpinner;
 
+    private Account account;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,7 @@ public class UserProfile extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         username = getUsernameIntent.getStringExtra("username");
+        Log.d("JBCNM: ", String.valueOf(username));
 
         final ArrayList<Account> accountList = new ArrayList<>();
 
@@ -126,6 +131,48 @@ public class UserProfile extends AppCompatActivity {
             }
         }
 
+    }
+
+    public void saveProfile(View view) {
+        final ArrayList<Account> accountList = new ArrayList<>();
+        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+        getUser.execute(username);
+        try {
+            accountList.clear();
+            accountList.addAll(getUser.get());
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the tweets out of asyc object");
+        }
+
+        account = accountList.get(0);
+
+        ElasticsearchAccountController.UpdateAccountTask updateAccountTask =
+                new ElasticsearchAccountController.UpdateAccountTask();
+
+
+        try {
+            account.setNickname(nicknameTxt.getText().toString());
+            account.setGender(genderSpinner.getSelectedItem().toString());
+            account.setRegion(regionTxt.getText().toString());
+        }
+        catch (Exception e) {
+
+            Log.i("Error", "Failed to edit user profile.");
+
+        }
+
+        updateAccountTask.execute(account);
+
+        Context context = getApplicationContext();
+        Toast.makeText(context, "Edit profile successfully", Toast.LENGTH_SHORT).show();
+
+        Intent MainpageIntent = new Intent(this, MainPageActivity.class);
+
+        MainpageIntent.putExtra("username", account.getUsername());
+
+
+        startActivity(MainpageIntent);
+        finish();
     }
 
 

@@ -10,6 +10,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -95,7 +96,48 @@ public class ElasticsearchAccountController {
     }
 
 
+    public static class UpdateAccountTask extends AsyncTask<Account, Void, Void> {
 
+        @Override
+        protected Void doInBackground(Account... accounts) {
+            verifySettings();
+
+            for (Account account : accounts) {
+
+                try {client.execute(new Delete.Builder(account.getId())
+                        .index("cmput301w17t5")
+                        .type("users")
+                        .build());
+
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the mood");
+                }
+
+                try {
+                    // where is the client?
+                    Index index = new Index.Builder(account)
+                            .index("cmput301w17t5")
+                            .type("users")
+                            .id(account.getId()) //Added to preserve ID
+                            .build();
+
+
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()){
+                        //mood.setId(result.getId());
+                    }
+                    else{
+                        Log.i("Error", "ElasticSearch was not able to add the mood.");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the mood");
+                }
+
+            }
+            return null;
+        }
+    }
 
 
 

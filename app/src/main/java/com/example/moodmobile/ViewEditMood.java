@@ -43,8 +43,6 @@ public class ViewEditMood extends AppCompatActivity {
         moodSituationEdittext = (EditText) findViewById(R.id.moodSituationEdittext);
         moodReasonEdittext = (EditText) findViewById(R.id.moodReasonEdittext);
 
-        saveButton = (Button) findViewById(R.id.moodSaveButton);
-
         String moodID = getIntent().getStringExtra("moodID");
 
         ElasticsearchMoodController.GetMoodsTaskByID getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByID();
