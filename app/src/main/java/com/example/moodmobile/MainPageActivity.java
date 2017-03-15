@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity {
+    private Intent intent;
 
     private ListView oldMoodsList;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
@@ -30,12 +31,15 @@ public class MainPageActivity extends AppCompatActivity {
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
+    public String username;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
+
+        intent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reasonText);
         chkDate = (CheckBox) findViewById(R.id.weekBox);
@@ -93,6 +97,9 @@ public class MainPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
+
+                profileIntent.putExtra("username", username);
+
                 startActivity(profileIntent);
                 finish();
                 //TO-DO Start Edit Profile Activity
@@ -199,6 +206,8 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        username = intent.getStringExtra("username");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute("");
