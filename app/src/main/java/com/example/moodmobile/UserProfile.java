@@ -166,12 +166,7 @@ public class UserProfile extends AppCompatActivity {
         Context context = getApplicationContext();
         Toast.makeText(context, "Edit profile successfully", Toast.LENGTH_SHORT).show();
 
-        Intent MainpageIntent = new Intent(this, MainPageActivity.class);
 
-        MainpageIntent.putExtra("username", account.getUsername());
-
-
-        startActivity(MainpageIntent);
         finish();
     }
 
