@@ -1,4 +1,4 @@
-public class TestLogin extends ActivityInstrumentationTestCase2 {
+/*public class TestLogin extends ActivityInstrumentationTestCase2 {
     public TestLogin() {
         super(LoginActivity.class);
     }
@@ -11,3 +11,4 @@ public class TestLogin extends ActivityInstrumentationTestCase2 {
     
     }
 }
+*/

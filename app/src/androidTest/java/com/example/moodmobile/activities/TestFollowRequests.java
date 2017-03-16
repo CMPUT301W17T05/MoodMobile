@@ -1,4 +1,4 @@
-public class TestFollowRequests extends ActivityInstrumentationTestCase2 {
+/*public class TestFollowRequests extends ActivityInstrumentationTestCase2 {
     public TestFollowRequests.java() {
         super(FollowRequestsActivity.class);
     }
@@ -11,3 +11,4 @@ public class TestFollowRequests extends ActivityInstrumentationTestCase2 {
     
     }
 }
+*/

@@ -2,43 +2,43 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/login_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.momo.momouiprototype.MainActivity">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
         android:text="Username: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_above="@+id/editText2"
+        android:layout_above="@+id/username"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:text="Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/loginBot"
         android:layout_alignParentBottom="true"
         style="@android:style/Widget.Holo.Light.Button"
-        android:layout_alignEnd="@+id/editText2"
-        android:layout_alignStart="@+id/button2" />
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/SaveBot" />
 
     <Button
-        android:text="*Create an account*"
+        android:id="@+id/SaveBot"
+        style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:layout_above="@+id/button"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:textStyle="normal|italic"
-        android:layout_alignEnd="@+id/editText2"
-        android:layout_alignStart="@+id/editText2" />
+        android:layout_above="@+id/loginBot"
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/username"
+        android:onClick="createAccount"
+        android:text="*Create an account*"
+        android:textStyle="normal|italic" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_above="@+id/button2"
+        android:id="@+id/username"
+        android:layout_above="@+id/SaveBot"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
