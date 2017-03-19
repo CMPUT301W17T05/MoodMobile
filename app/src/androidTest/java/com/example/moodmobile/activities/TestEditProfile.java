@@ -5,7 +5,7 @@ import com.example.moodmobile.activities.;
 
 public class TestEditProfile extends ActivityInstrumentationTestCase2 {
     public TestEditProfile() {
-        super(EditProfileActivity.class);
+        super(UserProfile.class);
     }
     
     public void testOnCreate() {

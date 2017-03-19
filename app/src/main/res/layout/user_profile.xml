@@ -21,20 +21,18 @@
         android:layout_marginTop="17dp"
         android:ems="10"
         android:gravity="center_vertical|center_horizontal"
-        android:inputType="textPersonName"
-        android:text="repka" />
-
-    <TextView
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/gender"
-        android:layout_alignStart="@+id/gender"
-        android:layout_below="@+id/textView9"
-        android:ems="10" />
+        android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/region"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/textView9"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp"
@@ -59,7 +57,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView8"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/editText5"
+        android:layout_below="@+id/nickname"
         android:layout_alignRight="@+id/textView9"
         android:layout_alignEnd="@+id/textView9" />
 
@@ -91,10 +89,11 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:text="SAVE"
-        android:layout_height="wrap_content"
-        android:id="@+id/saveButton"
+        android:id="@+id/saveProfile"
         android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:onClick="saveProfile"
+        android:text="SAVE"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 

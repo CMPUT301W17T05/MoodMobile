@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.moodmobile">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -11,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -26,9 +26,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateAccount" />
-        <activity android:name=".UserProfile"/>
-        <activity android:name=".AddMood" android:exported="true">
-        </activity>
+        <activity android:name=".UserProfile" />
+        <activity
+            android:name=".AddMood"
+            android:exported="true" />
+        <activity android:name=".MainPageActivity" />
+        <activity android:name=".ViewEditMood"></activity>
+
+
     </application>
 
 </manifest>

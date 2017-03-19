@@ -51,8 +51,13 @@ public class LoginPage extends AppCompatActivity {
                 else {
                     Context context = getApplicationContext();
                     Toast.makeText(context, "Log in successfully!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    Intent mainIntent = new Intent(LoginPage.this, MainPageActivity.class);
+                    mainIntent.putExtra("username", accountList.get(0).getUsername());
+
+                    startActivity(mainIntent);
+
                 }
-                    //TODO Goes to main page activity
 
 
             }
