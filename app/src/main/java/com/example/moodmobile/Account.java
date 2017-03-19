@@ -9,9 +9,19 @@ import io.searchbox.annotations.JestId;
  */
 
 public class Account{
+    private String profileImage;
     private String username;
     private String nickname;
     private String gender;
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     private String region;
 
     @JestId
