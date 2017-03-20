@@ -43,6 +43,7 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
+                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
@@ -74,6 +75,7 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
+                    //TODO add mood to "updatemood.sav"
                 }
 
                 try {
@@ -91,10 +93,12 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
+                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
+                    //TODO add mood to file?
                 }
 
             }
@@ -117,6 +121,7 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to delete the mood");
+                    //TODO add mood to "deletemood.sav"
                 }
 
 
@@ -221,4 +226,5 @@ public class ElasticsearchMoodController {
             client = (JestDroidClient) factory.getObject();
         }
     }
+
 }
