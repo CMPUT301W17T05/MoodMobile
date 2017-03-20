@@ -1,7 +1,6 @@
 package com.example.moodmobile;
 
 import android.app.IntentService;
-import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -28,10 +27,10 @@ import java.util.ArrayList;
  */
 
 public class SyncService extends IntentService {
-    private ArrayList<Mood> saveList;
+    private ArrayList<Mood> addList;
     private ArrayList<Mood> updateList;
     private ArrayList<Mood> deleteList;
-    private static final String SAVE_FILE = "savemood.sav";
+    private static final String ADD_FILE = "addmood.sav";
     private static final String UPDATE_FILE = "updatemood.sav";
     private static final String DELETE_FILE = "deletemood.sav";
 
@@ -41,27 +40,15 @@ public class SyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent){
-        //Files
-        //TODO How does updating moods work? Just update or delete + save?
-
-
         Bundle bundle = intent.getExtras();
         LoadAllFromFile();
 
-
-        //getmethod
-        Context context = this;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-        if (isConnected == true){
-            //TODO Post Moods
+        if (IsConnected() == true){
+            SyncWithServer();
 
             SaveAllToFile();
         }
         else{
-            //TODO Save Moods
             SaveAllToFile();
         }
 
@@ -84,7 +71,7 @@ public class SyncService extends IntentService {
     }
 
     private void LoadAllFromFile(){
-        LoadFromFile(SAVE_FILE, saveList);
+        LoadFromFile(ADD_FILE, addList);
         LoadFromFile(UPDATE_FILE, updateList);
         LoadFromFile(DELETE_FILE, deleteList);
     }
@@ -104,8 +91,52 @@ public class SyncService extends IntentService {
     }
 
     private void SaveAllToFile(){
-        SaveToFile(SAVE_FILE, saveList);
+        SaveToFile(ADD_FILE, addList);
         SaveToFile(UPDATE_FILE, updateList);
         SaveToFile(DELETE_FILE, deleteList);
+    }
+
+    private void AddToServer(){
+        ElasticsearchMoodController.AddMoodsTask addMoodTask =
+                new ElasticsearchMoodController.AddMoodsTask();
+        while (addList.size() != 0){
+            Mood currentMood = addList.get(0);
+            addMoodTask.execute(currentMood);
+            addList.remove(0);
+        }
+    }
+
+    private void UpdateOnServer(){
+        ElasticsearchMoodController.UpdateMoodsTask updateMoodsTask =
+                new ElasticsearchMoodController.UpdateMoodsTask();
+        while (updateList.size() != 0){
+            Mood currentMood = updateList.get(0);
+            updateMoodsTask.execute(currentMood);
+            updateList.remove(0);
+        }
+    }
+
+    private void DeleteFromServer(){
+        ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
+                new ElasticsearchMoodController.DeleteMoodsTask();
+        while (deleteList.size() != 0){
+            Mood currentMood = deleteList.get(0);
+            deleteMoodsTask.execute(currentMood);
+            deleteList.remove(0);
+        }
+    }
+
+    private void SyncWithServer(){
+        DeleteFromServer();
+        AddToServer();
+        UpdateOnServer();
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
 }

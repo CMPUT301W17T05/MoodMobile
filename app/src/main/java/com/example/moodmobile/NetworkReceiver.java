@@ -18,7 +18,8 @@ public class NetworkReceiver extends WakefulBroadcastReceiver {
         Intent service = new Intent(context, SyncService.class);
 
         /*
-        Code pulled from http://stackoverflow.com/questions/31689513/broadcastreceiver-to-detect-network-is-connected
+        Code Addapted from
+        http://stackoverflow.com/questions/31689513/broadcastreceiver-to-detect-network-is-connected
         on Mar 16, 2017
          */
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
