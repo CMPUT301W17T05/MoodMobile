@@ -33,6 +33,7 @@ public class SyncService extends IntentService {
     private static final String ADD_FILE = "addmood.sav";
     private static final String UPDATE_FILE = "updatemood.sav";
     private static final String DELETE_FILE = "deletemood.sav";
+    private Intent serviceIntent;
 
     public SyncService() {
         super("SyncService");
@@ -40,40 +41,33 @@ public class SyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent){
-        Bundle bundle = intent.getExtras();
+        serviceIntent = intent;
+
         LoadAllFromFile();
 
-        if (IsConnected() == true){
-            SyncWithServer();
+        SyncWithServer();
 
-            SaveAllToFile();
-        }
-        else{
-            SaveAllToFile();
-        }
-
-        Log.i("SyncService", "Completed service @ " + SystemClock.elapsedRealtime());
-        NetworkReceiver.completeWakefulIntent(intent);
+        EndService(true);
     }
 
-    private void LoadFromFile(String file, ArrayList<Mood> list){
+    private ArrayList<Mood> LoadFromFile(String file){
         try {
             FileInputStream fis = openFileInput(file);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<Mood>>(){}.getType();
-            list = gson.fromJson(in, listType);
+            return gson.fromJson(in, listType);
         } catch (FileNotFoundException e) {
-            list = new ArrayList<Mood>();
+            return new ArrayList<Mood>();
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
 
     private void LoadAllFromFile(){
-        LoadFromFile(ADD_FILE, addList);
-        LoadFromFile(UPDATE_FILE, updateList);
-        LoadFromFile(DELETE_FILE, deleteList);
+        addList = LoadFromFile(ADD_FILE);
+        updateList =  LoadFromFile(UPDATE_FILE);
+        deleteList = LoadFromFile(DELETE_FILE);
     }
 
     private void SaveToFile(String file, ArrayList<Mood> list){
@@ -99,10 +93,14 @@ public class SyncService extends IntentService {
     private void AddToServer(){
         ElasticsearchMoodController.AddMoodsTask addMoodTask =
                 new ElasticsearchMoodController.AddMoodsTask();
-        while (addList.size() != 0){
-            Mood currentMood = addList.get(0);
-            addMoodTask.execute(currentMood);
-            addList.remove(0);
+        while (addList.size() != 0) {
+            if (IsConnected() == true) {
+                Mood currentMood = addList.get(0);
+                addMoodTask.execute(currentMood);
+                addList.remove(0);
+            } else {
+                EndService(false);
+            }
         }
     }
 
@@ -110,9 +108,13 @@ public class SyncService extends IntentService {
         ElasticsearchMoodController.UpdateMoodsTask updateMoodsTask =
                 new ElasticsearchMoodController.UpdateMoodsTask();
         while (updateList.size() != 0){
-            Mood currentMood = updateList.get(0);
-            updateMoodsTask.execute(currentMood);
-            updateList.remove(0);
+            if (IsConnected() == true) {
+                Mood currentMood = updateList.get(0);
+                updateMoodsTask.execute(currentMood);
+                updateList.remove(0);
+            } else {
+                EndService(false);
+            }
         }
     }
 
@@ -120,9 +122,13 @@ public class SyncService extends IntentService {
         ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
                 new ElasticsearchMoodController.DeleteMoodsTask();
         while (deleteList.size() != 0){
-            Mood currentMood = deleteList.get(0);
-            deleteMoodsTask.execute(currentMood);
-            deleteList.remove(0);
+            if (IsConnected() == true) {
+                Mood currentMood = deleteList.get(0);
+                deleteMoodsTask.execute(currentMood);
+                deleteList.remove(0);
+            } else {
+                EndService(false);
+            }
         }
     }
 
@@ -138,5 +144,17 @@ public class SyncService extends IntentService {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         return isConnected;
+    }
+
+    private void EndService(Boolean isFinished){
+        if (isFinished == true){
+            Log.i("SyncService", "Completed service @ " + SystemClock.elapsedRealtime());
+            NetworkReceiver.completeWakefulIntent(serviceIntent);
+        }
+        else{
+            SaveAllToFile();
+            Log.i("SyncService", "Service Disrupted @ " + SystemClock.elapsedRealtime());
+            NetworkReceiver.completeWakefulIntent(serviceIntent);
+        }
     }
 }
