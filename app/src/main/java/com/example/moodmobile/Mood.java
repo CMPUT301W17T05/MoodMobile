@@ -17,7 +17,7 @@ public class Mood implements Moodable{
     private Date date;
     private String feeling;
     private String socialSituation;
-//    private Image moodImage;
+    private String moodImage;
 //    private Location location;
 
 
@@ -91,12 +91,13 @@ public class Mood implements Moodable{
         return socialSituation;
     }
 
-/*    public Image getMoodImage() {
+   public String getMoodImage() {
         return moodImage;
     }
-    public void setMoodImage(Image moodImage) {
+    public void setMoodImage(String moodImage) {
         this.moodImage = moodImage;
     }
+    /*
     public Location getLocation() {
         return location;
     }
