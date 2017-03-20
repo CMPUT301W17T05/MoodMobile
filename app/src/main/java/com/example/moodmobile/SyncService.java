@@ -10,6 +10,17 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -17,9 +28,12 @@ import java.util.ArrayList;
  */
 
 public class SyncService extends IntentService {
-    ArrayList<Mood> moodList;
-    Mood mood;
-    JobScheduler scheduler;
+    private ArrayList<Mood> saveList;
+    private ArrayList<Mood> updateList;
+    private ArrayList<Mood> deleteList;
+    private static final String SAVE_FILE = "savemood.sav";
+    private static final String UPDATE_FILE = "updatemood.sav";
+    private static final String DELETE_FILE = "deletemood.sav";
 
     public SyncService() {
         super("SyncService");
@@ -27,12 +41,13 @@ public class SyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent){
+        //Files
+        //TODO How does updating moods work? Just update or delete + save?
+
+
         Bundle bundle = intent.getExtras();
-        LoadFromFile();
-        if (bundle == null) {
-            mood = (Mood) bundle.get("mood");
-            moodList.add(mood);
-        }
+        LoadAllFromFile();
+
 
         //getmethod
         Context context = this;
@@ -43,37 +58,54 @@ public class SyncService extends IntentService {
         if (isConnected == true){
             //TODO Post Moods
 
-
+            SaveAllToFile();
         }
         else{
             //TODO Save Moods
-            SaveToFile();
+            SaveAllToFile();
         }
 
         Log.i("SyncService", "Completed service @ " + SystemClock.elapsedRealtime());
-        //TODO How to Complete Service? Back to Reciever vs Back to JobService
-        //jobFinished(mJobParams, false);
         NetworkReceiver.completeWakefulIntent(intent);
     }
 
-    private void LoadFromFile(){
-        //TODO Load Saved Moods From File
+    private void LoadFromFile(String file, ArrayList<Mood> list){
+        try {
+            FileInputStream fis = openFileInput(file);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Mood>>(){}.getType();
+            list = gson.fromJson(in, listType);
+        } catch (FileNotFoundException e) {
+            list = new ArrayList<Mood>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
-    private void SaveToFile(){
-        //TODO Save Moods to File
+    private void LoadAllFromFile(){
+        LoadFromFile(SAVE_FILE, saveList);
+        LoadFromFile(UPDATE_FILE, updateList);
+        LoadFromFile(DELETE_FILE, deleteList);
+    }
+
+    private void SaveToFile(String file, ArrayList<Mood> list){
+        try {
+            FileOutputStream fos = openFileOutput(file, 0);
+            OutputStreamWriter witer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(list, witer);
+            witer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void SaveAllToFile(){
+        SaveToFile(SAVE_FILE, saveList);
+        SaveToFile(UPDATE_FILE, updateList);
+        SaveToFile(DELETE_FILE, deleteList);
     }
 }
-
-/*
-ComponentName serviceName = new CompenentName(this, SyncService.java);
-
-JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-JobInfo jobInfo = new JobInfo.Builder(jobNumber, serviceName)
-    .serRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-    .isPersisted()
-    .build();
-
-scheduler.schedule(jobInfo);
- */

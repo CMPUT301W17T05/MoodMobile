@@ -39,11 +39,6 @@
             android:name=".SyncService"
             android:exported="false"
             />
-        <service
-            android:name=".SyncJob"
-            android:permission="android.permission.BIND_JOB_SERVICE" >
-
-        </service>
 
         <receiver
             android:name=".NetworkReceiver"
