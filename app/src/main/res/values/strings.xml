@@ -8,14 +8,14 @@
     </string-array>
 
     <string-array name="mood_array">
-        <item>Angry</item>
-        <item>Confused</item>
-        <item>Disgusting</item>
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
         <item>Fear</item>
-        <item>Happy</item>
-        <item>Surprised</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
         <item>Shame</item>
-        <item>Sad</item>
+        <item>Surprise</item>
     </string-array>
 
     <string-array name="situation_array">
@@ -24,5 +24,6 @@
         <item>With multiple people</item>
         <item>With a crowd</item>
     </string-array>
+    <string name="title_activity_main_test">MainActivityTest</string>
 </resources>
 

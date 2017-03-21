@@ -23,9 +23,9 @@ import java.util.Date;
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
 
-    private ListView oldMoodsList;
+    private ListView moodsListView;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
-    private ArrayAdapter<Mood> adapter;
+    private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
     private String situationArray[];
     private Spinner spinnerSituation;
@@ -51,7 +51,7 @@ public class MainPageActivity extends AppCompatActivity {
         Button mapButton = (Button) findViewById(R.id.map);
         spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
-        oldMoodsList = (ListView) findViewById(R.id.moodList);
+        moodsListView = (ListView) findViewById(R.id.moodList);
 
         chkDate.setOnClickListener(new View.OnClickListener() {
 
@@ -155,7 +155,7 @@ public class MainPageActivity extends AppCompatActivity {
         /* Listener to detect a mood that has been clicked.
                 *  This will also launch the ViewEditMood activity**/
 
-        oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
@@ -175,7 +175,7 @@ public class MainPageActivity extends AppCompatActivity {
                 *  Will delete a long-clicked mood.**/
 
 
-        oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        moodsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
@@ -219,9 +219,12 @@ public class MainPageActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
+        //TODO Create arrays listview to use.
+        for (Mood mood: moodsList){
 
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
+        }
+        adapter = new CustomListAdapter(this, itemname);
+        moodsListView.setAdapter(adapter);
     }
 
     protected void onResume() {
@@ -287,7 +290,40 @@ public class MainPageActivity extends AppCompatActivity {
         adapter.clear();
         moodsList.addAll(filteredMoodsList);
         adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
+        moodsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    private Integer getEmoticon(String emotion){
+        Integer emoticon;
+        switch (emotion) {
+            case "Anger":
+                emoticon = R.drawable.Anger;
+                break;
+            case "Confusion":
+                emoticon = R.drawable.Confusion;
+                break;
+            case "Disgust":
+                emoticon = R.drawable.Disgust;
+                break;
+            case "Fear":
+                emoticon = R.drawable.Fear;
+                break;
+            case "Happiness":
+                emoticon = R.drawable.Happiness;
+                break;
+            case "Sadness":
+                emoticon = R.drawable.Sadness;
+                break;
+            case "Shame":
+                emoticon = R.drawable.Shame;
+                break;
+            case "Surprise":
+                emoticon = R.drawable.Surprise;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid emotion: " + emotion);
+        }
+        return emoticon;
     }
 }
