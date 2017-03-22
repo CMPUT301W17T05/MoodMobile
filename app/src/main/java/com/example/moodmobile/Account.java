@@ -16,6 +16,7 @@ public class Account{
     private String gender;
     private String region;
     private ArrayList<String> following;
+    private ArrayList<String> followRequests;
 
 
     public String getProfileImage() {
@@ -81,4 +82,8 @@ public class Account{
     public ArrayList<String> getFollowing() {return following;}
 
     public void setFollowing(ArrayList<String> following) {this.following = following;}
+
+    public ArrayList<String> getFollowRequests() {return followRequests;}
+
+    public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
 }

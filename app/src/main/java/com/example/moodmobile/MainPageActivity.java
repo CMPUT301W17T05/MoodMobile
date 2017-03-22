@@ -289,7 +289,7 @@ public class MainPageActivity extends AppCompatActivity {
         moodsList.clear();
         adapter.clear();
         moodsList.addAll(filteredMoodsList);
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
+        adapter = new CustomListAdapter(this, moodsList);
         moodsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -297,33 +297,37 @@ public class MainPageActivity extends AppCompatActivity {
     private Integer getEmoticon(String emotion){
         Integer emoticon;
         switch (emotion) {
-            case "Anger":
-                emoticon = R.drawable.Anger;
+            case "anger":
+                emoticon = R.drawable.anger;
                 break;
-            case "Confusion":
-                emoticon = R.drawable.Confusion;
+            case "confusion":
+                emoticon = R.drawable.confusion;
                 break;
-            case "Disgust":
-                emoticon = R.drawable.Disgust;
+            case "disgust":
+                emoticon = R.drawable.disgust;
                 break;
-            case "Fear":
-                emoticon = R.drawable.Fear;
+            case "fear":
+                emoticon = R.drawable.fear;
                 break;
-            case "Happiness":
-                emoticon = R.drawable.Happiness;
+            case "happiness":
+                emoticon = R.drawable.happiness;
                 break;
-            case "Sadness":
-                emoticon = R.drawable.Sadness;
+            case "sadness":
+                emoticon = R.drawable.sadness;
                 break;
-            case "Shame":
-                emoticon = R.drawable.Shame;
+            case "shame":
+                emoticon = R.drawable.shame;
                 break;
-            case "Surprise":
-                emoticon = R.drawable.Surprise;
+            case "surprise":
+                emoticon = R.drawable.surprise;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid emotion: " + emotion);
         }
         return emoticon;
+    }
+
+    private void getArrays(){
+
     }
 }
