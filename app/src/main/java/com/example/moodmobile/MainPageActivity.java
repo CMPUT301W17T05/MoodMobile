@@ -132,7 +132,7 @@ public class MainPageActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();*/
             }
         });
-/*
+
         friendsButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -142,7 +142,7 @@ public class MainPageActivity extends AppCompatActivity {
                 //TO-DO Start Friends Activity
             }
         });
-
+/*
         mapButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {

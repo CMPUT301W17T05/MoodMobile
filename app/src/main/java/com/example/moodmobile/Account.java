@@ -1,5 +1,6 @@
 package com.example.moodmobile;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.searchbox.annotations.JestId;
@@ -13,6 +14,21 @@ public class Account{
     private String nickname;
     private String gender;
     private String region;
+    private ArrayList<String> friendsList;
+
+    public ArrayList<String> getFriendsList() {
+        return friendsList;
+    }
+
+    public void setFriendsList(ArrayList<String> friendsList) {
+        this.friendsList = friendsList;
+    }
+
+    public void addFriend(String username){
+        friendsList.add(username);
+    }
+
+
 
     @JestId
     private String id;
