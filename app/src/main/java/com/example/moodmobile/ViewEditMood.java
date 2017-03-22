@@ -47,8 +47,11 @@ public class ViewEditMood extends AppCompatActivity {
 
         String moodID = getIntent().getStringExtra("moodID");
 
-        ElasticsearchMoodController.GetMoodsTaskByID getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByID();
-        getMoodsTask.execute(moodID);
+        //ElasticsearchMoodController.GetMoodsTaskByID getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByID();
+        //getMoodsTask.execute(moodID);
+
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute("");
 
         try {
             moodList.addAll(getMoodsTask.get());
@@ -77,10 +80,12 @@ public class ViewEditMood extends AppCompatActivity {
                     /** Setting new values **/
                     try{
 
-                    mood.setMessage(moodEdittext.getText().toString());
-                    mood.setSituation(moodSituationEdittext.getText().toString());
-                    mood.setFeeling(moodReasonEdittext.getText().toString());
-                    mood.setDate(new Date());}
+                        mood.setMessage(moodEdittext.getText().toString());
+                        mood.setSituation(moodSituationEdittext.getText().toString());
+                        mood.setFeeling(moodReasonEdittext.getText().toString());
+                        mood.setDate(new Date());
+
+                    }
                     catch (ReasonTooLongException e) {
 
                         Context context = getApplicationContext();

@@ -33,7 +33,7 @@ public class Mood implements Serializable{
         this.id = id;
     }
 
-    public void setMessage(String message){//} throws ReasonTooLongException {
+    public void setMessage(String message)throws ReasonTooLongException {
         if (message.length() > 20){
             //Do Something!
             //throw new ReasonTooLongException();
