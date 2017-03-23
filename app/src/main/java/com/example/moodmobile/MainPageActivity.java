@@ -160,12 +160,14 @@ public class MainPageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
-                Mood moodToEdit = moodsList.get(index);
+                if (index < moodsList.size()) {
+                    Mood moodToEdit = moodsList.get(index);
 
-                Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
-                intent.putExtra("moodID", moodToEdit.getId());
+                    Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
+                    intent.putExtra("moodID", moodToEdit.getId());
 
-                startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -222,6 +224,11 @@ public class MainPageActivity extends AppCompatActivity {
         oldMoodsList.setAdapter(adapter);
     }
 
+    protected void onResume() {
+
+        super.onResume();
+        filterMoods();
+    }
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
@@ -242,7 +249,7 @@ public class MainPageActivity extends AppCompatActivity {
                 Date moodDate = mood.getDate();
                 if (!(moodDate.compareTo(week) < 0)) {
                     reason = reasonText.getText().toString();
-                    if (mood.getMessage().contains(reason)) {
+                    if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
                             continue;
@@ -250,7 +257,9 @@ public class MainPageActivity extends AppCompatActivity {
                             filteredMoodsList.add(mood);
                             continue;
                         }
-                    } else {
+                    }
+
+                    else {
                         continue;
                     }
                 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView6"
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/textView7"
         android:layout_centerHorizontal="true" />
 
@@ -38,49 +38,37 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView11"
         android:layout_below="@+id/ssSpinner"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/reason"
-        android:layout_below="@+id/textView11"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/addImage"
-        style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+    <EditText
+        android:id="@+id/reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/reason"
-        android:layout_alignStart="@+id/reason"
-        android:layout_below="@+id/reason"
-        android:onClick="addImage"
-        android:text="Add an image"
-        android:textStyle="normal|italic" />
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/textView11"
+        android:layout_centerHorizontal="true" />
 
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addImage"
-        android:layout_centerHorizontal="true"
         android:checked="false"
         android:duplicateParentState="false"
         android:text="Attach my location"
-        android:textIsSelectable="false" />
+        android:textIsSelectable="false"
+        android:layout_alignTop="@+id/publish"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp" />
 
     <Button
         android:text="Publish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/publish"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignStart="@+id/addImage"
-        android:layout_alignEnd="@+id/addImage" />
+        android:layout_marginBottom="57dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/textView7" />
 
     <TextView
         android:text="Add a mood:"
@@ -97,7 +85,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/moodSpinner"
         tools:entries="@array/moods_array"
-        android:layout_alignTop="@+id/textView6"
+        android:layout_below="@+id/textView6"
         android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:id="@+id/ivCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        android:layout_below="@+id/reason"
+        android:layout_toStartOf="@+id/textView7"
+        android:layout_alignBottom="@+id/addImage" />
+
+    <ImageView
+        android:id="@+id/moodImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_light_normal_background"
+        android:layout_below="@+id/ivGallery"
+        android:layout_toStartOf="@+id/ivGallery" />
+
+    <ImageButton
+        android:id="@+id/ivGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/publish"
+        android:layout_below="@+id/reason"
+        android:onClick="addImage"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
 </RelativeLayout>
