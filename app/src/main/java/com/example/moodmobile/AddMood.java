@@ -193,21 +193,19 @@ public class AddMood extends AppCompatActivity {
                 };
                 currentMood.setSituation(socialSituation);
 
+                currentMood.setUsername(getIntent().getStringExtra("username"));
+
                 addMoodTask.execute(currentMood);
 
                 Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
                 toast.show();
 
-                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
-                startActivity(MainpageIntent);
                 finish();
 
 
             }
 
         });
-
-
     }
 
     //When click the add Image button

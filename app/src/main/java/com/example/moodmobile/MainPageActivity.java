@@ -117,8 +117,8 @@ public class MainPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
+                newMoodIntent.putExtra("username", username);
                 startActivity(newMoodIntent);
-                finish();
                 //TO-DO Start New Mood Activity
                 /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
                 String message = bodyText.getText().toString();
@@ -212,18 +212,15 @@ public class MainPageActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
 
         try {
             moodsList = getMoodsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
-        //TODO Create arrays listview to use.
-        for (Mood mood: moodsList){
 
-        }
-        adapter = new CustomListAdapter(this, itemname);
+        adapter = new CustomListAdapter(this, moodsList);
         moodsListView.setAdapter(adapter);
     }
 
@@ -235,7 +232,7 @@ public class MainPageActivity extends AppCompatActivity {
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
         String reason;
         String situation;
 
@@ -291,43 +288,6 @@ public class MainPageActivity extends AppCompatActivity {
         moodsList.addAll(filteredMoodsList);
         adapter = new CustomListAdapter(this, moodsList);
         moodsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
-    private Integer getEmoticon(String emotion){
-        Integer emoticon;
-        switch (emotion) {
-            case "anger":
-                emoticon = R.drawable.anger;
-                break;
-            case "confusion":
-                emoticon = R.drawable.confusion;
-                break;
-            case "disgust":
-                emoticon = R.drawable.disgust;
-                break;
-            case "fear":
-                emoticon = R.drawable.fear;
-                break;
-            case "happiness":
-                emoticon = R.drawable.happiness;
-                break;
-            case "sadness":
-                emoticon = R.drawable.sadness;
-                break;
-            case "shame":
-                emoticon = R.drawable.shame;
-                break;
-            case "surprise":
-                emoticon = R.drawable.surprise;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid emotion: " + emotion);
-        }
-        return emoticon;
-    }
-
-    private void getArrays(){
-
-    }
 }

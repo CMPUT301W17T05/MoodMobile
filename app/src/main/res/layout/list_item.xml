@@ -16,7 +16,6 @@
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test name and situation."
         android:layout_toRightOf="@id/emoticon"
         android:textSize="10sp"
         android:textAlignment="viewStart" />
@@ -27,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/emoticon"
-        android:text="Test Location."
         android:textSize="10sp" />
 
     <!-- Mood Reason -->
@@ -37,7 +35,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/username"
         android:layout_toRightOf="@id/emoticon"
-        android:text="Test Reason"
         android:textSize="20sp" />
 
     <!--  -->
