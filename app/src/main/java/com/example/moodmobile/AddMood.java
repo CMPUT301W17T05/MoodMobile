@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Environment;
@@ -35,13 +37,21 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 
@@ -67,6 +77,8 @@ public class AddMood extends AppCompatActivity {
     protected String mLongitudeLabel;
     private  String encodeImage;
     ImageButton ivCamera;
+    private String SYNC_FILE = "sync.sav";
+
 
 
 
@@ -193,7 +205,11 @@ public class AddMood extends AppCompatActivity {
                 };
                 currentMood.setSituation(socialSituation);
 
-                addMoodTask.execute(currentMood);
+                if (IsConnected() == true){
+                    addMoodTask.execute(currentMood);
+                } else{
+                    SaveToFile(currentMood, 1);
+                }
 
                 Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
                 toast.show();
@@ -259,16 +275,55 @@ public class AddMood extends AppCompatActivity {
     public void takeAPhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_REQUEST);
-   }
+    }
 
-       public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                byte[] byteFormat = stream.toByteArray();
-                // get the base 64 string
-                        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-                return imgString;
-            }
+    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+            byte[] byteFormat = stream.toByteArray();
+            // get the base 64 string
+                    String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+            return imgString;
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+        } catch (FileNotFoundException e) {
+            syncList = new ArrayList<SyncMood>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+        syncList.add(syncMood);
+
+        try {
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
 
 }
 

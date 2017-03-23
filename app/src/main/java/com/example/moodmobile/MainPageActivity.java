@@ -2,6 +2,8 @@ package com.example.moodmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -17,11 +19,23 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
+    private String SYNC_FILE = "sync.sav";
 
     private ListView oldMoodsList;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
@@ -182,7 +196,11 @@ public class MainPageActivity extends AppCompatActivity {
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                deletemood.execute(moodsList.get(index));
+                if (IsConnected() == true) {
+                    deletemood.execute(moodsList.get(index));
+                } else {
+                    SaveToFile(moodsList.get(index), 3);
+                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
@@ -289,5 +307,44 @@ public class MainPageActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
         oldMoodsList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+        } catch (FileNotFoundException e) {
+            syncList = new ArrayList<SyncMood>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+        syncList.add(syncMood);
+
+        try {
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }

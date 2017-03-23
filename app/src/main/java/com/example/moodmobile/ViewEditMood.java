@@ -14,6 +14,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,6 +36,7 @@ import java.util.Date;
  */
 public class ViewEditMood extends AppCompatActivity {
 
+    private String SYNC_FILE = "sync.sav";
     private EditText moodEdittext;
     private EditText moodSituationEdittext;
     private EditText moodReasonEdittext;
@@ -100,7 +112,11 @@ public class ViewEditMood extends AppCompatActivity {
                      *
                      * **/
                     //setResult(RESULT_OK, intent);
-                    updateMoodTask.execute(mood);
+                    if (IsConnected() == true){
+                        updateMoodTask.execute(mood);
+                    } else {
+                        SaveToFile(mood, 2);
+                    }
                     finish();
 
                 } else {
@@ -125,6 +141,37 @@ public class ViewEditMood extends AppCompatActivity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+        } catch (FileNotFoundException e) {
+            syncList = new ArrayList<SyncMood>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+        syncList.add(syncMood);
+
+        try {
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
 }
