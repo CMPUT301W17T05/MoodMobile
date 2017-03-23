@@ -23,9 +23,9 @@ import java.util.Date;
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
 
-    private ListView oldMoodsList;
+    private ListView moodsListView;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
-    private ArrayAdapter<Mood> adapter;
+    private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
     private String situationArray[];
     private Spinner spinnerSituation;
@@ -51,7 +51,7 @@ public class MainPageActivity extends AppCompatActivity {
         Button mapButton = (Button) findViewById(R.id.map);
         spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
-        oldMoodsList = (ListView) findViewById(R.id.moodList);
+        moodsListView = (ListView) findViewById(R.id.moodList);
 
         chkDate.setOnClickListener(new View.OnClickListener() {
 
@@ -117,8 +117,8 @@ public class MainPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
+                newMoodIntent.putExtra("username", username);
                 startActivity(newMoodIntent);
-                finish();
                 //TO-DO Start New Mood Activity
                 /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
                 String message = bodyText.getText().toString();
@@ -155,7 +155,7 @@ public class MainPageActivity extends AppCompatActivity {
         /* Listener to detect a mood that has been clicked.
                 *  This will also launch the ViewEditMood activity**/
 
-        oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
@@ -175,7 +175,7 @@ public class MainPageActivity extends AppCompatActivity {
                 *  Will delete a long-clicked mood.**/
 
 
-        oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        moodsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
@@ -212,7 +212,7 @@ public class MainPageActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
 
         try {
             moodsList = getMoodsTask.get();
@@ -220,8 +220,8 @@ public class MainPageActivity extends AppCompatActivity {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
 
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
     }
 
     protected void onResume() {
@@ -232,7 +232,7 @@ public class MainPageActivity extends AppCompatActivity {
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
         String reason;
         String situation;
 
@@ -286,8 +286,8 @@ public class MainPageActivity extends AppCompatActivity {
         moodsList.clear();
         adapter.clear();
         moodsList.addAll(filteredMoodsList);
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
     }
+
 }

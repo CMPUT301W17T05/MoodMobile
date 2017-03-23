@@ -8,7 +8,9 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.*;
 
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -143,7 +145,7 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
+                MoodQuery = "{\"query\": {\"term\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
 
 
@@ -159,6 +161,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
@@ -200,6 +208,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
