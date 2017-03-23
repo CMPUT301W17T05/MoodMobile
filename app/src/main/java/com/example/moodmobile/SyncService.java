@@ -27,12 +27,8 @@ import java.util.ArrayList;
  */
 
 public class SyncService extends IntentService {
-    private ArrayList<Mood> addList;
-    private ArrayList<Mood> updateList;
-    private ArrayList<Mood> deleteList;
-    private static final String ADD_FILE = "addmood.sav";
-    private static final String UPDATE_FILE = "updatemood.sav";
-    private static final String DELETE_FILE = "deletemood.sav";
+    private ArrayList<SyncMood> syncList;
+    private static final String SYNC_FILE = "sync.sav";
     private Intent serviceIntent;
 
     public SyncService() {
@@ -43,40 +39,34 @@ public class SyncService extends IntentService {
     protected void onHandleIntent(Intent intent){
         serviceIntent = intent;
 
-        LoadAllFromFile();
+        LoadFromFile();
 
         SyncWithServer();
 
         EndService(true);
     }
 
-    private ArrayList<Mood> LoadFromFile(String file){
+    private void LoadFromFile(){
         try {
-            FileInputStream fis = openFileInput(file);
+            FileInputStream fis = openFileInput(SYNC_FILE);
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<Mood>>(){}.getType();
-            return gson.fromJson(in, listType);
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
         } catch (FileNotFoundException e) {
-            return new ArrayList<Mood>();
+            syncList = new ArrayList<SyncMood>();
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
 
-    private void LoadAllFromFile(){
-        addList = LoadFromFile(ADD_FILE);
-        updateList =  LoadFromFile(UPDATE_FILE);
-        deleteList = LoadFromFile(DELETE_FILE);
-    }
-
-    private void SaveToFile(String file, ArrayList<Mood> list){
+    private void SaveToFile(){
         try {
-            FileOutputStream fos = openFileOutput(file, 0);
-            OutputStreamWriter witer = new OutputStreamWriter(fos);
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
-            gson.toJson(list, witer);
-            witer.flush();
+            gson.toJson(syncList, writer);
+            writer.flush();
         } catch (FileNotFoundException e) {
             throw new RuntimeException();
         } catch (IOException e) {
@@ -84,58 +74,49 @@ public class SyncService extends IntentService {
         }
     }
 
-    private void SaveAllToFile(){
-        SaveToFile(ADD_FILE, addList);
-        SaveToFile(UPDATE_FILE, updateList);
-        SaveToFile(DELETE_FILE, deleteList);
-    }
 
-    private void AddToServer(){
+    private void AddToServer(Mood currentMood){
         ElasticsearchMoodController.AddMoodsTask addMoodTask =
                 new ElasticsearchMoodController.AddMoodsTask();
-        while (addList.size() != 0) {
-            if (IsConnected() == true) {
-                Mood currentMood = addList.get(0);
-                addMoodTask.execute(currentMood);
-                addList.remove(0);
-            } else {
-                EndService(false);
-            }
+        if (IsConnected() == true) {
+            addMoodTask.execute(currentMood);
+        } else {
+            EndService(false);
         }
     }
 
-    private void UpdateOnServer(){
+    private void UpdateOnServer(Mood currentMood){
         ElasticsearchMoodController.UpdateMoodsTask updateMoodsTask =
                 new ElasticsearchMoodController.UpdateMoodsTask();
-        while (updateList.size() != 0){
-            if (IsConnected() == true) {
-                Mood currentMood = updateList.get(0);
-                updateMoodsTask.execute(currentMood);
-                updateList.remove(0);
-            } else {
-                EndService(false);
-            }
+        if (IsConnected() == true) {
+            updateMoodsTask.execute(currentMood);
+        } else {
+            EndService(false);
         }
     }
 
-    private void DeleteFromServer(){
+    private void DeleteFromServer(Mood currentMood){
         ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
                 new ElasticsearchMoodController.DeleteMoodsTask();
-        while (deleteList.size() != 0){
-            if (IsConnected() == true) {
-                Mood currentMood = deleteList.get(0);
-                deleteMoodsTask.execute(currentMood);
-                deleteList.remove(0);
-            } else {
-                EndService(false);
-            }
+        if (IsConnected() == true) {
+            deleteMoodsTask.execute(currentMood);
+        } else {
+            EndService(false);
         }
     }
 
     private void SyncWithServer(){
-        DeleteFromServer();
-        AddToServer();
-        UpdateOnServer();
+        while (syncList.size() != 0){
+            SyncMood currentSyncMood = syncList.get(0);
+            if (currentSyncMood.getSyncTask() == 1){
+                AddToServer(currentSyncMood.getSyncMood());
+            }else if (currentSyncMood.getSyncTask() == 2){
+                UpdateOnServer(currentSyncMood.getSyncMood());
+            } else if (currentSyncMood.getSyncTask() == 3) {
+                DeleteFromServer(currentSyncMood.getSyncMood());
+            }
+            syncList.remove(0);
+        }
     }
 
     private boolean IsConnected(){
@@ -152,7 +133,7 @@ public class SyncService extends IntentService {
             NetworkReceiver.completeWakefulIntent(serviceIntent);
         }
         else{
-            SaveAllToFile();
+            SaveToFile();
             Log.i("SyncService", "Service Disrupted @ " + SystemClock.elapsedRealtime());
             NetworkReceiver.completeWakefulIntent(serviceIntent);
         }
