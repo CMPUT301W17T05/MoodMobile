@@ -1,18 +1,20 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.moodmobile.Classes.Mood;
+import com.example.moodmobile.Controllers.ElasticsearchMoodController;
+import com.example.moodmobile.R;
+import com.example.moodmobile.ReasonTooLongException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +25,7 @@ import java.util.Date;
  *
  * Ths mood is sent to this activity via an intent from the parent activity.
  */
-public class ViewEditMood extends AppCompatActivity {
+public class ViewEditMoodActivity extends AppCompatActivity {
 
     private EditText moodEdittext;
     private EditText moodSituationEdittext;

@@ -1,11 +1,10 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Classes;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.ObjectUtils;
+import com.example.moodmobile.Classes.Mood;
+import com.example.moodmobile.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

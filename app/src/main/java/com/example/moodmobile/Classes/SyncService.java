@@ -1,14 +1,16 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Classes;
 
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.example.moodmobile.Classes.Mood;
+import com.example.moodmobile.Classes.NetworkReceiver;
+import com.example.moodmobile.Controllers.ElasticsearchMoodController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,4 +1,4 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Interfaces;
 
 import java.util.Date;
 

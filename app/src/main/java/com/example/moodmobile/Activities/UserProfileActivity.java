@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,23 +20,24 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
 
+import com.example.moodmobile.Classes.Account;
+import com.example.moodmobile.Controllers.ElasticsearchAccountController;
+import com.example.moodmobile.R;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     public static final int IMAGE_REQUEST = 20;
     private Intent getUsernameIntent;

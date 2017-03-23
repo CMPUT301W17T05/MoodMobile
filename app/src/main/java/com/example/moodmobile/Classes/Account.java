@@ -1,4 +1,4 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Classes;
 
 import java.util.ArrayList;
 import java.util.Date;

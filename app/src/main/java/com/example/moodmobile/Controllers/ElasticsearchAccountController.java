@@ -1,8 +1,9 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.moodmobile.Classes.Account;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;

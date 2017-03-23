@@ -1,4 +1,4 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.moodmobile.Classes.Account;
+import com.example.moodmobile.Controllers.ElasticsearchAccountController;
+import com.example.moodmobile.R;
+
 import java.util.ArrayList;
 
-public class LoginPage extends AppCompatActivity {
+public class LoginPageActivity extends AppCompatActivity {
     private EditText username;
 
     @Override
@@ -52,7 +56,7 @@ public class LoginPage extends AppCompatActivity {
                     Context context = getApplicationContext();
                     Toast.makeText(context, "Log in successfully!", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
-                    Intent mainIntent = new Intent(LoginPage.this, MainPageActivity.class);
+                    Intent mainIntent = new Intent(LoginPageActivity.this, MainPageActivity.class);
                     mainIntent.putExtra("username", accountList.get(0).getUsername());
 
                     startActivity(mainIntent);
@@ -73,7 +77,7 @@ public class LoginPage extends AppCompatActivity {
     }
 
     public void createAccount(View view) {
-        Intent intent = new Intent(this, CreateAccount.class);
+        Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
     }
 

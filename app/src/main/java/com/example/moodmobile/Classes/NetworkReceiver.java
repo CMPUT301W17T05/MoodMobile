@@ -1,4 +1,4 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Classes;
 
 import android.content.Context;
 import android.content.Intent;

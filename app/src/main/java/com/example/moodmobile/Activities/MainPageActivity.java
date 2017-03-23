@@ -1,4 +1,4 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.moodmobile.Classes.CustomListAdapter;
+import com.example.moodmobile.Controllers.ElasticsearchMoodController;
+import com.example.moodmobile.Classes.Mood;
+import com.example.moodmobile.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,7 +101,7 @@ public class MainPageActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
+                Intent profileIntent = new Intent(v.getContext(), UserProfileActivity.class);
 
                 profileIntent.putExtra("username", username);
 
@@ -116,7 +121,7 @@ public class MainPageActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
+                Intent newMoodIntent = new Intent(v.getContext(), AddMoodActivity.class);
                 newMoodIntent.putExtra("username", username);
                 startActivity(newMoodIntent);
                 //TO-DO Start New Mood Activity
@@ -153,7 +158,7 @@ public class MainPageActivity extends AppCompatActivity {
         });*/
 
         /* Listener to detect a mood that has been clicked.
-                *  This will also launch the ViewEditMood activity**/
+                *  This will also launch the ViewEditMoodActivity activity**/
 
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -163,7 +168,7 @@ public class MainPageActivity extends AppCompatActivity {
                 if (index < moodsList.size()) {
                     Mood moodToEdit = moodsList.get(index);
 
-                    Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
+                    Intent intent = new Intent(MainPageActivity.this, ViewEditMoodActivity.class);
                     intent.putExtra("moodID", moodToEdit.getId());
 
                     startActivityForResult(intent, 1);

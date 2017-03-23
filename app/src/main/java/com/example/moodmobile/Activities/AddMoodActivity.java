@@ -1,54 +1,39 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.google.android.gms.common.ConnectionResult;
+import com.example.moodmobile.Classes.Mood;
+import com.example.moodmobile.Controllers.ElasticsearchMoodController;
+import com.example.moodmobile.R;
+import com.example.moodmobile.ReasonTooLongException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationServices;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.text.BreakIterator;
-import java.util.ArrayList;
 
-import static com.example.moodmobile.R.id.image;
-import static com.example.moodmobile.R.id.imageView;
-
-public class AddMood extends AppCompatActivity {
+public class AddMoodActivity extends AppCompatActivity {
 
     public static final int IMG_REQUEST = 21;
     private EditText reasonText;
@@ -70,7 +55,7 @@ public class AddMood extends AppCompatActivity {
 
 
 
-    protected static final String TAG = "AddMood";
+    protected static final String TAG = "AddMoodActivity";
     CameraPhoto cameraPhoto;
 
     final int CAMERA_REQUEST = 10000;

@@ -1,10 +1,10 @@
-package com.example.moodmobile;
+package com.example.moodmobile.Classes;
 
 import android.location.Location;
-import android.media.Image;
 
-import java.util.Collections;
-import java.util.Comparator;
+import com.example.moodmobile.Interfaces.Moodable;
+import com.example.moodmobile.ReasonTooLongException;
+
 import java.util.Date;
 
 import io.searchbox.annotations.JestId;
@@ -15,7 +15,7 @@ import io.searchbox.annotations.JestId;
    Modified by Repka on 2017-03-21.
  */
 
-public class Mood implements Moodable{
+public class Mood implements Moodable {
     private String message;
     private Date date;
     private String feeling;

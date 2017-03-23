@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.example.moodmobile;
+package com.example.moodmobile.Activities;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +17,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.moodmobile.Classes.Account;
+import com.example.moodmobile.Controllers.ElasticsearchAccountController;
+import com.example.moodmobile.R;
+
 import java.util.ArrayList;
 
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity {
     private EditText newUserName;
 
     @Override
