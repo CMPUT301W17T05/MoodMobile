@@ -47,7 +47,7 @@ public class MainPageActivity extends AppCompatActivity {
         situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
         Button addMoodButton = (Button) findViewById(R.id.addMood);
-        Button friendsButton = (Button) findViewById(R.id.friends);
+        final Button friendsButton = (Button) findViewById(R.id.friends);
         Button mapButton = (Button) findViewById(R.id.map);
         spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
@@ -134,11 +134,12 @@ public class MainPageActivity extends AppCompatActivity {
         });
 
         friendsButton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
-                startActivity(friendsIntent);
+                friendsIntent.putExtra("username", username); //Sends the logged in username to the next activity.
+
+                startActivityForResult(friendsIntent, 1);
                 //TO-DO Start Friends Activity
             }
         });

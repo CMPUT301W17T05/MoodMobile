@@ -10,22 +10,21 @@ import io.searchbox.annotations.JestId;
  */
 
 public class Account{
+    private String profileImage;
     private String username;
     private String nickname;
     private String gender;
     private String region;
-    private ArrayList<String> friendsList;
+    private ArrayList<String> following;
+    private ArrayList<String> followRequests;
 
-    public ArrayList<String> getFriendsList() {
-        return friendsList;
+
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setFriendsList(ArrayList<String> friendsList) {
-        this.friendsList = friendsList;
-    }
-
-    public void addFriend(String username){
-        friendsList.add(username);
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
 
@@ -79,4 +78,12 @@ public class Account{
     public void setRegion(String region) {
         this.region = region;
     }
+
+    public ArrayList<String> getFollowing() {return following;}
+
+    public void setFollowing(ArrayList<String> following) {this.following = following;}
+
+    public ArrayList<String> getFollowRequests() {return followRequests;}
+
+    public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
 }

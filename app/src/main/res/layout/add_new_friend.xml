@@ -33,7 +33,7 @@
         android:text="See who added me "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button5"
+        android:id="@+id/GetFriendRequests"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
@@ -42,7 +42,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/SendRequest"
-        android:layout_below="@+id/button5"
+        android:layout_below="@+id/GetFriendRequests"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -52,6 +52,14 @@
         android:ems="10"
         android:id="@+id/usernameSearch"
         android:hint="MoMo username"
-        android:layout_above="@+id/button5"
+        android:layout_above="@+id/GetFriendRequests"
         android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/SendRequest"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        android:id="@+id/RequestsList" />
 </RelativeLayout>
