@@ -52,7 +52,7 @@ public class LoginPage extends AppCompatActivity {
                     Context context = getApplicationContext();
                     Toast.makeText(context, "Log in successfully!", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
-                    Intent mainIntent = new Intent(LoginPage.this, MainPageActivity.class);
+                    Intent mainIntent = new Intent(LoginPage.this, Osm_mapView.class);
                     mainIntent.putExtra("username", accountList.get(0).getUsername());
 
                     startActivity(mainIntent);
