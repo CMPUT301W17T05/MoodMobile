@@ -1,10 +1,6 @@
 package com.example.moodmobile;
 
 import android.location.Location;
-import android.media.Image;
-
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 import io.searchbox.annotations.JestId;

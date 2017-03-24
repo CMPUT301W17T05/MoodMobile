@@ -36,7 +36,9 @@
         <activity
             android:name=".AddMood"
             android:exported="true" />
-        <activity android:name=".MainPageActivity" />
+        <activity
+            android:name=".MainPageActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ViewEditMood" />
 
         <service

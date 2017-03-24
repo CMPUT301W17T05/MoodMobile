@@ -3,10 +3,15 @@ package com.example.moodmobile;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,7 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainPageActivity extends AppCompatActivity {
+public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Intent intent;
 
     private ListView moodsListView;
@@ -37,8 +42,7 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_screen);
-
+        setContentView(R.layout.activity_main);
         intent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reasonText);
@@ -112,26 +116,6 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
-        addMoodButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
-                newMoodIntent.putExtra("username", username);
-                startActivity(newMoodIntent);
-                //TO-DO Start New Mood Activity
-                /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
-                String message = bodyText.getText().toString();
-                getTweetsTask.execute(message);
-                try {
-                    tweetList.clear();
-                    tweetList.addAll(getTweetsTask.get());
-                } catch (Exception e) {
-                    Log.i("Error", "Failed to get the tweets out of the async object");
-                }
-                adapter.notifyDataSetChanged();*/
-            }
-        });
 /*
         friendsButton.setOnClickListener(new View.OnClickListener() {
 
@@ -229,6 +213,72 @@ public class MainPageActivity extends AppCompatActivity {
         super.onResume();
         filterMoods();
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_filter) {
+            //TODO popup filter dialog
+            return true;
+        }
+
+        else if (id == R.id.action_mood){
+            setResult(RESULT_OK);
+            Intent newMoodIntent = new Intent(this, AddMood.class);
+            newMoodIntent.putExtra("username", username);
+            startActivity(newMoodIntent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_moods) {
+            if (this == )
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();

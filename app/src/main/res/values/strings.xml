@@ -25,5 +25,7 @@
         <item>With a crowd</item>
     </string-array>
     <string name="title_activity_main_test">MainActivityTest</string>
+    <string name="action_mood">Add Mood</string>
+    <string name="action_filter">Filter Moods</string>
 </resources>
 
