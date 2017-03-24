@@ -82,7 +82,7 @@ public class MainPageActivity extends AppCompatActivity {
         spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterMoods();
+//                filterMoods(); //Causing nullpointer exception
             }
 
             @Override

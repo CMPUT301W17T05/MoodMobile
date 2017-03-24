@@ -86,4 +86,6 @@ public class Account{
     public ArrayList<String> getFollowRequests() {return followRequests;}
 
     public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
+
+    public void addFollowRequest(String username){this.followRequests.add(username);}
 }
