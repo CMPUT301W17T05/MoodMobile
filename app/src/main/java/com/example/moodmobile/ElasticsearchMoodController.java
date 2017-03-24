@@ -46,11 +46,6 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
-                        //TODO add mood to "sync.sav" with task 1
-                        /*
-                        SyncMood syncMood = new SyncMood(mood, 1);
-                        //save mood to sync.sav
-                         */
                     }
                 }
                 catch (Exception e) {
@@ -82,10 +77,6 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
-                    //TODO add mood to sync.sav with task 2
-                    /*
-                    SyncMood syncMood = new SyncMood(mood, 2);
-                     */
                 }
 
                 try {
@@ -103,10 +94,6 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
-                        //TODO add mood to sync.sav with task 1
-                        /*
-                        SyncMood syncMood - new SyncMood(mood, 1);
-                         */
                     }
                 }
                 catch (Exception e) {
@@ -133,10 +120,6 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to delete the mood");
-                    //TODO add mood to "sync.sav" with task 3
-                    /*
-                    SyncMood syncMood = new SyncMood(mood, 3);
-                     */
                 }
 
 
