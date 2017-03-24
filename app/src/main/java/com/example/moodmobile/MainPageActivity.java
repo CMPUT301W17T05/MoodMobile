@@ -35,7 +35,7 @@ import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
-    private String SYNC_FILE = "sync.sav";
+    private static final String SYNC_FILE = "syncmood.sav";
 
     private ListView moodsListView;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
@@ -96,12 +96,12 @@ public class MainPageActivity extends AppCompatActivity {
         spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterMoods();
+                //filterMoods();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                filterMoods();
+                //filterMoods();
             }
 
         });
@@ -245,7 +245,7 @@ public class MainPageActivity extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
-        filterMoods();
+        //zfilterMoods();
     }
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
@@ -288,7 +288,7 @@ public class MainPageActivity extends AppCompatActivity {
 
             else {
                 reason = reasonText.getText().toString();
-                if (mood.getMessage().contains(reason)) {
+                if (mood.getMessage().contains(reason) == true) {
                     situation = spinnerSituation.getSelectedItem().toString();
                     if (mood.getSituation() == null) {
                         continue;

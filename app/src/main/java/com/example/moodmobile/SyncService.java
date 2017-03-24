@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class SyncService extends IntentService {
     private ArrayList<SyncMood> syncList;
-    private static final String SYNC_FILE = "sync.sav";
+    private static final String SYNC_FILE = "syncmood.sav";
     private Intent serviceIntent;
 
     public SyncService() {

@@ -77,7 +77,7 @@ public class AddMood extends AppCompatActivity {
     protected String mLongitudeLabel;
     private  String encodeImage;
     ImageButton ivCamera;
-    private String SYNC_FILE = "sync.sav";
+    private static final String SYNC_FILE = "syncmood.sav";
 
 
 
@@ -321,6 +321,10 @@ public class AddMood extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(context, "Saved Mood For Later", Toast.LENGTH_LONG);
+        toast.show();
     }
 
 }

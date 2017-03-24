@@ -36,7 +36,7 @@ import java.util.Date;
  */
 public class ViewEditMood extends AppCompatActivity {
 
-    private String SYNC_FILE = "sync.sav";
+    private static final String SYNC_FILE = "syncmood.sav";
     private EditText moodEdittext;
     private EditText moodSituationEdittext;
     private EditText moodReasonEdittext;
