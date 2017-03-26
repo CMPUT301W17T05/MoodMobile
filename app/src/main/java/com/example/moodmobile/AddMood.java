@@ -4,14 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,21 +23,29 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
+import com.kosalgeek.android.photoutil.CameraPhoto;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 
+import static com.example.moodmobile.R.id.image;
 import static com.example.moodmobile.R.id.imageView;
 
 public class AddMood extends AppCompatActivity {
@@ -41,7 +53,7 @@ public class AddMood extends AppCompatActivity {
     public static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Button publishButton;
-    private Button addImageButton;
+    private ImageButton addImageButton;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private CheckBox locationCheckBox;
@@ -53,9 +65,15 @@ public class AddMood extends AppCompatActivity {
     protected Location mLastLocation;
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
+    private  String encodeImage;
+    ImageButton ivCamera;
+
 
 
     protected static final String TAG = "AddMood";
+    CameraPhoto cameraPhoto;
+
+    final int CAMERA_REQUEST = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +83,19 @@ public class AddMood extends AppCompatActivity {
 
         reasonText = (EditText) findViewById(R.id.reason);
         publishButton = (Button) findViewById(R.id.publish);
-        addImageButton = (Button) findViewById(R.id.addImage);
+        addImageButton = (ImageButton) findViewById(R.id.ivGallery);
         moodSpinner = (Spinner) findViewById(R.id.moodSpinner);
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
+        ivCamera = (ImageButton) findViewById(R.id.ivCamera);
+        ivCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takeAPhoto();
+            }
+        });
+
+
 
 
 //        buildGoogleApiClient();
@@ -150,6 +177,7 @@ public class AddMood extends AppCompatActivity {
 //                Toast toast = Toast.makeText(context, text, duration);
 //                toast.show();
 
+                currentMood.setMoodImage(encodeImage);
 
                 reason = reasonText.getText().toString();
 
@@ -165,10 +193,13 @@ public class AddMood extends AppCompatActivity {
                 };
                 currentMood.setSituation(socialSituation);
 
+                currentMood.setUsername(getIntent().getStringExtra("username"));
+
                 addMoodTask.execute(currentMood);
 
-                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
-                startActivity(MainpageIntent);
+                Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
+                toast.show();
+
                 finish();
 
 
@@ -189,6 +220,7 @@ public class AddMood extends AppCompatActivity {
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
+
         if (resultCode == RESULT_OK){
             if (requestCode == IMG_REQUEST){
                 Uri imageUri = data.getData();
@@ -197,11 +229,22 @@ public class AddMood extends AppCompatActivity {
 
                 try{
                     inputStream = getContentResolver().openInputStream(imageUri);
-                    Bitmap image = BitmapFactory.decodeStream(inputStream);
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
+                    ImageView moodImage = (ImageView) findViewById(R.id.moodImage);
+                    moodImage.setImageBitmap(resized);
+                    encodeImage = getEncoded64ImageStringFromBitmap(bitmap);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+            }
+        else if (requestCode == CAMERA_REQUEST) {
+                Bitmap bitmap = (Bitmap)data.getExtras().get("data");
+                Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
+                ImageView moodImage = (ImageView) findViewById(R.id.moodImage);
+                moodImage.setImageBitmap(resized);
+                encodeImage = getEncoded64ImageStringFromBitmap(bitmap);
             }
         }
     }
@@ -209,56 +252,21 @@ public class AddMood extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 //        mGoogleApiClient.connect();
-
-
     }
 
+    public void takeAPhoto(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_REQUEST);
+   }
+
+       public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+                byte[] byteFormat = stream.toByteArray();
+                // get the base 64 string
+                        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+                return imgString;
+            }
+
 }
-
-//    protected synchronized void buildGoogleApiClient() {
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API)
-//                .build();
-//    }
-//
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        if (mGoogleApiClient.isConnected()) {
-//            mGoogleApiClient.disconnect();
-//        }
-//    }
-//
-//
-//    @Override
-//    public void onConnected(Bundle connectionHint) {
-//        // Provides a simple way of getting a device's location and is well suited for
-//        // applications that do not require a fine-grained location and that do not need location
-//        // updates. Gets the best and most recent location currently available, which may be null
-//        // in rare cases when a location is not available.
-//        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//        if (mLastLocation != null) {
-//
-//        } else {
-//            CharSequence text = 'no_location_detected';
-//            Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-//        }
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//        Log.i(TAG, "Connection suspended");
-//        mGoogleApiClient.connect();
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(ConnectionResult result) {
-//        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-//        // onConnectionFailed.
-//        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-
-//    }
 

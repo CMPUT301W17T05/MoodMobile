@@ -1,7 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp"
-    android:textSize="16sp" >
-</TextView>
+    android:orientation = "horizontal">
+
+    <!-- Emoticon image -->
+
+    <ImageView
+        android:id="@+id/emoticon"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <!-- Username and social situation -->
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/emoticon"
+        android:textSize="10sp"
+        android:textAlignment="viewStart" />
+
+    <!-- Location and date -->
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emoticon"
+        android:textSize="10sp" />
+
+    <!-- Mood Reason -->
+    <TextView
+        android:id="@+id/reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username"
+        android:layout_toRightOf="@id/emoticon"
+        android:textSize="20sp" />
+
+    <!--  -->
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>
