@@ -1,5 +1,6 @@
 package com.example.moodmobile;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -15,6 +16,7 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -27,6 +29,10 @@ import android.util.Log;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
+    private Intent getUsernameIntent;
+    public String username;
+    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+
     private MapView         MapView;
     private MapController   MapController;
     private  LocationManager locationManager;
@@ -41,6 +47,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_view);
 
+        getUsernameIntent = getIntent();
         MapView = (MapView) findViewById(R.id.map);
         MapView.setTileSource(TileSourceFactory.MAPNIK);
         MapView.setBuiltInZoomControls(true);
@@ -59,10 +66,36 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
 
 
+
+
     }
 
     protected void onStart() {
         super.onStart();
+        username = getUsernameIntent.getStringExtra("username");
+        Log.d("username:::", String.valueOf(username));
+
+
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+
+        for(int i =0;i<moodsList.size();i++){
+
+            Mood mood=moodsList.get(i);
+            if (mood.getLatitude() != null && mood.getLocation() != null ){
+                Log.i("WCNMB","jin lai le!");
+                GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
+                addMarker(marker);
+            }
+
+        }
+
     }
 
 
