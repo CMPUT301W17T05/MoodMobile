@@ -116,9 +116,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         GeoPoint center = new GeoPoint(location.getLatitude(), location.getLongitude());
-
         MapController.animateTo(center);
-        addMarker(center);
 
 
     }
