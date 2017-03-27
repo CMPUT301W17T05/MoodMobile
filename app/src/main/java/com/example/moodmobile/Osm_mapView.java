@@ -85,11 +85,13 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
 
+        Log.i("AAAAA", String.valueOf(moodsList.size()));
         for(int i =0;i<moodsList.size();i++){
 
             Mood mood=moodsList.get(i);
+            Log.i("WCNMB",String.valueOf(mood.getLatitude()));
+
             if (mood.getLatitude() != null && mood.getLocation() != null ){
-                Log.i("WCNMB","jin lai le!");
                 GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
                 addMarker(marker);
             }
@@ -103,7 +105,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         Marker marker = new Marker(MapView);
         marker.setPosition(center);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
-        marker.setIcon(getResources().getDrawable(R.drawable.common_google_signin_btn_icon_dark));
+        marker.setIcon(getResources().getDrawable(R.drawable.red));
 
         MapView.getOverlays().clear();
         MapView.getOverlays().add(marker);

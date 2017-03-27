@@ -144,7 +144,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
 
-                 //This is for checking the value of CurrentMood and socialSituation
+                //This is for checking the value of CurrentMood and socialSituation
 
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
@@ -164,8 +164,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     toast2.show();
                 };
                 currentMood.setSituation(socialSituation);
-
-                currentMood.setUsername(getIntent().getStringExtra("username"));
 
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
@@ -188,12 +186,16 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
                 toast.show();
 
+                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
+                startActivity(MainpageIntent);
                 finish();
 
 
             }
 
         });
+
+
     }
 
     //When click the add Image button
@@ -227,7 +229,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     e.printStackTrace();
                 }
             }
-        else if (requestCode == CAMERA_REQUEST) {
+            else if (requestCode == CAMERA_REQUEST) {
                 Bitmap bitmap = (Bitmap)data.getExtras().get("data");
                 Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
                 ImageView moodImage = (ImageView) findViewById(R.id.moodImage);
@@ -245,16 +247,16 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         startActivityForResult(intent, CAMERA_REQUEST);
-   }
+    }
 
-       public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                byte[] byteFormat = stream.toByteArray();
-                // get the base 64 string
-                        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-                return imgString;
-            }
+    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+        return imgString;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -275,4 +277,3 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 }
-
