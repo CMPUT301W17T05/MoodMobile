@@ -45,9 +45,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String socialSituation;
     private Mood currentMood;
     private String reason;
-    protected Location location;
+    private Location location;
     private double latitude; // Latitude
-    private double longtitude; // Longitude
+    private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private LocationManager locationManager;
@@ -73,6 +73,10 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +148,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
 
-                 //This is for checking the value of CurrentMood and socialSituation
+                //This is for checking the value of CurrentMood and socialSituation
 
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
@@ -167,14 +171,10 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
-                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                    latitude = location.getLatitude();
-                    longtitude = location.getLongitude();
+
                     currentMood.setLatitude(latitude);
-                    currentMood.setLongitude(longtitude);
-                    currentMood.setLocation(location);
+                    currentMood.setLongitude(longitude);
 
                     Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLatitude()));
                     Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLongitude()));
@@ -229,7 +229,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     e.printStackTrace();
                 }
             }
-        else if (requestCode == CAMERA_REQUEST) {
+            else if (requestCode == CAMERA_REQUEST) {
                 Bitmap bitmap = (Bitmap)data.getExtras().get("data");
                 Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
                 ImageView moodImage = (ImageView) findViewById(R.id.moodImage);
@@ -247,19 +247,22 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         startActivityForResult(intent, CAMERA_REQUEST);
-   }
+    }
 
-       public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-                byte[] byteFormat = stream.toByteArray();
-                // get the base 64 string
-                        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-                return imgString;
-            }
+    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+        return imgString;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
     }
 
     @Override
