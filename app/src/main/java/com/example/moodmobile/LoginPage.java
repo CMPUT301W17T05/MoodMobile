@@ -56,6 +56,7 @@ public class LoginPage extends AppCompatActivity {
                     mainIntent.putExtra("username", accountList.get(0).getUsername());
 
                     startActivity(mainIntent);
+                    finish();
 
                 }
 

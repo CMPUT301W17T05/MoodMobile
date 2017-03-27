@@ -58,7 +58,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
         GeoPoint center = new GeoPoint(53.34, -113.9);
         MapController.animateTo(center);
-        addMarker(center);
+        //addMarker(center);
 
 
 
@@ -89,7 +89,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         for(int i =0;i<moodsList.size();i++){
 
             Mood mood=moodsList.get(i);
-            Log.i("WCNMB",String.valueOf(mood.getLatitude()));
+            Log.i("Mood is: ",String.valueOf(mood.getFeeling()));
 
             if (mood.getLatitude() != null && mood.getLocation() != null ){
                 GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
