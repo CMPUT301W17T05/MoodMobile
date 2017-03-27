@@ -11,8 +11,9 @@ import io.searchbox.annotations.JestId;
 
 /**
  * Created by Repka on 2017-03-07.
-   Modified by Jia on 2017-03-12.
-   Modified by Repka on 2017-03-21.
+
+ Modified by Jia on 2017-03-12.
+ Modified by Repka on 2017-03-21.
  */
 
 public class Mood implements Moodable{
