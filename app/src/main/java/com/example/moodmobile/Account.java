@@ -18,6 +18,11 @@ public class Account{
     private ArrayList<String> following;
     private ArrayList<String> followRequests;
 
+    public Account() {
+        following = new ArrayList<>();
+        followRequests = new ArrayList<>();
+    }
+
 
     public String getProfileImage() {
         return profileImage;
@@ -82,6 +87,8 @@ public class Account{
     public ArrayList<String> getFollowing() {return following;}
 
     public void setFollowing(ArrayList<String> following) {this.following = following;}
+
+    public void addFollowing(String username) {this.following.add(username);}
 
     public ArrayList<String> getFollowRequests() {return followRequests;}
 
