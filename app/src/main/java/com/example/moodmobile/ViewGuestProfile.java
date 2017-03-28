@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Collections;
+
 /**
  * Created by juice on 27/03/17.
  */
@@ -33,7 +35,7 @@ public class ViewGuestProfile extends AppCompatActivity {
         guestAcceptRequest = (Button) findViewById(R.id.GuestAcceptRequest);
         guestDenyRequest = (Button) findViewById(R.id.GuestDenyRequest);
 
-        String guestUsername = getIntent().getStringExtra("guestUsername");
+        final String guestUsername = getIntent().getStringExtra("guestUsername");
 
         ElasticsearchAccountController.GetUser getUserActivity = new ElasticsearchAccountController.GetUser();
         ElasticsearchMoodController.GetMoodsTaskByName getUserLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
@@ -41,6 +43,18 @@ public class ViewGuestProfile extends AppCompatActivity {
         try {
             guestUserAccount = (Account) getUserActivity.execute(guestUsername).get().get(0);
             LatestMood = (Mood) getUserLatestMood.execute(guestUsername).get().get(0);//Should get latest mood
+
+            guestProfileName.setText(guestUserAccount.getUsername());
+
+            /**
+             * TODO
+             * change getLatitude,Longiture to
+             * getLocation once location functionality is implimented.
+             */
+            guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
+            guestLatestLocationTextview.setText("Latest Location: "
+                    + "Latitude: " + LatestMood.getLatitude() + " "
+                    + "Longitude: " + LatestMood.getLongitude());
         } catch (Exception e) {
             /**
              * TODO
@@ -48,22 +62,28 @@ public class ViewGuestProfile extends AppCompatActivity {
              */
         }
 
-        guestProfileName.setText(guestUserAccount.getUsername());
 
-        /**
-         * TODO
-         * change getLatitude,Longiture to
-         * getLocation once location functionality is implimented.
-         */
-        guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
-        guestLatestLocationTextview.setText("Latest Location: "
-                + "Latitude: " + LatestMood.getLatitude() + " "
-                + "Longitude: " + LatestMood.getLongitude());
 
         guestDenyRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Account loggedInUser;
 
+                ElasticsearchAccountController.GetUser getUserActivity = new ElasticsearchAccountController.GetUser();
+                ElasticsearchAccountController.UpdateAccountTask updateAccountTask = new ElasticsearchAccountController.UpdateAccountTask();
+                try {
+                    loggedInUser = getUserActivity.execute(getIntent().getStringExtra("username")).get().get(0);
+
+                    loggedInUser.getFollowRequests().removeAll(Collections.singleton(guestUsername));
+
+                    updateAccountTask.execute(loggedInUser);
+
+                    finish();
+                } catch (Exception e) {
+                    /**
+                     * Handle this
+                     */
+                }
             }
         });
 

@@ -125,9 +125,12 @@ public class FriendsActivity extends AppCompatActivity {
                  */
 
                 Intent intent = new Intent(FriendsActivity.this, ViewGuestProfile.class)
-                        .putExtra("guestUsername", followRequestsList.get(i));
+                        .putExtra("guestUsername", followRequestsList.get(i))
+                        .putExtra("username", username);
 
                 startActivityForResult(intent, 1);
+                followRequestsAdapter.notifyDataSetChanged();
+
             }
         });
     }
@@ -137,5 +140,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
         //requestsList.setAdapter(followRequestsAdapter); //Causes error
+        followRequestsAdapter.notifyDataSetChanged();
+
     }
 }
