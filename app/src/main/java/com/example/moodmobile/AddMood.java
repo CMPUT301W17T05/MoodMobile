@@ -76,6 +76,11 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
