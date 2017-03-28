@@ -33,7 +33,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 public class UserProfile extends AppCompatActivity {
@@ -42,13 +44,15 @@ public class UserProfile extends AppCompatActivity {
     private Intent getUsernameIntent;
     public String username;
     private ImageView imageView;
-
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
     private Spinner genderSpinner;
     private String encodeImage;
     private ImageView userProfile;
+
+    private ArrayList<String> genderArray = new ArrayList<String>();
+    int position;
 
     private Account account;
     @Override
@@ -93,7 +97,8 @@ public class UserProfile extends AppCompatActivity {
         }
 
         Log.d("LALALA: ", String.valueOf(accountList.size()));
-
+        genderArray.add("Male");
+        genderArray.add("Female");
         if (accountList.get(0).getProfileImage() != null) {
             byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -107,6 +112,10 @@ public class UserProfile extends AppCompatActivity {
         usernameTxt.setText(username);
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());
+
+        position = genderArray.indexOf(accountList.get(0).getGender());
+        genderSpinner.setSelection(position);
+
     }
 
 

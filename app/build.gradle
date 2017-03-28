@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.example.moodmobile"
         minSdkVersion 18
-        targetSdkVersion 18
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -17,8 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-    }
 }
 
 dependencies {
@@ -28,12 +26,16 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
+    compile files('src/include/PhotoUtil.jar')
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-maps:10.2.0'
     compile 'com.google.android.gms:play-services-location:10.2.0'
     compile 'org.osmdroid:osmdroid-android:5.4.1:release@aar'
+
+    testCompile 'junit:junit:4.12'
+
     compile files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
     compile files('src/include/PhotoUtil.jar')
 }

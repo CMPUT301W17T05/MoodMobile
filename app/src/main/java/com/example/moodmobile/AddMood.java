@@ -34,6 +34,8 @@ import java.util.ArrayList;
 
 public class AddMood extends AppCompatActivity implements LocationListener {
 
+    private Intent getUsernameIntent;
+    private String username;
     public static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Button publishButton;
@@ -65,6 +67,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
         final Mood currentMood = new Mood(null);
+        getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
         publishButton = (Button) findViewById(R.id.publish);
@@ -149,6 +152,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                         new ElasticsearchMoodController.AddMoodsTask();
 
                 Feeling = moodSpinner.getSelectedItem().toString();
+                currentMood.setUsername(username);
                 currentMood.setFeeling(Feeling);
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
@@ -173,6 +177,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     toast2.show();
                 };
                 currentMood.setSituation(socialSituation);
+
 
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
@@ -246,6 +251,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     @Override
     protected void onStart() {
         super.onStart();
+        username = getUsernameIntent.getStringExtra("username");
+
     }
 
     public void takeAPhoto(){
@@ -285,4 +292,3 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 }
-

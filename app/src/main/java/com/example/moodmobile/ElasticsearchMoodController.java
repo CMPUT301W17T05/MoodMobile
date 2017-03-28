@@ -8,7 +8,9 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.*;
 
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
@@ -43,6 +45,7 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
+                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
@@ -74,6 +77,7 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
+                    //TODO add mood to "updatemood.sav"
                 }
 
                 try {
@@ -91,10 +95,12 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
+                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
+                    //TODO add mood to file?
                 }
 
             }
@@ -117,6 +123,7 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to delete the mood");
+                    //TODO add mood to "deletemood.sav"
                 }
 
 
@@ -138,7 +145,7 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
+                MoodQuery = "{\"query\": {\"term\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
 
 
@@ -154,6 +161,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
@@ -195,6 +208,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
@@ -221,4 +240,5 @@ public class ElasticsearchMoodController {
             client = (JestDroidClient) factory.getObject();
         }
     }
+
 }
