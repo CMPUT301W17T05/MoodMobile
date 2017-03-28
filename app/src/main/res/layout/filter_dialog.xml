@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Filter Moods By:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="42dp"
+        android:id="@+id/filterTitle"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Past week:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/weekFilter"
+        android:layout_marginStart="20dp"
+        android:layout_below="@+id/filterTitle"
+        android:layout_alignStart="@+id/filterTitle" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/weekBox"
+        android:layout_alignBaseline="@+id/weekFilter"
+        android:layout_alignBottom="@+id/weekFilter"
+        android:layout_toRightOf="@+id/weekFilter"
+        android:layout_toEndOf="@+id/weekFilter" />
+
+    <TextView
+        android:text="Emotion:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emotionFilter"
+        android:layout_below="@+id/weekBox"
+        android:layout_alignLeft="@+id/weekFilter"
+        android:layout_alignStart="@+id/weekFilter" />
+
+    <Spinner
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sitSpinner"
+        android:layout_below="@+id/weekFilter"
+        android:layout_toRightOf="@+id/emotionFilter"
+        android:layout_toEndOf="@+id/emotionFilter" />
+
+    <TextView
+        android:text="Reason Contains:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reasonFilter"
+        android:layout_below="@+id/sitSpinner"
+        android:layout_alignLeft="@+id/emotionFilter"
+        android:layout_alignStart="@+id/emotionFilter" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_below="@+id/emotionFilter"
+        android:layout_toRightOf="@+id/reasonFilter"
+        android:layout_toEndOf="@+id/reasonFilter"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:id="@+id/reasonText"
+        android:textSize="18sp" />
+
+
+</LinearLayout>

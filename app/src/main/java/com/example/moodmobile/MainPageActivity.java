@@ -1,12 +1,15 @@
 package com.example.moodmobile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,6 +40,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private EditText reasonText;
     private CheckBox chkDate;
     public String username;
+    final Dialog dialog = new Dialog(MainPageActivity.this);
 
 
     @Override
@@ -44,18 +48,27 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         intent = getIntent();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         reasonText = (EditText) findViewById(R.id.reasonText);
         chkDate = (CheckBox) findViewById(R.id.weekBox);
         spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
         situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
-        Button addMoodButton = (Button) findViewById(R.id.addMood);
-        Button friendsButton = (Button) findViewById(R.id.friends);
-        Button mapButton = (Button) findViewById(R.id.map);
         spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
         moodsListView = (ListView) findViewById(R.id.moodList);
+
 
         chkDate.setOnClickListener(new View.OnClickListener() {
 
@@ -105,36 +118,8 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 profileIntent.putExtra("username", username);
 
                 startActivity(profileIntent);
-                //finish();
-                //TO-DO Start Edit Profile Activity
-                /*String text = bodyText.getText().toString();
-                NormalTweet newTweet = new NormalTweet(text);
-                tweetList.add(newTweet);
-                adapter.notifyDataSetChanged();
-                ElasticsearchTweetController.AddTweetsTask addTweetsTask = new ElasticsearchTweetController.AddTweetsTask();
-                addTweetsTask.execute(newTweet);*/
             }
         });
-
-/*
-        friendsButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
-                startActivity(friendsIntent);
-                //TO-DO Start Friends Activity
-            }
-        });
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
-                startActivity(mapIntent);
-            }
-        });*/
 
         /* Listener to detect a mood that has been clicked.
                 *  This will also launch the ViewEditMood activity**/
@@ -211,7 +196,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     protected void onResume() {
 
         super.onResume();
-        filterMoods();
+        //filterMoods();
     }
 
     @Override
@@ -241,7 +226,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
             //TODO popup filter dialog
-            return true;
+            dialog.create();
         }
 
         else if (id == R.id.action_mood){
@@ -261,17 +246,27 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
 
         if (id == R.id.nav_moods) {
-            if (this == )
-        } else if (id == R.id.nav_gallery) {
+            if (this.getClass() != MainPageActivity.class){
+                setResult(RESULT_OK);
+                Intent mainIntent = new Intent(this, MainPageActivity.class);
+                mainIntent.putExtra("username", username);
+                startActivity(mainIntent);
+            }
+        } else if (id == R.id.nav_following) {
+            /*
+                setResult(RESULT_OK);
+                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
+                startActivity(friendsIntent);*/
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_requests) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_map) {
+           /* setResult(RESULT_OK);
+            Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
+            startActivity(mapIntent);*/
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_logout) {
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
