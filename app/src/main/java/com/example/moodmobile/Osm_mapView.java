@@ -42,6 +42,8 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     ArrayList<OverlayItem> overlayItemArray;
+    Drawable markerColor;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
         GeoPoint center = new GeoPoint(53.34, -113.9);
         MapController.animateTo(center);
-        //addMarker(center);
+        addMarker(center, "This is where you are.", getResources().getDrawable(R.drawable.origin));
 
 
 
@@ -89,11 +91,40 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         for(int i =0;i<moodsList.size();i++){
 
             Mood mood=moodsList.get(i);
-            Log.i("Mood is: ",String.valueOf(mood.getFeeling()));
+            Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
 
-            if (mood.getLatitude() != null && mood.getLocation() != null ){
-                GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
-                addMarker(marker);
+            if (mood.getLatitude() != null && mood.getLongitude() != null ){
+                //GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
+                Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
+
+                String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
+
+                if (mood.getFeeling().equals("Anger")){
+                    markerColor = getResources().getDrawable(R.drawable.red);
+                }
+                else if (mood.getFeeling().equals("Confusion")){
+                    markerColor = getResources().getDrawable(R.drawable.blue);
+                }
+                else if (mood.getFeeling().equals("Disgust")){
+                    markerColor = getResources().getDrawable(R.drawable.pinkheart);
+                }
+                else if (mood.getFeeling().equals("Fear")){
+                    markerColor = getResources().getDrawable(R.drawable.black);
+                }
+                else if (mood.getFeeling().equals("Happiness")){
+                    markerColor = getResources().getDrawable(R.drawable.green);
+                }
+                else if (mood.getFeeling().equals("Sadness")){
+                    markerColor = getResources().getDrawable(R.drawable.grey);
+                }
+                else if (mood.getFeeling().equals("Shame")){
+                    markerColor = getResources().getDrawable(R.drawable.white);
+                }
+                else if (mood.getFeeling().equals("Surprise")){
+                    markerColor = getResources().getDrawable(R.drawable.pink);
+                }
+                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, markerColor);
+
             }
 
         }
@@ -101,13 +132,12 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     }
 
 
-    public void addMarker (GeoPoint center){
+    public void addMarker (GeoPoint center, String title, Drawable icon){
         Marker marker = new Marker(MapView);
         marker.setPosition(center);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
-        marker.setIcon(getResources().getDrawable(R.drawable.red));
-
-        MapView.getOverlays().clear();
+        marker.setIcon(icon);
+        marker.setTitle(title);
         MapView.getOverlays().add(marker);
         MapView.invalidate();
 

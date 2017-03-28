@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -21,38 +18,25 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationServices;
-import com.kosalgeek.android.photoutil.CameraPhoto;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 
-import static com.example.moodmobile.R.id.image;
-import static com.example.moodmobile.R.id.imageView;
+public class AddMood extends AppCompatActivity implements LocationListener {
 
-public class AddMood extends AppCompatActivity {
-
-    public static final int IMG_REQUEST = 21;
     private Intent getUsernameIntent;
-    public String username;
+    private String username;
+    public static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Button publishButton;
     private ImageButton addImageButton;
@@ -63,17 +47,18 @@ public class AddMood extends AppCompatActivity {
     private String socialSituation;
     private Mood currentMood;
     private String reason;
-    protected GoogleApiClient mGoogleApiClient;
-    protected Location mLastLocation;
-    protected String mLatitudeLabel;
-    protected String mLongitudeLabel;
+    private Location location;
+    private double latitude; // Latitude
+    private double longitude; // Longitude
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private LocationManager locationManager;
     private  String encodeImage;
     ImageButton ivCamera;
 
 
 
     protected static final String TAG = "AddMood";
-    CameraPhoto cameraPhoto;
 
     final int CAMERA_REQUEST = 10000;
 
@@ -81,9 +66,8 @@ public class AddMood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
-        getUsernameIntent = getIntent();
-
         final Mood currentMood = new Mood(null);
+        getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
         publishButton = (Button) findViewById(R.id.publish);
@@ -92,20 +76,21 @@ public class AddMood extends AppCompatActivity {
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
+
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takeAPhoto();
             }
         });
-
-
-
-
-//        buildGoogleApiClient();
-//
-//
-//        mGoogleApiClient
 
 
         // Create an ArrayAdapter using the mood_array and a default spinner layout
@@ -137,8 +122,6 @@ public class AddMood extends AppCompatActivity {
                     toast.show();
                 }
                 else{
-                    //currentMood.setLocation(null);
-
                     //Unchecked test
                     Context context = getApplicationContext();
                     CharSequence text = "Unchecked";
@@ -169,6 +152,7 @@ public class AddMood extends AppCompatActivity {
                         new ElasticsearchMoodController.AddMoodsTask();
 
                 Feeling = moodSpinner.getSelectedItem().toString();
+                currentMood.setUsername(username);
                 currentMood.setFeeling(Feeling);
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
@@ -178,8 +162,6 @@ public class AddMood extends AppCompatActivity {
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
                 int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
 
                 currentMood.setMoodImage(encodeImage);
 
@@ -189,18 +171,28 @@ public class AddMood extends AppCompatActivity {
                 try {currentMood.setMessage(reason);
                 } catch (ReasonTooLongException e) {
 
-                    //                   Context context = getApplicationContext();
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
                     Toast toast2 = Toast.makeText(context, text, duration);
                     toast2.show();
                 };
                 currentMood.setSituation(socialSituation);
-                currentMood.setUsername(username);
+
+                // Set the location if box is checked.
+                if(locationCheckBox.isChecked()){
+
+
+                    currentMood.setLatitude(latitude);
+                    currentMood.setLongitude(longitude);
+
+                    Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLatitude()));
+                    Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLongitude()));
+
+                }
 
                 addMoodTask.execute(currentMood);
 
-                toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
                 toast.show();
 
                 Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
@@ -259,11 +251,12 @@ public class AddMood extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         username = getUsernameIntent.getStringExtra("username");
-//        mGoogleApiClient.connect();
+
     }
 
     public void takeAPhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         startActivityForResult(intent, CAMERA_REQUEST);
     }
 
@@ -276,4 +269,25 @@ public class AddMood extends AppCompatActivity {
         return imgString;
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
