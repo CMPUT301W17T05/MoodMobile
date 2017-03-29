@@ -46,6 +46,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private CheckBox chkDate;
     private ImageView userImage;
     private TextView userText;
+    private TextView welcomeText;
     public String username;
 
 
@@ -57,7 +58,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -65,10 +66,16 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View hView = navigationView.getHeaderView(0);
+
+        username = getIntent().getStringExtra("username");
+        welcomeText = (TextView) findViewById(R.id.welcomeText);
+        welcomeText.setText("Welcome " + username);
+        userImage = (ImageView) hView.findViewById(R.id.navImage);
+        userText = (TextView) hView.findViewById(R.id.navText);
 
         moodsListView = (ListView) findViewById(R.id.moodList);
-        userImage = (ImageView) findViewById(R.id.navImage);
-        userText = (TextView) findViewById(R.id.navText);
+
 
         final ArrayList<Account> accountList = new ArrayList<>();
 
@@ -88,6 +95,33 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             userImage.setImageBitmap(decodedByte);
         }
         userText.setText(username);
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
+
+                profileIntent.putExtra("username", username);
+
+                startActivity(profileIntent);
+            }
+        });
+
+        userText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
+
+                profileIntent.putExtra("username", username);
+
+                startActivity(profileIntent);
+            }
+        });
+
 
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -159,9 +193,18 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     }
 
     protected void onResume() {
-
         super.onResume();
-        //filterMoods();
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -239,15 +282,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.navImage || id == R.id.navText){
-            setResult(RESULT_OK);
-            Intent profileIntent = new Intent(this, UserProfile.class);
-
-            profileIntent.putExtra("username", username);
-
-            startActivity(profileIntent);
-        }
 
         if (id == R.id.nav_moods) {
             if (this.getClass() != MainPageActivity.class){

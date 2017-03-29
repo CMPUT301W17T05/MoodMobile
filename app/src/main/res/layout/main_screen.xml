@@ -20,6 +20,7 @@
             android:text="Welcome User!"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:id="@+id/welcomeText"
             android:textSize="24sp"
             android:textStyle="normal|italic"
             android:layout_above = "@+id/listContents"
