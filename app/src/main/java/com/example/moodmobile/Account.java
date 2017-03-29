@@ -36,7 +36,7 @@ public class Account{
         this.username = username;
     }
 
-
+    public Account(){};
 
     public void setId(String id) {
         this.id = id;
