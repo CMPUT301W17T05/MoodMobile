@@ -56,7 +56,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
                 try {
                     addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
                     locations[position] = addresses.get(0).getLocality() + " @ " + mood.getDate();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     locations[position] = mood.getDate().toString();
                 }
             }

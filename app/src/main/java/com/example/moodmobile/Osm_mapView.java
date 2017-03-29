@@ -15,16 +15,26 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+
 import java.util.ArrayList;
+
 import android.location.Location;
 import android.location.LocationManager;
+import android.system.Os;
 import android.util.Log;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
@@ -33,14 +43,18 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     public String username;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
 
-    private MapView         MapView;
-    private MapController   MapController;
-    private  LocationManager locationManager;
+    private RadioButton rb1;
+    private RadioButton rb2;
+    private RadioButton rb3;
+
+    private MapView MapView;
+    private MapController MapController;
+    private LocationManager locationManager;
     private Location location; // Location
     private double latitude; // Latitude
     private double longitude; // Longitude
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
+
     ArrayList<OverlayItem> overlayItemArray;
     Drawable markerColor;
 
@@ -57,11 +71,56 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         MapController = (MapController) MapView.getController();
         MapController.setZoom(13);
         overlayItemArray = new ArrayList<OverlayItem>();
+        rb1 = (RadioButton) findViewById(R.id.myMood);
+        rb2 = (RadioButton) findViewById(R.id.following);
+
+        rb1.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                showMyMood();
+            }
+
+        });
+
+        rb2.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                showFollowing();
+            }
+
+        });
+
 
         GeoPoint center = new GeoPoint(53.34, -113.9);
         MapController.animateTo(center);
-        addMarker(center, "This is where you are.", getResources().getDrawable(R.drawable.origin));
+        addMarker(center, "This is where you are.","origin");
 
+        if (ContextCompat.checkSelfPermission(Osm_mapView.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(Osm_mapView.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                Toast.makeText(Osm_mapView.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(Osm_mapView.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_FOR_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
 
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -77,6 +136,51 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         username = getUsernameIntent.getStringExtra("username");
         Log.d("username:::", String.valueOf(username));
 
+
+    }
+
+
+    public void addMarker (GeoPoint center, String title, String color){
+        Marker marker = new Marker(MapView);
+        marker.setPosition(center);
+        marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
+        if (color.equals("Anger")){
+            markerColor = getResources().getDrawable(R.drawable.red);
+        }
+        else if (color.equals("Confusion")){
+            markerColor = getResources().getDrawable(R.drawable.blue);
+        }
+        else if (color.equals("Disgust")){
+            markerColor = getResources().getDrawable(R.drawable.pinkheart);
+        }
+        else if (color.equals("Fear")){
+            markerColor = getResources().getDrawable(R.drawable.black);
+        }
+        else if (color.equals("Happiness")){
+            markerColor = getResources().getDrawable(R.drawable.green);
+        }
+        else if (color.equals("Sadness")){
+            markerColor = getResources().getDrawable(R.drawable.grey);
+        }
+        else if (color.equals("Shame")){
+            markerColor = getResources().getDrawable(R.drawable.white);
+        }
+        else if (color.equals("Surprise")){
+            markerColor = getResources().getDrawable(R.drawable.pink);
+        }
+        else if (color.equals("origin")){
+            markerColor = getResources().getDrawable(R.drawable.origin);
+        }
+        marker.setIcon(markerColor);
+        marker.setTitle(title);
+        MapView.getOverlays().add(marker);
+        MapView.invalidate();
+
+    }
+
+
+    public void showMyMood(){
+        MapView.getOverlays().clear();
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
@@ -99,49 +203,19 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
                 String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
 
-                if (mood.getFeeling().equals("Anger")){
-                    markerColor = getResources().getDrawable(R.drawable.red);
-                }
-                else if (mood.getFeeling().equals("Confusion")){
-                    markerColor = getResources().getDrawable(R.drawable.blue);
-                }
-                else if (mood.getFeeling().equals("Disgust")){
-                    markerColor = getResources().getDrawable(R.drawable.pinkheart);
-                }
-                else if (mood.getFeeling().equals("Fear")){
-                    markerColor = getResources().getDrawable(R.drawable.black);
-                }
-                else if (mood.getFeeling().equals("Happiness")){
-                    markerColor = getResources().getDrawable(R.drawable.green);
-                }
-                else if (mood.getFeeling().equals("Sadness")){
-                    markerColor = getResources().getDrawable(R.drawable.grey);
-                }
-                else if (mood.getFeeling().equals("Shame")){
-                    markerColor = getResources().getDrawable(R.drawable.white);
-                }
-                else if (mood.getFeeling().equals("Surprise")){
-                    markerColor = getResources().getDrawable(R.drawable.pink);
-                }
-                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, markerColor);
+                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, mood.getFeeling());
 
             }
 
         }
-
     }
 
-
-    public void addMarker (GeoPoint center, String title, Drawable icon){
-        Marker marker = new Marker(MapView);
-        marker.setPosition(center);
-        marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
-        marker.setIcon(icon);
-        marker.setTitle(title);
-        MapView.getOverlays().add(marker);
+    public void showFollowing(){
+        MapView.getOverlays().clear();
         MapView.invalidate();
 
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -166,5 +240,17 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_FOR_LOCATION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(Osm_mapView.this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Osm_mapView.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
 
 }

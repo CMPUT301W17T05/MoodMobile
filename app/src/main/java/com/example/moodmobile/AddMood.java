@@ -1,7 +1,9 @@
 package com.example.moodmobile;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -10,6 +12,8 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -37,6 +41,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
     public static final int IMG_REQUEST = 21;
+    private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
     private EditText reasonText;
     private Button publishButton;
     private ImageButton addImageButton;
@@ -53,9 +58,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private LocationManager locationManager;
-    private  String encodeImage;
+    private String encodeImage;
     ImageButton ivCamera;
-
 
 
     protected static final String TAG = "AddMood";
@@ -78,6 +82,35 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ContextCompat.checkSelfPermission(AddMood.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AddMood.this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                Toast.makeText(AddMood.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(AddMood.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_FOR_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
         location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
@@ -290,5 +323,19 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_FOR_LOCATION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(AddMood.this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddMood.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 }
