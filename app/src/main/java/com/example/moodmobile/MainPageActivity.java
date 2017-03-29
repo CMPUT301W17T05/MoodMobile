@@ -3,6 +3,8 @@ package com.example.moodmobile;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,8 +24,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,8 +44,9 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
+    private ImageView userImage;
+    private TextView userText;
     public String username;
-    final Dialog dialog = new Dialog(MainPageActivity.this);
 
 
     @Override
@@ -60,69 +66,28 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        reasonText = (EditText) findViewById(R.id.reasonText);
-        chkDate = (CheckBox) findViewById(R.id.weekBox);
-        spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        situationArray = getResources().getStringArray(R.array.situation_array);
-        Button editProfileButton = (Button) findViewById(R.id.editButton);
-        spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
-        spinnerSituation.setAdapter(spinAdapter);
         moodsListView = (ListView) findViewById(R.id.moodList);
+        userImage = (ImageView) findViewById(R.id.navImage);
+        userText = (TextView) findViewById(R.id.navText);
 
+        final ArrayList<Account> accountList = new ArrayList<>();
 
-        chkDate.setOnClickListener(new View.OnClickListener() {
+        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+        getUser.execute(username);
 
-            public void onClick(View v) {
-                filterMoods();
-            }
+        try {
+            accountList.clear();
+            accountList.addAll(getUser.get());
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the tweets out of asyc object");
+        }
 
-        });
-
-        reasonText.addTextChangedListener(new TextWatcher() {
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                filterMoods();
-
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                filterMoods();
-            }
-
-            public void afterTextChanged(Editable s) {
-                filterMoods();
-            }
-        });
-
-        spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterMoods();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                filterMoods();
-            }
-
-        });
-
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
-
-                profileIntent.putExtra("username", username);
-
-                startActivity(profileIntent);
-            }
-        });
-
-        /* Listener to detect a mood that has been clicked.
-                *  This will also launch the ViewEditMood activity**/
+        if (accountList.get(0).getProfileImage() != null) {
+            byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            userImage.setImageBitmap(decodedByte);
+        }
+        userText.setText(username);
 
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -225,8 +190,38 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
+
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.filter_dialog);
+            dialog.setTitle("Filter Moods");
+
+            Button filterButton = (Button) dialog.findViewById(R.id.filterButton);
+            Button cancelButton = (Button) dialog.findViewById(R.id.cancelButton);
+            reasonText = (EditText) dialog.findViewById(R.id.reasonText);
+            chkDate = (CheckBox) dialog.findViewById(R.id.weekBox);
+            spinnerSituation = (Spinner) dialog.findViewById(R.id.sitSpinner);
+            situationArray = getResources().getStringArray(R.array.situation_array);
+            spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+            spinnerSituation.setAdapter(spinAdapter);
+
+            filterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    filterMoods();
+                }
+            });
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
             //TODO popup filter dialog
-            dialog.create();
+            dialog.show();
         }
 
         else if (id == R.id.action_mood){
@@ -244,6 +239,15 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        if (id == R.id.navImage || id == R.id.navText){
+            setResult(RESULT_OK);
+            Intent profileIntent = new Intent(this, UserProfile.class);
+
+            profileIntent.putExtra("username", username);
+
+            startActivity(profileIntent);
+        }
 
         if (id == R.id.nav_moods) {
             if (this.getClass() != MainPageActivity.class){

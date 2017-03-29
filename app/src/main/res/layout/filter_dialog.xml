@@ -3,71 +3,89 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="Filter Moods By:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="42dp"
-        android:id="@+id/filterTitle"
-        android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/dateLayout"
+        android:orientation="horizontal">
 
-    <TextView
-        android:text="Past week:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/weekFilter"
-        android:layout_marginStart="20dp"
-        android:layout_below="@+id/filterTitle"
-        android:layout_alignStart="@+id/filterTitle" />
+        <TextView
+            android:text="Past week:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/weekFilter" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/weekBox"
-        android:layout_alignBaseline="@+id/weekFilter"
-        android:layout_alignBottom="@+id/weekFilter"
-        android:layout_toRightOf="@+id/weekFilter"
-        android:layout_toEndOf="@+id/weekFilter" />
+        <CheckBox
+            android:id="@+id/weekBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/weekFilter" />
 
-    <TextView
-        android:text="Emotion:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/emotionFilter"
-        android:layout_below="@+id/weekBox"
-        android:layout_alignLeft="@+id/weekFilter"
-        android:layout_alignStart="@+id/weekFilter" />
+    </LinearLayout>
 
-    <Spinner
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sitSpinner"
-        android:layout_below="@+id/weekFilter"
-        android:layout_toRightOf="@+id/emotionFilter"
-        android:layout_toEndOf="@+id/emotionFilter" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/emotionLayout"
+        android:orientation="horizontal">
 
-    <TextView
+        <TextView
+            android:text="Emotion:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emotionFilter" />
+
+        <Spinner
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sitSpinner" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/reasonLayout">
+
+        <TextView
         android:text="Reason Contains:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/reasonFilter"
-        android:layout_below="@+id/sitSpinner"
-        android:layout_alignLeft="@+id/emotionFilter"
-        android:layout_alignStart="@+id/emotionFilter" />
+        android:id="@+id/reasonFilter" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_below="@+id/emotionFilter"
-        android:layout_toRightOf="@+id/reasonFilter"
-        android:layout_toEndOf="@+id/reasonFilter"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
-        android:id="@+id/reasonText"
-        android:textSize="18sp" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/reasonText"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/filterButton"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:text="Filter" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
