@@ -30,25 +30,36 @@ public class FriendsActivity extends AppCompatActivity {
         followRequestsList.addAll(user.getFollowRequests());
     }
 
+    public void displayUserNotFoundMessage(){
+        Log.i("Error", "User does not exist.");
+
+        Context context = getApplicationContext();
+
+        CharSequence text = "User does not exist!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_friend);
 
+        Account currentlyLoggedIn;
+
         final ArrayList<Account> searchResults = new ArrayList<Account>();
 
         final String username = getIntent().getStringExtra("username"); //User currently logged in
-
-
         final EditText usernameSearch = (EditText) findViewById(R.id.usernameSearch);
-        Button sendRequest = (Button) findViewById(R.id.SendRequest);
-        Button getFriendRequests = (Button) findViewById(R.id.GetFriendRequests);
-        ListView requestsList = (ListView) findViewById(R.id.RequestsList);
+
+        Button sendRequest =        (Button) findViewById(R.id.SendRequest);
+        Button getFriendRequests =  (Button) findViewById(R.id.GetFriendRequests);
+        ListView requestsList =     (ListView) findViewById(R.id.RequestsList);
 
         followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
         requestsList.setAdapter(followRequestsAdapter);
-
-        Account currentlyLoggedIn;
 
         ElasticsearchAccountController.GetUser loggedInUserTask = new ElasticsearchAccountController.GetUser();
 
@@ -73,21 +84,15 @@ public class FriendsActivity extends AppCompatActivity {
                 searchUserTask.execute(usernameSearch.getText().toString());
 
                 try {
+                    searchResults.clear();
                     searchResults.addAll(searchUserTask.get());
 
                 } catch (Exception e) {
-                    Log.i("Error", "User does not exist.");
+                    Log.i("Error", "Could not download account details for logged in user..");
 
-                    Context context = getApplicationContext();
-
-                    CharSequence text = "User does not exist!";
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
                 }
 
-                try {
+                if (searchResults.size() != 0){
                     friendRequestDest = searchResults.get(0);
                     friendRequestDest.addFollowRequest(username);
 
@@ -101,17 +106,8 @@ public class FriendsActivity extends AppCompatActivity {
 
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
-                }
-                catch (Exception e) {
-                    Log.i("Error", "User does not exist.");
-
-                    Context context = getApplicationContext();
-
-                    CharSequence text = "User does not exist!";
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
+                } else {
+                    displayUserNotFoundMessage();
                 }
             }
         });

@@ -1,10 +1,13 @@
 package com.example.moodmobile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collections;
 
@@ -19,32 +22,62 @@ public class ViewGuestProfile extends AppCompatActivity {
     private Account guestUserAccount;
     private Mood LatestMood;
 
-    private Button guestDenyRequest;
-    private Button guestAcceptRequest;
+    private Button guestDenyRequestButton;
+    private Button guestAcceptRequestButton;
 
+    public void displayRequestNotSent(){
+        Log.i("Error", "Could not accept follow request.");
+
+        Context context = getApplicationContext();
+
+        CharSequence text = "Error: could not accept request.";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    public void displaySuccessfullyAcceptedRequest(String username){
+        Context context = getApplicationContext();
+
+        CharSequence text = "Request Accepted! "
+                + username + " is now following you!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.guest_profile);
 
+        final String guestUsername = getIntent().getStringExtra("guestUsername");
+        final String loggedInUsername = getIntent().getStringExtra("username");
+
         TextView guestProfileName = (TextView) findViewById(R.id.GuestProfileName);
         TextView guestLatestMoodTextview = (TextView) findViewById(R.id.GuestLatestMoodTextview);
         TextView guestLatestLocationTextview = (TextView) findViewById(R.id.GuestLatestLocationTextview);
 
-        guestAcceptRequest = (Button) findViewById(R.id.GuestAcceptRequest);
-        guestDenyRequest = (Button) findViewById(R.id.GuestDenyRequest);
-
-        final String guestUsername = getIntent().getStringExtra("guestUsername");
+        guestAcceptRequestButton = (Button) findViewById(R.id.GuestAcceptRequest);
+        guestDenyRequestButton = (Button) findViewById(R.id.GuestDenyRequest);
 
         ElasticsearchAccountController.GetUser getUserActivity = new ElasticsearchAccountController.GetUser();
         ElasticsearchMoodController.GetMoodsTaskByName getUserLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
 
         try {
             guestUserAccount = (Account) getUserActivity.execute(guestUsername).get().get(0);
-            LatestMood = (Mood) getUserLatestMood.execute(guestUsername).get().get(0);//Should get latest mood
-
             guestProfileName.setText(guestUserAccount.getUsername());
+        } catch (Exception e) {
+            /**
+             * TODO
+             * handle this exception
+             */
+        }
+
+        try {
+            LatestMood = (Mood) getUserLatestMood.execute(guestUsername).get().get(0);//Should get latest mood
 
             /**
              * TODO
@@ -55,16 +88,16 @@ public class ViewGuestProfile extends AppCompatActivity {
             guestLatestLocationTextview.setText("Latest Location: "
                     + "Latitude: " + LatestMood.getLatitude() + " "
                     + "Longitude: " + LatestMood.getLongitude());
+
+            //guestLatestLocationTextview.setText("Latest Location: " + LatestMood.getLocation().toString());
         } catch (Exception e) {
             /**
-             * TODO
-             * handle this exception
              */
         }
 
 
 
-        guestDenyRequest.setOnClickListener(new View.OnClickListener() {
+        guestDenyRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Account loggedInUser;
@@ -72,8 +105,7 @@ public class ViewGuestProfile extends AppCompatActivity {
                 ElasticsearchAccountController.GetUser getUserActivity = new ElasticsearchAccountController.GetUser();
                 ElasticsearchAccountController.UpdateAccountTask updateAccountTask = new ElasticsearchAccountController.UpdateAccountTask();
                 try {
-                    loggedInUser = getUserActivity.execute(getIntent().getStringExtra("username")).get().get(0);
-
+                    loggedInUser = getUserActivity.execute(loggedInUsername).get().get(0);
                     loggedInUser.getFollowRequests().removeAll(Collections.singleton(guestUsername));
 
                     updateAccountTask.execute(loggedInUser);
@@ -84,6 +116,48 @@ public class ViewGuestProfile extends AppCompatActivity {
                      * Handle this
                      */
                 }
+            }
+        });
+
+        guestAcceptRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Account loggedInUser;
+                Account guestUser;
+
+                ElasticsearchAccountController.GetUser getUserTask
+                        = new ElasticsearchAccountController.GetUser();
+                ElasticsearchAccountController.UpdateAccountTask updateAccountTask
+                        = new ElasticsearchAccountController.UpdateAccountTask();
+
+                // Remove guest user from the follow requests
+                try{
+                    loggedInUser = getUserTask.execute(loggedInUsername).get().get(0);
+                    loggedInUser.getFollowRequests().removeAll(Collections.singleton(guestUsername));
+
+                    updateAccountTask.execute(loggedInUser);
+                } catch (Exception e) {
+                    /**
+                     *
+                     */
+                }
+
+                getUserTask = new ElasticsearchAccountController.GetUser();
+                updateAccountTask = new ElasticsearchAccountController.UpdateAccountTask();
+
+                // Add logged in user to the guests' following list
+                try{
+                    guestUser = getUserTask.execute(guestUsername).get().get(0);
+                    guestUser.addFollowing(loggedInUsername);
+
+                    updateAccountTask.execute(guestUser);
+
+                    displaySuccessfullyAcceptedRequest(guestUsername);
+                } catch (Exception e) {
+                    displayRequestNotSent();
+                }
+
+                finish();
             }
         });
 
