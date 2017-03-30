@@ -99,9 +99,6 @@ public class UserProfile extends AppCompatActivity {
 
         }
 
-
-
-
         usernameTxt.setText(username);
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());

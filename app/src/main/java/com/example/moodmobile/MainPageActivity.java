@@ -1,22 +1,33 @@
 package com.example.moodmobile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -33,13 +44,17 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainPageActivity extends AppCompatActivity {
+public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Intent intent;
     private static final String SYNC_FILE = "syncmood.sav";
-
+    private ImageView userImage;
+    private TextView userText;
+    private TextView welcomeText;
     private ListView moodsListView;
     private ArrayList<Mood> moodsList = new ArrayList<>();
     private CustomListAdapter adapter;
+    private ArrayAdapter<String> spinAdapter;
+    private String situationArray[];
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
@@ -49,127 +64,75 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_screen);
-
+        setContentView(R.layout.activity_main);
         intent = getIntent();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        reasonText = (EditText) findViewById(R.id.reasonText);
-        chkDate = (CheckBox) findViewById(R.id.weekBox);
-        spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        String[] situationArray = getResources().getStringArray(R.array.situation_array);
-        Button editProfileButton = (Button) findViewById(R.id.editButton);
-        Button addMoodButton = (Button) findViewById(R.id.addMood);
-        //TODO Unused variable?
-        //Button friendsButton = (Button) findViewById(R.id.friends);
-        Button mapButton = (Button) findViewById(R.id.map);
-        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
-        spinnerSituation.setAdapter(spinAdapter);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View hView = navigationView.getHeaderView(0);
+
+        username = getIntent().getStringExtra("username");
+        welcomeText = (TextView) findViewById(R.id.welcomeText);
+        welcomeText.setText("Welcome " + username + "!");
+        userImage = (ImageView) hView.findViewById(R.id.navImage);
+        userText = (TextView) hView.findViewById(R.id.navText);
+
         moodsListView = (ListView) findViewById(R.id.moodList);
 
-        chkDate.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View v) {
-                filterMoods();
-            }
+        final ArrayList<Account> accountList = new ArrayList<>();
 
-        });
+        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+        getUser.execute(username);
 
-        reasonText.addTextChangedListener(new TextWatcher() {
+        try {
+            accountList.clear();
+            accountList.addAll(getUser.get());
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the tweets out of asyc object");
+        }
 
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                filterMoods();
+        if (accountList.get(0).getProfileImage() != null) {
+            byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            userImage.setImageBitmap(decodedByte);
+        }
+        userText.setText(username);
 
-            }
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                filterMoods();
-            }
-
-            public void afterTextChanged(Editable s) {
-                filterMoods();
-            }
-        });
-
-        spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        userImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                //filterMoods();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                //filterMoods();
-            }
-
-        });
-
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
 
                 profileIntent.putExtra("username", username);
 
                 startActivity(profileIntent);
-                //finish();
-                //TO-DO Start Edit Profile Activity
-                /*String text = bodyText.getText().toString();
-                NormalTweet newTweet = new NormalTweet(text);
-                tweetList.add(newTweet);
-                adapter.notifyDataSetChanged();
-                ElasticsearchTweetController.AddTweetsTask addTweetsTask = new ElasticsearchTweetController.AddTweetsTask();
-                addTweetsTask.execute(newTweet);*/
             }
         });
 
-        addMoodButton.setOnClickListener(new View.OnClickListener() {
-
+        userText.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
-                newMoodIntent.putExtra("username", username);
-                startActivity(newMoodIntent);
-                //TO-DO Start New Mood Activity
-                /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
-                String message = bodyText.getText().toString();
-                getTweetsTask.execute(message);
-                try {
-                    tweetList.clear();
-                    tweetList.addAll(getTweetsTask.get());
-                } catch (Exception e) {
-                    Log.i("Error", "Failed to get the tweets out of the async object");
-                }
-                adapter.notifyDataSetChanged();*/
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
+                profileIntent.putExtra("username", username);
+                startActivity(profileIntent);
             }
+
         });
-/*
-        friendsButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
-                startActivity(friendsIntent);
-                //TO-DO Start Friends Activity
-            }
-        });*/
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent mapIntent = new Intent(v.getContext(), Osm_mapView.class);
-
-                mapIntent.putExtra("username", username);
-
-                startActivity(mapIntent);
-            }
-        });
-
-        /* Listener to detect a mood that has been clicked.
-                *  This will also launch the ViewEditMood activity**/
 
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -245,10 +208,128 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     protected void onResume() {
-        //TODO method only calls super
         super.onResume();
-        //zfilterMoods();
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_filter) {
+
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.filter_dialog);
+            dialog.setTitle("Filter Moods");
+
+            Button filterButton = (Button) dialog.findViewById(R.id.filterButton);
+            Button cancelButton = (Button) dialog.findViewById(R.id.cancelButton);
+            reasonText = (EditText) dialog.findViewById(R.id.reasonText);
+            chkDate = (CheckBox) dialog.findViewById(R.id.weekBox);
+            spinnerSituation = (Spinner) dialog.findViewById(R.id.sitSpinner);
+            situationArray = getResources().getStringArray(R.array.situation_array);
+            spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+            spinnerSituation.setAdapter(spinAdapter);
+
+            filterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    filterMoods();
+                }
+            });
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            //TODO popup filter dialog
+            dialog.show();
+        }
+
+        else if (id == R.id.action_mood){
+            setResult(RESULT_OK);
+            Intent newMoodIntent = new Intent(this, AddMood.class);
+            newMoodIntent.putExtra("username", username);
+            startActivity(newMoodIntent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_moods) {
+            if (this.getClass() != MainPageActivity.class){
+                setResult(RESULT_OK);
+                Intent mainIntent = new Intent(this, MainPageActivity.class);
+                mainIntent.putExtra("username", username);
+                startActivity(mainIntent);
+            }
+        } else if (id == R.id.nav_following) {
+            /*
+                setResult(RESULT_OK);
+                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
+                startActivity(friendsIntent);*/
+
+        } else if (id == R.id.nav_requests) {
+
+        } else if (id == R.id.nav_map) {
+            setResult(RESULT_OK);
+            Intent mapIntent = new Intent(this, Osm_mapView.class);
+
+            mapIntent.putExtra("username", username);
+
+            startActivity(mapIntent);
+
+        } else if (id == R.id.nav_logout) {
+            finish();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
