@@ -25,18 +25,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class AddMood extends AppCompatActivity implements LocationListener {
 
+    private Intent getUsernameIntent;
+    private String username;
     public static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Button publishButton;
@@ -47,8 +45,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String Feeling;
     private String socialSituation;
     private String reason;
-    protected Location location;
     private GeoPoint geoPoint;
+    private Location location;
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
@@ -68,6 +66,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
         final Mood currentMood = new Mood(null);
+        getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
         publishButton = (Button) findViewById(R.id.publish);
@@ -76,6 +75,15 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
+
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +151,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                         new ElasticsearchMoodController.AddMoodsTask();
 
                 Feeling = moodSpinner.getSelectedItem().toString();
+                currentMood.setUsername(username);
                 currentMood.setFeeling(Feeling);
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
@@ -193,12 +202,16 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
 
+                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
+                startActivity(MainpageIntent);
                 finish();
 
 
             }
 
         });
+
+
     }
 
     //When click the add Image button
@@ -244,6 +257,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     @Override
     protected void onStart() {
         super.onStart();
+        username = getUsernameIntent.getStringExtra("username");
     }
 
     public void takeAPhoto(){
@@ -263,6 +277,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        longitude = location.getLongitude();
+        latitude  = location.getLatitude();
+        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
     }
 
     @Override
@@ -280,4 +297,3 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 }
-

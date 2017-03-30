@@ -101,9 +101,9 @@
         android:id="@+id/moodImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_light_normal_background"
         android:layout_below="@+id/ivGallery"
-        android:layout_toStartOf="@+id/ivGallery" />
+        android:layout_toStartOf="@+id/ivGallery"
+        app:srcCompat="@android:drawable/screen_background_light_transparent" />
 
     <ImageButton
         android:id="@+id/ivGallery"

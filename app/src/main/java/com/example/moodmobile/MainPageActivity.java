@@ -32,16 +32,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-    private Intent intent;
 
-    private ListView moodsListView;
+    private Intent intent;
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
     private ImageView userImage;
     private TextView userText;
     private TextView welcomeText;
-
+    private ListView moodsListView;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
     private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
@@ -114,13 +113,11 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 setResult(RESULT_OK);
                 drawer.closeDrawer(GravityCompat.START);
                 Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
-
                 profileIntent.putExtra("username", username);
-
                 startActivity(profileIntent);
             }
-        });
 
+        });
 
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -298,9 +295,12 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         } else if (id == R.id.nav_requests) {
 
         } else if (id == R.id.nav_map) {
-           /* setResult(RESULT_OK);
-            Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
-            startActivity(mapIntent);*/
+            setResult(RESULT_OK);
+            Intent mapIntent = new Intent(this, Osm_mapView.class);
+
+            mapIntent.putExtra("username", username);
+
+            startActivity(mapIntent);
 
         } else if (id == R.id.nav_logout) {
             finish();
