@@ -37,17 +37,18 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private Intent intent;
 
     private ListView moodsListView;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
-    private CustomListAdapter adapter;
-    private ArrayAdapter<String> spinAdapter;
-    private String situationArray[];
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
     private ImageView userImage;
     private TextView userText;
     private TextView welcomeText;
-    public String username;
+
+    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+    private CustomListAdapter adapter;
+    private ArrayAdapter<String> spinAdapter;
+    private String situationArray[];
+    private String username;
 
 
     @Override
@@ -312,7 +313,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    private void filterMoods(){
+    public void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
