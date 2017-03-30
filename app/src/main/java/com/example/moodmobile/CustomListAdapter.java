@@ -52,9 +52,9 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
                 images[position] = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             }
 
-            if (mood.getLocation() != null){
+            if (mood.getLatitude() != null && mood.getLongitude() != null){
                 try {
-                    addresses = gcd.getFromLocation(mood.getLocation().getLatitude(), mood.getLocation().getLongitude(), 1);
+                    addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
                     locations[position] = addresses.get(0).getLocality() + " @ " + mood.getDate();
                 } catch (Exception e) {
                     locations[position] = mood.getDate().toString();

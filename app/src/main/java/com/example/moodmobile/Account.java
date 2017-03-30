@@ -18,7 +18,6 @@ public class Account{
     private ArrayList<String> following;
     private ArrayList<String> followRequests;
 
-
     public String getProfileImage() {
         return profileImage;
     }

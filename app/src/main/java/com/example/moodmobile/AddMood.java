@@ -54,6 +54,10 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private Mood currentMood;
     private String reason;
     private Location mlocation;
+
+    private String location;
+
+
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
@@ -206,7 +210,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 if(locationCheckBox.isChecked()){
 
                     GeoPoint location = new GeoPoint(mlocation.getLatitude(), mlocation.getLongitude());
-                    currentMood.setLocation(location);
+                    currentMood.setLatitude(mlocation.getLatitude());
+                    currentMood.setLongitude(mlocation.getLongitude());
+
+
+
+                    currentMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
 
 
                 }
