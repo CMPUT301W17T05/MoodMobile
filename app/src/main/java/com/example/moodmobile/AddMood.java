@@ -2,6 +2,7 @@ package com.example.moodmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -10,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -23,14 +25,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import org.osmdroid.views.overlay.OverlayItem;
-
+import org.osmdroid.util.GeoPoint;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class AddMood extends AppCompatActivity implements LocationListener {
 
@@ -45,8 +44,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private CheckBox locationCheckBox;
     private String Feeling;
     private String socialSituation;
-    private Mood currentMood;
     private String reason;
+    private GeoPoint geoPoint;
     private Location location;
     private double latitude; // Latitude
     private double longitude; // Longitude
@@ -179,21 +178,28 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 currentMood.setSituation(socialSituation);
 
 
+                currentMood.setUsername(getIntent().getStringExtra("username"));
+
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    }
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    geoPoint = new GeoPoint(latitude, longitude);
 
+                    currentMood.setLocation(geoPoint);
 
-                    currentMood.setLatitude(latitude);
-                    currentMood.setLongitude(longitude);
-
-                    Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLatitude()));
-                    Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLongitude()));
+                    Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLocation().getLatitude()));
+                    Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLocation().getLongitude()));
 
                 }
 
                 addMoodTask.execute(currentMood);
 
-                Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
 
                 Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
@@ -252,7 +258,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     protected void onStart() {
         super.onStart();
         username = getUsernameIntent.getStringExtra("username");
-
     }
 
     public void takeAPhoto(){

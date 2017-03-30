@@ -28,11 +28,11 @@ import java.util.Locale;
 public class CustomListAdapter extends ArrayAdapter<Mood> {
 
     private Activity context;
-    private final String[] reasons = new String[10];
-    private final Integer[] emoteids = new Integer[10];
-    private final String[] usernames = new String[10];
-    private final String[] locations = new String[10];
-    private final Bitmap[] images = new Bitmap[10];
+    private String[] reasons = new String[10];
+    private Integer[] emoteids = new Integer[10];
+    private String[] usernames = new String[10];
+    private String[] locations = new String[10];
+    private Bitmap[] images = new Bitmap[10];
     private List<Address> addresses;
     private Integer position;
     private byte[] decodedString;
@@ -52,9 +52,9 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
                 images[position] = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             }
 
-            if (mood.getLatitude() != null || mood.getLongitude() != null){
+            if (mood.getLocation() != null){
                 try {
-                    addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
+                    addresses = gcd.getFromLocation(mood.getLocation().getLatitude(), mood.getLocation().getLongitude(), 1);
                     locations[position] = addresses.get(0).getLocality() + " @ " + mood.getDate();
                 } catch (IOException e) {
                     locations[position] = mood.getDate().toString();
