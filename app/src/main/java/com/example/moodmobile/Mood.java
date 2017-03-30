@@ -3,6 +3,8 @@ package com.example.moodmobile;
 import android.location.Location;
 import android.media.Image;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -25,6 +27,9 @@ public class Mood implements Moodable{
     private String moodImage;
     private Double latitude;
     private Double longitude;
+
+
+    private GeoPoint geoPoint;
     private Location location;
     private String username;
 
@@ -135,4 +140,11 @@ public class Mood implements Moodable{
         this.longitude = longitude;
     }
 
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
+    }
 }

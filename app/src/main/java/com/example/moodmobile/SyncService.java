@@ -59,8 +59,6 @@ public class SyncService extends IntentService {
             return gson.fromJson(in, listType);
         } catch (FileNotFoundException e) {
             return new ArrayList<Mood>();
-        } catch (IOException e) {
-            throw new RuntimeException();
         }
     }
 

@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.ByteArrayOutputStream;
@@ -59,6 +60,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private LocationManager locationManager;
     private String encodeImage;
+    private GeoPoint geoPoint;
     ImageButton ivCamera;
 
 
@@ -218,6 +220,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     currentMood.setLatitude(latitude);
                     currentMood.setLongitude(longitude);
+                    geoPoint = new GeoPoint(latitude, longitude);
+                    currentMood.setGeoPoint(geoPoint);
 
                     Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLatitude()));
                     Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLongitude()));
