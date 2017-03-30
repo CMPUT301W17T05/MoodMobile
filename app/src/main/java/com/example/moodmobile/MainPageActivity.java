@@ -59,7 +59,8 @@ public class MainPageActivity extends AppCompatActivity {
         String[] situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
         Button addMoodButton = (Button) findViewById(R.id.addMood);
-        Button friendsButton = (Button) findViewById(R.id.friends);
+        //TODO Unused variable?
+        //Button friendsButton = (Button) findViewById(R.id.friends);
         Button mapButton = (Button) findViewById(R.id.map);
         ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);

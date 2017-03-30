@@ -87,29 +87,31 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
                 String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
 
-                if (mood.getFeeling().equals("Anger")){
-                    markerColor = getResources().getDrawable(R.drawable.red);
-                }
-                else if (mood.getFeeling().equals("Confusion")){
-                    markerColor = getResources().getDrawable(R.drawable.blue);
-                }
-                else if (mood.getFeeling().equals("Disgust")){
-                    markerColor = getResources().getDrawable(R.drawable.pinkheart);
-                }
-                else if (mood.getFeeling().equals("Fear")){
-                    markerColor = getResources().getDrawable(R.drawable.black);
-                }
-                else if (mood.getFeeling().equals("Happiness")){
-                    markerColor = getResources().getDrawable(R.drawable.green);
-                }
-                else if (mood.getFeeling().equals("Sadness")){
-                    markerColor = getResources().getDrawable(R.drawable.grey);
-                }
-                else if (mood.getFeeling().equals("Shame")){
-                    markerColor = getResources().getDrawable(R.drawable.white);
-                }
-                else if (mood.getFeeling().equals("Surprise")){
-                    markerColor = getResources().getDrawable(R.drawable.pink);
+                switch (mood.getFeeling()) {
+                    case "Anger":
+                        markerColor = getResources().getDrawable(R.drawable.red);
+                        break;
+                    case "Confusion":
+                        markerColor = getResources().getDrawable(R.drawable.blue);
+                        break;
+                    case "Disgust":
+                        markerColor = getResources().getDrawable(R.drawable.pinkheart);
+                        break;
+                    case "Fear":
+                        markerColor = getResources().getDrawable(R.drawable.black);
+                        break;
+                    case "Happiness":
+                        markerColor = getResources().getDrawable(R.drawable.green);
+                        break;
+                    case "Sadness":
+                        markerColor = getResources().getDrawable(R.drawable.grey);
+                        break;
+                    case "Shame":
+                        markerColor = getResources().getDrawable(R.drawable.white);
+                        break;
+                    case "Surprise":
+                        markerColor = getResources().getDrawable(R.drawable.pink);
+                        break;
                 }
                 addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, markerColor);
 

@@ -20,7 +20,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +31,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 public class UserProfile extends AppCompatActivity {
 

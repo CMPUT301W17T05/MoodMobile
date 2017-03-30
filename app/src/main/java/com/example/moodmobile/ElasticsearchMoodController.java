@@ -7,9 +7,6 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.*;
 
 import io.searchbox.core.Delete;

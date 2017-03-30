@@ -168,7 +168,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
-                    Toast toast2 = Toast.makeText(context, text, duration);
+                    Toast toast2 = Toast.makeText(context, text2, duration2);
                     toast2.show();
                 }
                 currentMood.setSituation(socialSituation);
