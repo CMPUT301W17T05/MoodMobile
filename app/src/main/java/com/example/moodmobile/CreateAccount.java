@@ -35,6 +35,12 @@ public class CreateAccount extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Account newUser = new Account(newUserName.getText().toString());
+                newUser.setProfileImage(null);
+                newUser.setNickname(null);
+                newUser.setGender(null);
+                newUser.setRegion(null);
+                newUser.setFollowing(new ArrayList<String>());
+                newUser.setFollowRequests(new ArrayList<String>());
 
                 ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
                 getUser.execute(newUserName.getText().toString());

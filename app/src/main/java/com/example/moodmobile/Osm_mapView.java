@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -54,9 +55,11 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private MapController MapController;
     private LocationManager locationManager;
     private Location mlocation; // Location
-    private double latitude; // Latitude
-    private double longitude; // Longitude
-    private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_FOR_COARSE_LOCATION = 2;
+
+    private static final int MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE = 3;
+
     private int i;
     ArrayList<OverlayItem> overlayItemArray;
     Drawable markerColor;
@@ -66,18 +69,16 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_view);
 
+        getLocationPermission();
+        getLocation2Permission();
+        getExternalPermission();
+
         getUsernameIntent = getIntent();
         MapView = (MapView) findViewById(R.id.map);
-        MapView.setTileSource(TileSourceFactory.MAPNIK);
-        MapView.setBuiltInZoomControls(true);
-        MapView.setMultiTouchControls(true);
-        MapController = (MapController) MapView.getController();
-        MapController.setZoom(13);
-        overlayItemArray = new ArrayList<OverlayItem>();
+
         rb1 = (RadioButton) findViewById(R.id.myMood);
         rb2 = (RadioButton) findViewById(R.id.following);
         rb3 = (RadioButton) findViewById(R.id.nearby);
-
         rb1.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -85,7 +86,6 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             }
 
         });
-
         rb2.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -93,7 +93,6 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             }
 
         });
-
         rb3.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -104,33 +103,20 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
 
 
-        if (ContextCompat.checkSelfPermission(Osm_mapView.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(Osm_mapView.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+    }
 
-                Toast.makeText(Osm_mapView.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
+    protected void onStart() {
+        super.onStart();
+        username = getUsernameIntent.getStringExtra("username");
+        Log.d("username:::", String.valueOf(username));
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(Osm_mapView.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_FOR_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-
+        MapView.setTileSource(TileSourceFactory.MAPNIK);
+        MapView.setBuiltInZoomControls(true);
+        MapView.setMultiTouchControls(true);
+        MapController = (MapController) MapView.getController();
+        MapController.setZoom(13);
+        overlayItemArray = new ArrayList<OverlayItem>();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
@@ -139,14 +125,6 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
         MapController.animateTo(center);
         addMarker(center, "This is where you are.","origin");
-
-
-    }
-
-    protected void onStart() {
-        super.onStart();
-        username = getUsernameIntent.getStringExtra("username");
-        Log.d("username:::", String.valueOf(username));
 
 
     }
@@ -224,38 +202,40 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     public void showFollowing(){
 
-        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+        ElasticsearchAccountController.GetUser getCurrentUser = new ElasticsearchAccountController.GetUser();
 
-        getUser.execute(username);
+        getCurrentUser.execute(username);
 
         try {
             currentAccount.clear();
-            currentAccount.addAll(getUser.get());
-            //followingUsernameList = currentAccount.get(0).getFollowing();
-            Toast.makeText(Osm_mapView.this, "Size of following user: "+String.valueOf(currentAccount.get(0).getUsername()), Toast.LENGTH_SHORT).show();
+            currentAccount.addAll(getCurrentUser.get());
+            followingUsernameList = currentAccount.get(0).getFollowing();
+            Toast.makeText(Osm_mapView.this, "Size of following user: "+String.valueOf(currentAccount.get(0).getFollowing().size()), Toast.LENGTH_SHORT).show();
 
 
         } catch (Exception e) {
             Log.i("Error", "Failed to get the Accounts out of asyc object");
         }
 
-        /*for (i = 0; i < followingUsernameList.size(); i++){
-            ElasticsearchMoodController.GetMoodsTaskByName getLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
-            try {
-                Mood LatestMood = getLatestMood.execute(followingUsernameList.get(i)).get().get(0);//Should get latest mood
-                if (LatestMood.getLatitude() != null && LatestMood.getLongitude() != null){
-                    String titleTxt = LatestMood.getUsername() + " feels " + LatestMood.getFeeling() + " here.";
-                    addMarker(new GeoPoint(LatestMood.getLatitude(), LatestMood.getLongitude()), titleTxt, LatestMood.getFeeling());
+        if (followingUsernameList != null && followingUsernameList.size() != 0) {
+            for (i = 0; i < followingUsernameList.size(); i++) {
+                ElasticsearchMoodController.GetMoodsTaskByName getLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
+                try {
+                    Mood LatestMood = getLatestMood.execute(followingUsernameList.get(i)).get().get(0);//Should get latest mood
+                    if (LatestMood.getLatitude() != null && LatestMood.getLongitude() != null) {
+                        String titleTxt = LatestMood.getUsername() + " feels " + LatestMood.getFeeling() + " here.";
+                        addMarker(new GeoPoint(LatestMood.getLatitude(), LatestMood.getLongitude()), titleTxt, LatestMood.getFeeling());
+
+                    }
+
+
+                } catch (Exception e) {
 
                 }
 
-
-            } catch (Exception e) {
-
             }
-
         }
-        */
+
 
 
         MapView.invalidate();
@@ -289,17 +269,102 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_FOR_LOCATION:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(Osm_mapView.this, "Permission Granted!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(Osm_mapView.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-                }
+    public void getLocationPermission() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION);
         }
     }
+
+    public void getLocation2Permission() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_FOR_COARSE_LOCATION);
+        }
+    }
+
+
+    public void getExternalPermission() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE);
+        }
+    }
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        // Make sure it's our original READ_CONTACTS request
+        if (requestCode == MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION || requestCode == MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE || requestCode == MY_PERMISSIONS_REQUEST_FOR_COARSE_LOCATION) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
 
 }
