@@ -91,7 +91,7 @@ public class ElasticsearchMoodController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
-                        //mood.setId(result.getId());
+                        mood.setId(result.getId());
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
