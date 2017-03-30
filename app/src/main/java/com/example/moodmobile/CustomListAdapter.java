@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 /**
+ * TODO Default File Template
  * Created by Derek.R on 2017-03-20.
  */
 
@@ -33,28 +31,25 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
     private final String[] usernames = new String[10];
     private final String[] locations = new String[10];
     private final Bitmap[] images = new Bitmap[10];
-    private List<Address> addresses;
-    private Integer position;
-    private byte[] decodedString;
 
     public CustomListAdapter(Activity activityContext, ArrayList<Mood> MoodsList) {
         super(activityContext, R.layout.list_item, MoodsList);
         // TODO Auto-generated constructor stub
         context = activityContext;
-        position = 0;
+        Integer position = 0;
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
         for (Mood mood : MoodsList) {
             reasons[position] = mood.getMessage();
             emoteids[position] = getEmoticon(mood.getFeeling());
             usernames[position] = mood.getUsername() + " " + mood.getSituation();
             if (mood.getMoodImage() != null) {
-                decodedString = Base64.decode(mood.getMoodImage(), Base64.NO_WRAP);
+                byte[] decodedString = Base64.decode(mood.getMoodImage(), Base64.NO_WRAP);
                 images[position] = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             }
 
             if (mood.getLatitude() != null || mood.getLongitude() != null){
                 try {
-                    addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
+                    List<Address> addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
                     locations[position] = addresses.get(0).getLocality() + " @ " + mood.getDate();
                 } catch (IOException e) {
                     locations[position] = mood.getDate().toString();

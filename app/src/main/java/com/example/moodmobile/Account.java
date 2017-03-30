@@ -1,11 +1,11 @@
 package com.example.moodmobile;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
 /**
+ * TODO Default File Template
  * Created by Derek.R on 2017-03-07.
  */
 

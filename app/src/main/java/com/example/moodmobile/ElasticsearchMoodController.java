@@ -7,9 +7,6 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.*;
 
 import io.searchbox.core.Delete;
@@ -17,7 +14,6 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 
 /**
  * Modified by Jia on 2017-03-12.
@@ -45,7 +41,6 @@ public class ElasticsearchMoodController {
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
-                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
@@ -77,7 +72,6 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
-                    //TODO add mood to "updatemood.sav"
                 }
 
                 try {
@@ -91,16 +85,15 @@ public class ElasticsearchMoodController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
-                        //TODO add mood to "addmood.sav"
                     }
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the mood");
-                    //TODO add mood to file?
                 }
 
             }
@@ -123,7 +116,6 @@ public class ElasticsearchMoodController {
 
                 } catch (Exception e) {
                     Log.i("Error", "The application failed to delete the mood");
-                    //TODO add mood to "deletemood.sav"
                 }
 
 
@@ -138,7 +130,7 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){
@@ -185,7 +177,7 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){

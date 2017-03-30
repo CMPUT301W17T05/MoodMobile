@@ -2,6 +2,8 @@ package com.example.moodmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -17,17 +19,27 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
+    private static final String SYNC_FILE = "syncmood.sav";
 
     private ListView moodsListView;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+    private ArrayList<Mood> moodsList = new ArrayList<>();
     private CustomListAdapter adapter;
-    private ArrayAdapter<String> spinAdapter;
-    private String situationArray[];
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
@@ -44,12 +56,13 @@ public class MainPageActivity extends AppCompatActivity {
         reasonText = (EditText) findViewById(R.id.reasonText);
         chkDate = (CheckBox) findViewById(R.id.weekBox);
         spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        situationArray = getResources().getStringArray(R.array.situation_array);
+        String[] situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
         Button addMoodButton = (Button) findViewById(R.id.addMood);
-        Button friendsButton = (Button) findViewById(R.id.friends);
+        //TODO Unused variable?
+        //Button friendsButton = (Button) findViewById(R.id.friends);
         Button mapButton = (Button) findViewById(R.id.map);
-        spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
         moodsListView = (ListView) findViewById(R.id.moodList);
 
@@ -82,12 +95,12 @@ public class MainPageActivity extends AppCompatActivity {
         spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterMoods();
+                //filterMoods();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                filterMoods();
+                //filterMoods();
             }
 
         });
@@ -185,7 +198,11 @@ public class MainPageActivity extends AppCompatActivity {
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                deletemood.execute(moodsList.get(index));
+                if (IsConnected()) {
+                    deletemood.execute(moodsList.get(index));
+                } else {
+                    SaveToFile(moodsList.get(index), 3);
+                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
@@ -228,12 +245,12 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     protected void onResume() {
-
+        //TODO method only calls super
         super.onResume();
-        filterMoods();
+        //zfilterMoods();
     }
     private void filterMoods(){
-        ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
+        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
         String reason;
@@ -255,18 +272,22 @@ public class MainPageActivity extends AppCompatActivity {
                     if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
+                            //TODO add something?
                             continue;
                         } else if (mood.getSituation().contains(situation)) {
                             filteredMoodsList.add(mood);
+                            //TODO ADD SOMETHING?
                             continue;
                         }
                     }
 
                     else {
+                        //TODO ADD SOMETHING?
                         continue;
                     }
                 }
                 else{
+                    //TODO ADD SOMETHING?
                     continue;
                 }
             }
@@ -293,4 +314,36 @@ public class MainPageActivity extends AppCompatActivity {
         moodsListView.setAdapter(adapter);
     }
 
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
 }
