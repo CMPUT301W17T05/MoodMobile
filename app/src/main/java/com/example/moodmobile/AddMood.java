@@ -33,7 +33,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     private Intent getUsernameIntent;
     private String username;
-    public static final int IMG_REQUEST = 21;
+    private static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
@@ -49,13 +49,11 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     private LocationManager locationManager;
     private  String encodeImage;
-    ImageButton ivCamera;
 
 
+    private static final String TAG = "AddMood";
 
-    protected static final String TAG = "AddMood";
-
-    final int CAMERA_REQUEST = 10000;
+    private final int CAMERA_REQUEST = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +64,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
         reasonText = (EditText) findViewById(R.id.reason);
         Button publishButton = (Button) findViewById(R.id.publish);
+        //TODO addImageButton unused
         ImageButton addImageButton = (ImageButton) findViewById(R.id.ivGallery);
         moodSpinner = (Spinner) findViewById(R.id.moodSpinner);
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
-        ivCamera = (ImageButton) findViewById(R.id.ivCamera);
+        ImageButton ivCamera = (ImageButton) findViewById(R.id.ivCamera);
 
         //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
@@ -154,6 +153,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 //This is for checking the value of CurrentMood and socialSituation
 
+                //TODO text unused or text2 undused
+                //TODO duration unsused or duration2 unused
                 Context context = getApplicationContext();
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
                 int duration = Toast.LENGTH_LONG;
@@ -203,6 +204,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 
+    //TODO is this ever used?
     //When click the add Image button
     public void addImage(View v){
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -250,13 +252,13 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 
-    public void takeAPhoto(){
+    private void takeAPhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         startActivityForResult(intent, CAMERA_REQUEST);
     }
 
-    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+    private String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteFormat = stream.toByteArray();

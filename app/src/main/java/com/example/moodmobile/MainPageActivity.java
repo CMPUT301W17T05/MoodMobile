@@ -24,7 +24,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +42,7 @@ public class MainPageActivity extends AppCompatActivity {
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
-    public String username;
+    private String username;
 
 
     @Override
@@ -188,7 +187,8 @@ public class MainPageActivity extends AppCompatActivity {
         });
 
         /** Long click listener for the mood list.
-                *  Will delete a long-clicked mood.**/
+         *  Will delete a long-clicked mood.
+         */
 
 
         moodsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -201,17 +201,18 @@ public class MainPageActivity extends AppCompatActivity {
                 if (IsConnected()) {
                     deletemood.execute(moodsList.get(index));
                 } else {
-                    SaveToFile(moodsList.get(index), 3);
+                    SaveToFile(moodsList.get(index));
                 }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
-                /** TODO notify elasticsearch**/
+                /** TODO notify elasticsearch
+                 */
 
 
                 /**
                  Display a user message that the selected person was deleted
-                 **/
+                 */
 
                 Context context = getApplicationContext();
                 String text = "Mood Deleted";
@@ -322,8 +323,8 @@ public class MainPageActivity extends AppCompatActivity {
         return isConnected;
     }
 
-    private void SaveToFile(Mood mood, int task){
-        SyncMood syncMood = new SyncMood(mood, task);
+    private void SaveToFile(Mood mood){
+        SyncMood syncMood = new SyncMood(mood, 3);
         ArrayList<SyncMood> syncList;
 
         try {
@@ -340,8 +341,6 @@ public class MainPageActivity extends AppCompatActivity {
             gson = new Gson();
             gson.toJson(syncList, writer);
             writer.flush();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException();
         } catch (IOException e) {
             throw new RuntimeException();
         }

@@ -67,8 +67,6 @@ public class SyncService extends IntentService {
             Gson gson = new Gson();
             gson.toJson(syncList, writer);
             writer.flush();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException();
         } catch (IOException e) {
             throw new RuntimeException();
         }

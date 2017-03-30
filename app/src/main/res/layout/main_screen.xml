@@ -127,7 +127,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bottomButtons"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        style="?andorid:attr/buttonBarStyle">
 
         <Button
             android:layout_width="wrap_content"
@@ -135,7 +136,9 @@
             android:id="@+id/button14"
             android:layout_weight="0.83"
             android:text="My Mood"
-            android:padding="0dp" />
+            android:padding="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            />
 
         <Button
             android:text="Friends"
@@ -143,14 +146,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/friends"
             android:layout_weight="1"
-            android:padding="0dp" />
+            android:padding="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            />
 
         <Button
             android:text="Map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/map"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            />
 
     </LinearLayout>
 

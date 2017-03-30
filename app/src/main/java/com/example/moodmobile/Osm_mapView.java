@@ -20,7 +20,6 @@ import android.util.Log;
 
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
-    public String username;
     private ArrayList<Mood> moodsList = new ArrayList<>();
 
     private MapView         MapView;
@@ -30,8 +29,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
-    ArrayList<OverlayItem> overlayItemArray;
-    Drawable markerColor;
+    private Drawable markerColor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         MapView.setMultiTouchControls(true);
         MapController = (MapController) MapView.getController();
         MapController.setZoom(13);
-        overlayItemArray = new ArrayList<>();
+        ArrayList<OverlayItem> overlayItemArray = new ArrayList<>();
 
         GeoPoint center = new GeoPoint(53.34, -113.9);
         MapController.animateTo(center);
@@ -62,7 +60,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     protected void onStart() {
         super.onStart();
-        username = getUsernameIntent.getStringExtra("username");
+        String username = getUsernameIntent.getStringExtra("username");
         Log.d("username:::", String.valueOf(username));
 
 
@@ -122,7 +120,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     }
 
 
-    public void addMarker (GeoPoint center, String title, Drawable icon){
+    private void addMarker(GeoPoint center, String title, Drawable icon){
         Marker marker = new Marker(MapView);
         marker.setPosition(center);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);

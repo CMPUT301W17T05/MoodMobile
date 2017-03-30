@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class CustomListAdapter extends ArrayAdapter<Mood> {
 
-    private Activity context;
+    private final Activity context;
     private final String[] reasons = new String[10];
     private final Integer[] emoteids = new Integer[10];
     private final String[] usernames = new String[10];
