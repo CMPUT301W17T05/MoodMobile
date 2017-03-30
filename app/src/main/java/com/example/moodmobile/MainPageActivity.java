@@ -38,10 +38,8 @@ public class MainPageActivity extends AppCompatActivity {
     private static final String SYNC_FILE = "syncmood.sav";
 
     private ListView moodsListView;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+    private ArrayList<Mood> moodsList = new ArrayList<>();
     private CustomListAdapter adapter;
-    private ArrayAdapter<String> spinAdapter;
-    private String situationArray[];
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
@@ -58,12 +56,12 @@ public class MainPageActivity extends AppCompatActivity {
         reasonText = (EditText) findViewById(R.id.reasonText);
         chkDate = (CheckBox) findViewById(R.id.weekBox);
         spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        situationArray = getResources().getStringArray(R.array.situation_array);
+        String[] situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
         Button addMoodButton = (Button) findViewById(R.id.addMood);
         Button friendsButton = (Button) findViewById(R.id.friends);
         Button mapButton = (Button) findViewById(R.id.map);
-        spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
         moodsListView = (ListView) findViewById(R.id.moodList);
 
@@ -199,7 +197,7 @@ public class MainPageActivity extends AppCompatActivity {
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                if (IsConnected() == true) {
+                if (IsConnected()) {
                     deletemood.execute(moodsList.get(index));
                 } else {
                     SaveToFile(moodsList.get(index), 3);
@@ -251,7 +249,7 @@ public class MainPageActivity extends AppCompatActivity {
         //zfilterMoods();
     }
     private void filterMoods(){
-        ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
+        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
         String reason;
@@ -273,25 +271,29 @@ public class MainPageActivity extends AppCompatActivity {
                     if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
+                            //TODO add something?
                             continue;
                         } else if (mood.getSituation().contains(situation)) {
                             filteredMoodsList.add(mood);
+                            //TODO ADD SOMETHING?
                             continue;
                         }
                     }
 
                     else {
+                        //TODO ADD SOMETHING?
                         continue;
                     }
                 }
                 else{
+                    //TODO ADD SOMETHING?
                     continue;
                 }
             }
 
             else {
                 reason = reasonText.getText().toString();
-                if (mood.getMessage().contains(reason) == true) {
+                if (mood.getMessage().contains(reason)) {
                     situation = spinnerSituation.getSelectedItem().toString();
                     if (mood.getSituation() == null) {
                         continue;
@@ -329,18 +331,12 @@ public class MainPageActivity extends AppCompatActivity {
             Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
             syncList = gson.fromJson(in, listType);
-        } catch (FileNotFoundException e) {
-            syncList = new ArrayList<SyncMood>();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
 
-        syncList.add(syncMood);
+            syncList.add(syncMood);
 
-        try {
             FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
             OutputStreamWriter writer = new OutputStreamWriter(fos);
-            Gson gson = new Gson();
+            gson = new Gson();
             gson.toJson(syncList, writer);
             writer.flush();
         } catch (FileNotFoundException e) {

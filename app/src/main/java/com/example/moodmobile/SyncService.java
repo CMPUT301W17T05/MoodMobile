@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -54,7 +53,7 @@ public class SyncService extends IntentService {
             Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
             syncList = gson.fromJson(in, listType);
         } catch (FileNotFoundException e) {
-            syncList = new ArrayList<SyncMood>();
+            syncList = new ArrayList<>();
         } catch (IOException e) {
             throw new RuntimeException();
         }
@@ -78,7 +77,7 @@ public class SyncService extends IntentService {
     private void AddToServer(Mood currentMood){
         ElasticsearchMoodController.AddMoodsTask addMoodTask =
                 new ElasticsearchMoodController.AddMoodsTask();
-        if (IsConnected() == true) {
+        if (IsConnected()) {
             addMoodTask.execute(currentMood);
         } else {
             EndService(false);
@@ -88,7 +87,7 @@ public class SyncService extends IntentService {
     private void UpdateOnServer(Mood currentMood){
         ElasticsearchMoodController.UpdateMoodsTask updateMoodsTask =
                 new ElasticsearchMoodController.UpdateMoodsTask();
-        if (IsConnected() == true) {
+        if (IsConnected()) {
             updateMoodsTask.execute(currentMood);
         } else {
             EndService(false);
@@ -98,7 +97,7 @@ public class SyncService extends IntentService {
     private void DeleteFromServer(Mood currentMood){
         ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
                 new ElasticsearchMoodController.DeleteMoodsTask();
-        if (IsConnected() == true) {
+        if (IsConnected()) {
             deleteMoodsTask.execute(currentMood);
         } else {
             EndService(false);
@@ -128,7 +127,7 @@ public class SyncService extends IntentService {
     }
 
     private void EndService(Boolean isFinished){
-        if (isFinished == true){
+        if (isFinished){
             Log.i("SyncService", "Completed service @ " + SystemClock.elapsedRealtime());
             NetworkReceiver.completeWakefulIntent(serviceIntent);
         }

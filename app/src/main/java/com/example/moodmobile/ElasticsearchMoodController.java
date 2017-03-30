@@ -1,8 +1,5 @@
 package com.example.moodmobile;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -20,7 +17,6 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 
 /**
  * Modified by Jia on 2017-03-12.
@@ -92,6 +88,7 @@ public class ElasticsearchMoodController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{
@@ -136,7 +133,7 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){
@@ -183,7 +180,7 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){

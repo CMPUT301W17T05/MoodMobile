@@ -1,7 +1,6 @@
 package com.example.moodmobile;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 

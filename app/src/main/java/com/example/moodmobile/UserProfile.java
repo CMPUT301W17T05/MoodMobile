@@ -31,12 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 
 public class UserProfile extends AppCompatActivity {
 
@@ -51,10 +46,9 @@ public class UserProfile extends AppCompatActivity {
     private String encodeImage;
     private ImageView userProfile;
 
-    private ArrayList<String> genderArray = new ArrayList<String>();
+    private ArrayList<String> genderArray = new ArrayList<>();
     int position;
 
-    private Account account;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,7 +165,7 @@ public class UserProfile extends AppCompatActivity {
             Log.i("Error", "Failed to get the tweets out of asyc object");
         }
 
-        account = accountList.get(0);
+        Account account = accountList.get(0);
 
         ElasticsearchAccountController.UpdateAccountTask updateAccountTask =
                 new ElasticsearchAccountController.UpdateAccountTask();
