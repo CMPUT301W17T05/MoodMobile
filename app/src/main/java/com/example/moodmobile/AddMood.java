@@ -190,7 +190,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 addMoodTask.execute(currentMood);
 
-                Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
 
                 finish();

@@ -1,7 +1,5 @@
 package com.example.moodmobile;
 
-import android.location.Location;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.util.Date;
