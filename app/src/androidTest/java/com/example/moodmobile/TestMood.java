@@ -1,9 +1,10 @@
 package com.example.moodmobile;
 
 /**
+ * TODO Default File Template
  * Created by juice on 27/02/17.
  */
-/*
+
 import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
@@ -18,12 +19,36 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         super(activityClass);
     }
 
+    public void testToString(){
+        Mood mood = new Mood("Happy");
+        String message1 = "This is good";
+        String message2 = "";
+        String message3 = "This message is way too long and should throw some type of exception";
+
+        //TODO iterate over messages
+
+    }
+
+    public void testSetMessage(){}
+    public void testSetDate(){}
+    public void testSetFeeling(){
+
+    }
+    public void testSetSituation(){
+
+    }
+    public void testGetMessage(){}
+    public void testGetDate(){}
+    public void testGetFeelign(){}
+    public void testGetSituation(){}
+    public void testGetMoodImage(){}
 
 
-    public void testSetType(){
+
+    /*public void testSetType(){
         Mood mood = new Mood();
 
-        mood.setType("Happy");
+        mood.setFeeling("Happy");
 
         String type = mood.getType();
         assertEquals(type, "Happy");
@@ -142,11 +167,11 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         assertTrue(moodlist.size(), 1);
 
 
-    }
+    }*/
 }
 
 
-*/
+
 
 
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,24 +30,35 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-
     private Intent intent;
-    private Spinner spinnerSituation;
-    private EditText reasonText;
-    private CheckBox chkDate;
+    private static final String SYNC_FILE = "syncmood.sav";
     private ImageView userImage;
     private TextView userText;
     private TextView welcomeText;
     private ListView moodsListView;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+    private ArrayList<Mood> moodsList = new ArrayList<>();
     private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
     private String situationArray[];
-    private String username;
+    private Spinner spinnerSituation;
+    private EditText reasonText;
+    private CheckBox chkDate;
+    public String username;
 
 
     @Override
@@ -62,13 +75,14 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View hView = navigationView.getHeaderView(0);
 
         username = getIntent().getStringExtra("username");
         welcomeText = (TextView) findViewById(R.id.welcomeText);
-        welcomeText.setText("Welcome " + username);
+        welcomeText.setText("Welcome " + username + "!");
         userImage = (ImageView) hView.findViewById(R.id.navImage);
         userText = (TextView) hView.findViewById(R.id.navText);
 
@@ -93,6 +107,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             userImage.setImageBitmap(decodedByte);
         }
         userText.setText(username);
+
 
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +161,11 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                deletemood.execute(moodsList.get(index));
+                if (IsConnected()) {
+                    deletemood.execute(moodsList.get(index));
+                } else {
+                    SaveToFile(moodsList.get(index), 3);
+                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
@@ -311,8 +330,8 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    public void filterMoods(){
-        ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
+    private void filterMoods(){
+        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
         String reason;
@@ -334,18 +353,22 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                     if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
+                            //TODO add something?
                             continue;
                         } else if (mood.getSituation().contains(situation)) {
                             filteredMoodsList.add(mood);
+                            //TODO ADD SOMETHING?
                             continue;
                         }
                     }
 
                     else {
+                        //TODO ADD SOMETHING?
                         continue;
                     }
                 }
                 else{
+                    //TODO ADD SOMETHING?
                     continue;
                 }
             }
@@ -372,4 +395,36 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         moodsListView.setAdapter(adapter);
     }
 
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
 }

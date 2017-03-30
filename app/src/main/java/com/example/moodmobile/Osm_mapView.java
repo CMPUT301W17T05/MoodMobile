@@ -1,19 +1,11 @@
 package com.example.moodmobile;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.api.IMapController;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.Polyline;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
-import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 
 import android.Manifest;
 import android.content.Context;
@@ -36,12 +28,9 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
     private ArrayList<Account> currentAccount = new ArrayList<>();
     private ArrayList<String> followingUsernameList = new ArrayList<String>();
     private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
@@ -50,14 +39,16 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private RadioButton rb2;
     private RadioButton rb3;
 
-    private MapView MapView;
-    private MapController MapController;
     private LocationManager locationManager;
     private Location mlocation; // Location
-    private double latitude; // Latitude
-    private double longitude; // Longitude
     private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
-    private int i;
+    private ArrayList<Mood> moodsList = new ArrayList<>();
+
+    private MapView         MapView;
+    private MapController   MapController;
+    private Location location; // Location
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     ArrayList<OverlayItem> overlayItemArray;
     Drawable markerColor;
 
@@ -73,10 +64,10 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         MapView.setMultiTouchControls(true);
         MapController = (MapController) MapView.getController();
         MapController.setZoom(13);
-        overlayItemArray = new ArrayList<OverlayItem>();
         rb1 = (RadioButton) findViewById(R.id.myMood);
         rb2 = (RadioButton) findViewById(R.id.following);
         rb3 = (RadioButton) findViewById(R.id.nearby);
+        overlayItemArray = new ArrayList<>();
 
         rb1.setOnClickListener(new View.OnClickListener() {
 
@@ -131,8 +122,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             }
         }
 
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
         mlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
@@ -213,7 +203,34 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
                 //Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
 
                 String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
-                addMarker(new GeoPoint(mood.getLocation().getLatitude(), mood.getLocation().getLongitude()), titleTxt, mood.getFeeling());
+                addMarker(mood.getLocation(), titleTxt, mood.getFeeling());
+
+                switch (mood.getFeeling()) {
+                    case "Anger":
+                        markerColor = getResources().getDrawable(R.drawable.red);
+                        break;
+                    case "Confusion":
+                        markerColor = getResources().getDrawable(R.drawable.blue);
+                        break;
+                    case "Disgust":
+                        markerColor = getResources().getDrawable(R.drawable.pinkheart);
+                        break;
+                    case "Fear":
+                        markerColor = getResources().getDrawable(R.drawable.black);
+                        break;
+                    case "Happiness":
+                        markerColor = getResources().getDrawable(R.drawable.green);
+                        break;
+                    case "Sadness":
+                        markerColor = getResources().getDrawable(R.drawable.grey);
+                        break;
+                    case "Shame":
+                        markerColor = getResources().getDrawable(R.drawable.white);
+                        break;
+                    case "Surprise":
+                        markerColor = getResources().getDrawable(R.drawable.pink);
+                        break;
+                }
 
             }
 

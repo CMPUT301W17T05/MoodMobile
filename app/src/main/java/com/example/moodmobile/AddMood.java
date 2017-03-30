@@ -37,8 +37,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String username;
     public static final int IMG_REQUEST = 21;
     private EditText reasonText;
-    private Button publishButton;
-    private ImageButton addImageButton;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private CheckBox locationCheckBox;
@@ -50,7 +48,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     private LocationManager locationManager;
     private  String encodeImage;
     ImageButton ivCamera;
@@ -69,20 +67,20 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
-        publishButton = (Button) findViewById(R.id.publish);
-        addImageButton = (ImageButton) findViewById(R.id.ivGallery);
+        Button publishButton = (Button) findViewById(R.id.publish);
+        ImageButton addImageButton = (ImageButton) findViewById(R.id.ivGallery);
         moodSpinner = (Spinner) findViewById(R.id.moodSpinner);
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+        //location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        longitude = location.getLongitude();
-        latitude  = location.getLatitude();
-        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
+        //longitude = location.getLongitude();
+        //latitude  = location.getLatitude();
+        //Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,9 +170,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
-                    Toast toast2 = Toast.makeText(context, text, duration);
+                    Toast toast2 = Toast.makeText(context, text2, duration2);
                     toast2.show();
-                };
+                }
                 currentMood.setSituation(socialSituation);
 
 
@@ -192,9 +190,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     currentMood.setLocation(geoPoint);
 
-                    Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLocation().getLatitude()));
-                    Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLocation().getLongitude()));
-
                 }
 
                 addMoodTask.execute(currentMood);
@@ -202,8 +197,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
 
-                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
-                startActivity(MainpageIntent);
                 finish();
 
 
