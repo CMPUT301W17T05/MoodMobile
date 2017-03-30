@@ -18,6 +18,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
+import io.searchbox.indices.mapping.PutMapping;
 
 /**
  * Modified by Jia on 2017-03-12.
@@ -25,7 +26,14 @@ import io.searchbox.core.Update;
  */
 
 public class ElasticsearchMoodController {
-    private static JestDroidClient client;
+    private static JestDroidClient client
+            ;
+    static PutMapping moodMapping = new PutMapping.Builder(
+            "cmput301w17t5",
+            "moods",
+            "{ \"moods\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\"} } } }"
+    ).refresh(true).build();
+
 
     // TODO we need a function which adds mood to elastic search
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
@@ -39,6 +47,8 @@ public class ElasticsearchMoodController {
 
                 try {
                     // where is the client?
+                    client.execute(moodMapping); // Sets type of location to be "geo_point" on elasticsearch
+
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
                         mood.setId(result.getId());
