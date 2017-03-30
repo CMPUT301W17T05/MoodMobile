@@ -40,8 +40,11 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
-    public String username;
+    private String username;
     private ArrayList<Mood> moodsList = new ArrayList<Mood>();
+    private ArrayList<Account> currentAccount = new ArrayList<>();
+    private ArrayList<String> followingUsernameList = new ArrayList<String>();
+    private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
 
     private RadioButton rb1;
     private RadioButton rb2;
@@ -50,11 +53,11 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private MapView MapView;
     private MapController MapController;
     private LocationManager locationManager;
-    private Location location; // Location
+    private Location mlocation; // Location
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
-
+    private int i;
     ArrayList<OverlayItem> overlayItemArray;
     Drawable markerColor;
 
@@ -73,6 +76,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         overlayItemArray = new ArrayList<OverlayItem>();
         rb1 = (RadioButton) findViewById(R.id.myMood);
         rb2 = (RadioButton) findViewById(R.id.following);
+        rb3 = (RadioButton) findViewById(R.id.nearby);
 
         rb1.setOnClickListener(new View.OnClickListener() {
 
@@ -90,10 +94,15 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
         });
 
+        rb3.setOnClickListener(new View.OnClickListener() {
 
-        GeoPoint center = new GeoPoint(53.34, -113.9);
-        MapController.animateTo(center);
-        addMarker(center, "This is where you are.","origin");
+            public void onClick(View v) {
+                showNearby();
+            }
+
+        });
+
+
 
         if (ContextCompat.checkSelfPermission(Osm_mapView.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -125,8 +134,11 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
+        mlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-
+        GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
+        MapController.animateTo(center);
+        addMarker(center, "This is where you are.","origin");
 
 
     }
@@ -195,28 +207,65 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         for(int i =0;i<moodsList.size();i++){
 
             Mood mood=moodsList.get(i);
-            Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
 
-            if (mood.getLatitude() != null && mood.getLongitude() != null ){
+            if (mood.getLocation() != null ){
                 //GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
-                Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
+                //Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
 
                 String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
-
-                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, mood.getFeeling());
+                addMarker(mood.getLocation(), titleTxt, mood.getFeeling());
 
             }
 
         }
+        Toast.makeText(Osm_mapView.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
+
     }
 
     public void showFollowing(){
-        MapView.getOverlays().clear();
+
+        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+
+        getUser.execute(username);
+
+        try {
+            currentAccount.clear();
+            currentAccount.addAll(getUser.get());
+            //followingUsernameList = currentAccount.get(0).getFollowing();
+            Toast.makeText(Osm_mapView.this, "Size of following user: "+String.valueOf(currentAccount.get(0).getUsername()), Toast.LENGTH_SHORT).show();
+
+
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the Accounts out of asyc object");
+        }
+
+        /*for (i = 0; i < followingUsernameList.size(); i++){
+            ElasticsearchMoodController.GetMoodsTaskByName getLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
+            try {
+                Mood LatestMood = getLatestMood.execute(followingUsernameList.get(i)).get().get(0);//Should get latest mood
+                if (LatestMood.getLatitude() != null && LatestMood.getLongitude() != null){
+                    String titleTxt = LatestMood.getUsername() + " feels " + LatestMood.getFeeling() + " here.";
+                    addMarker(new GeoPoint(LatestMood.getLatitude(), LatestMood.getLongitude()), titleTxt, LatestMood.getFeeling());
+
+                }
+
+
+            } catch (Exception e) {
+
+            }
+
+        }
+        */
+
+
         MapView.invalidate();
 
     }
 
-
+    public void showNearby(){
+        MapView.getOverlays().clear();
+        MapView.invalidate();
+        }
     @Override
     public void onLocationChanged(Location location) {
         GeoPoint center = new GeoPoint(location.getLatitude(), location.getLongitude());

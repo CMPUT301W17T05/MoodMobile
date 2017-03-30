@@ -53,14 +53,13 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String socialSituation;
     private Mood currentMood;
     private String reason;
-    private Location location;
+    private Location mlocation;
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private LocationManager locationManager;
     private String encodeImage;
-    private GeoPoint geoPoint;
     ImageButton ivCamera;
 
 
@@ -83,7 +82,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(AddMood.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -112,12 +110,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
             }
         }
 
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
-        location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        mlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        longitude = location.getLongitude();
-        latitude  = location.getLatitude();
+        longitude = mlocation.getLongitude();
+        latitude  = mlocation.getLatitude();
         Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
@@ -169,16 +167,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
 
 
-        //Check the location box
-        if (locationCheckBox.isChecked()) {
-            Context context = getApplicationContext();
-            CharSequence text = "Checked";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-        }
-
-
         publishButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -217,14 +205,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
 
+                    GeoPoint location = new GeoPoint(mlocation.getLatitude(), mlocation.getLongitude());
+                    currentMood.setLocation(location);
 
-                    currentMood.setLatitude(latitude);
-                    currentMood.setLongitude(longitude);
-                    geoPoint = new GeoPoint(latitude, longitude);
-                    currentMood.setGeoPoint(geoPoint);
-
-                    Log.i(TAG, "Latitude is "+String.valueOf(currentMood.getLatitude()));
-                    Log.i(TAG, "Longtitude is "+String.valueOf(currentMood.getLongitude()));
 
                 }
 
