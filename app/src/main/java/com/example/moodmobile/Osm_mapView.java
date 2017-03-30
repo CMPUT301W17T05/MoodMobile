@@ -136,7 +136,10 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
         mlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
+        latitude = mlocation.getLatitude();
+        longitude = mlocation.getLongitude();
+
+        GeoPoint center = new GeoPoint(latitude, longitude);
         MapController.animateTo(center);
         addMarker(center, "This is where you are.","origin");
 
@@ -264,11 +267,38 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     public void showNearby(){
         MapView.getOverlays().clear();
+        ElasticsearchMoodController.GetNearMoodsTask getNearMoodsTask = new ElasticsearchMoodController.GetNearMoodsTask();
+        getNearMoodsTask.execute(String.valueOf(latitude),String.valueOf(longitude));
+
+        try {
+            moodsList = getNearMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        Log.i("AAAAA", String.valueOf(moodsList.size()));
+        for(int i =0;i<moodsList.size();i++){
+            Mood mood=moodsList.get(i);
+            if (mood.getLocation() != null ){
+                //GeoPoint marker = new GeoPoint(mood.getLatitude(), mood.getLongitude());
+                //Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
+                String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
+                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, mood.getFeeling());
+            }
+        }
+        Toast.makeText(Osm_mapView.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
         MapView.invalidate();
         }
     @Override
     public void onLocationChanged(Location location) {
-        GeoPoint center = new GeoPoint(location.getLatitude(), location.getLongitude());
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        GeoPoint center = new GeoPoint(latitude, longitude);
         MapController.animateTo(center);
 
 

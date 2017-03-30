@@ -17,7 +17,6 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 import io.searchbox.indices.mapping.PutMapping;
 
 /**
@@ -241,7 +240,6 @@ public class ElasticsearchMoodController {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
-
             ArrayList<Mood> moods = new ArrayList<Mood>();
             //Search string here
             String MoodQuery;
@@ -249,10 +247,10 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"match_all\" : {} }, { \"filter\" : \"" + search_parameters[0] + "\" }}}";
+                MoodQuery = "{\"query\": {\"match_all\" : {} }, \"filter\" : \" { \"geo_distance\" : { \"distance\" : \"5km\",\"mood.location\" :{"
+                        +"\"lat\" :" + search_parameters[0]+","+"\"lon\" :"+search_parameters[1]
+                                                                                          + "\" }}}}}}";
             }
-
-
             // TODO Build the query
             Search search = new Search.Builder(MoodQuery)
                     .addIndex("cmput301w17t5")
