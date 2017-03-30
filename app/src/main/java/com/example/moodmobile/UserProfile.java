@@ -31,10 +31,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 public class UserProfile extends AppCompatActivity {
 

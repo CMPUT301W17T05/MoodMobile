@@ -245,7 +245,7 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     protected void onResume() {
-
+        //TODO method only calls super
         super.onResume();
         //zfilterMoods();
     }

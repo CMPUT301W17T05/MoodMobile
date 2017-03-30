@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
+ * TODO Default File Template
  * Created by zindi on 3/16/17.
  */
 
@@ -53,11 +54,7 @@ public class SyncService extends IntentService {
             Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
             syncList = gson.fromJson(in, listType);
         } catch (FileNotFoundException e) {
-<<<<<<< Updated upstream
             syncList = new ArrayList<>();
-=======
-            return new ArrayList<>();
->>>>>>> Stashed changes
         } catch (IOException e) {
             throw new RuntimeException();
         }
@@ -68,15 +65,10 @@ public class SyncService extends IntentService {
             FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
-<<<<<<< Updated upstream
             gson.toJson(syncList, writer);
             writer.flush();
         } catch (FileNotFoundException e) {
             throw new RuntimeException();
-=======
-            gson.toJson(list, witer);
-            witer.flush();
->>>>>>> Stashed changes
         } catch (IOException e) {
             throw new RuntimeException();
         }
