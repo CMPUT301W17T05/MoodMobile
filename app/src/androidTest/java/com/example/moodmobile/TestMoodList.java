@@ -1,4 +1,5 @@
-/*import android.test.ActivityInstrumentationTestCase2;
+/*
+import android.test.ActivityInstrumentationTestCase2;
 
 import java.util.Date;
 import java.util.ArrayList;

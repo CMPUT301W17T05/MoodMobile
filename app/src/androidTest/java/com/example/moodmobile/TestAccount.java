@@ -5,10 +5,7 @@ package com.example.moodmobile;
  * Created by juice on 27/02/17.
  */
 
-/*
 import android.test.ActivityInstrumentationTestCase2;
-
-import junit.framework.Assert;
 
 import java.util.ArrayList;
 
@@ -27,7 +24,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         assertNotSame(username, "notreal");
         assertEquals(username, "PokeTrainer");
     }
-
+    /*
     public void testGetDeviceIMEI(){
         Account account = new Account();
 
@@ -37,7 +34,15 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         assertEquals(IMEI, "IMEIstringNUMBERS1234567890");
     }
 
+    public void testSetDeviceIMEI(){
+        Account account = new Account();
+        account.setDeviceIMEI("IMEIstringNUMBERS1234567890");
 
+        String IMEI = account.getDeviceIMEI();
+        assertEquals(IMEI, "IMEIstringNUMBERS1234567890");
+        assertNotSame(IMEI, "imeiSTRINGnumbers1234567890"); // Test for case sensitivity
+    }
+    */
     public void testSetUsername(){
         Account account = new Account();
         account.setUsername("PokeTrainer");
@@ -49,15 +54,6 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         account.setUsername("");
         // Should fail to set a blank username and keep old name instead
         assertEquals(username, "PokeTrainer");
-    }
-
-    public void testSetDeviceIMEI(){
-        Account account = new Account();
-        account.setDeviceIMEI("IMEIstringNUMBERS1234567890");
-
-        String IMEI = account.getDeviceIMEI();
-        assertEquals(IMEI, "IMEIstringNUMBERS1234567890");
-        assertNotSame(IMEI, "imeiSTRINGnumbers1234567890"); // Test for case sensitivity
     }
 
 
@@ -109,12 +105,12 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     public void testCheckName(){
         Account account = new Account();
 
-        account.setUserame("Ash");
+        account.setUsername("Ash");
 
         String name = account.getUsername();
         assertEquals(name, "Ash");
 
-        account.setUserame("Brock");
+        account.setUsername("Brock");
 
         name = account.getUsername();
         assertEquals(name, "Brock");
@@ -137,10 +133,9 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         String nickname = "Ash";
         String region = "Kanto";
 
-        accout.setNickname(nickname);
-        accout.setRegion(region);
+        account.setNickname(nickname);
+        account.setRegion(region);
 
-        assertTrue(account.updateProfile());
         assertEquals(account.getNickname(), nickname);
         assertEquals(account.getRegion(), region);
     }
@@ -154,28 +149,12 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         AccountList.add(account);
 
         Account otherAccount = AccountList.get(0);
-        assertSame(account.getUsername, otherAccount.getUsername);
+        assertSame(account.getUsername(), otherAccount.getUsername());
     }
 
-    public void testSaveCurrentAccount(){
-        ArrayList<Account> AccountList = new ArrayList<Account>();
-
-        //Should return false since no account to save
-        assertFalse(account.saveCurentAccount);
-
-        Account account = new Account();
-        account.setUsername("Ash");
-
-        AccountList.add(account);
-
-        //Saving account should return True if no errors
-        assertTrue(account.saveCurentAccount);
-    }
 
 
 }
-
-*/
 
 
 

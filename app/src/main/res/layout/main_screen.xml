@@ -1,96 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.moodmobile.MainPageActivity"
+    tools:showIn="@layout/app_bar">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/userView"
         android:weightSum="1">
 
         <TextView
             android:text="Welcome User!"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/userView"
+            android:id="@+id/welcomeText"
             android:textSize="24sp"
             android:textStyle="normal|italic"
+            android:layout_above = "@+id/listContents"
             android:layout_weight="1.00" />
-
-        <Button
-            android:text="Edit Profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editButton" />
     </LinearLayout>
-
-    <TextView
-        android:text="Filter Moods By:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="42dp"
-        android:id="@+id/filterTitle"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="Past week:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/weekFilter"
-        android:layout_marginStart="20dp"
-        android:layout_below="@+id/filterTitle"
-        android:layout_alignStart="@+id/filterTitle" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/weekBox"
-        android:layout_alignBaseline="@+id/weekFilter"
-        android:layout_alignBottom="@+id/weekFilter"
-        android:layout_toRightOf="@+id/weekFilter"
-        android:layout_toEndOf="@+id/weekFilter" />
-
-    <TextView
-        android:text="Emotion:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/emotionFilter"
-        android:layout_below="@+id/weekBox"
-        android:layout_alignLeft="@+id/weekFilter"
-        android:layout_alignStart="@+id/weekFilter" />
-
-    <Spinner
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sitSpinner"
-        android:layout_below="@+id/weekFilter"
-        android:layout_toRightOf="@+id/emotionFilter"
-        android:layout_toEndOf="@+id/emotionFilter" />
-
-    <TextView
-        android:text="Reason Contains:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/reasonFilter"
-        android:layout_below="@+id/sitSpinner"
-        android:layout_alignLeft="@+id/emotionFilter"
-        android:layout_alignStart="@+id/emotionFilter" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_below="@+id/emotionFilter"
-        android:layout_toRightOf="@+id/reasonFilter"
-        android:layout_toEndOf="@+id/reasonFilter"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
-        android:id="@+id/reasonText"
-        android:textSize="18sp" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -98,67 +33,12 @@
         android:scrollbars="vertical"
         android:layout_marginTop="5dp"
         android:id="@+id/listContents"
-        android:layout_below="@+id/reasonText"
-        android:layout_above="@+id/addMood">
+        android:layout_below="@+id/userView">
         <ListView
             android:id="@+id/moodList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </RelativeLayout>
-
-
-    <Button
-        android:text="Add Mood"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addMood"
-        android:background="@drawable/buttonstyle"
-        android:layout_marginBottom="48dp"
-        android:layout_above="@+id/bottomButtons"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/bottomButtons"
-        android:gravity="bottom"
-        style="?andorid:attr/buttonBarStyle">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button14"
-            android:layout_weight="0.83"
-            android:text="My Mood"
-            android:padding="0dp"
-            style="?android:attr/buttonBarButtonStyle"
-            />
-
-        <Button
-            android:text="Friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/friends"
-            android:layout_weight="1"
-            android:padding="0dp"
-            style="?android:attr/buttonBarButtonStyle"
-            />
-
-        <Button
-            android:text="Map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/map"
-            android:layout_weight="1"
-            style="?android:attr/buttonBarButtonStyle"
-            />
-
-    </LinearLayout>
 
 </RelativeLayout>

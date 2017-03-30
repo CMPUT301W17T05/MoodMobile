@@ -1,6 +1,6 @@
 package com.example.moodmobile;
 
-import android.location.Location;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.Date;
 
@@ -20,9 +20,7 @@ public class Mood implements Moodable{
     private String feeling;
     private String socialSituation;
     private String moodImage;
-    private Double latitude;
-    private Double longitude;
-    private Location location;
+    private GeoPoint location;
     private String username;
 
 
@@ -47,7 +45,7 @@ public class Mood implements Moodable{
     }
 
     public Mood(String feeling, String moodMessage
-            , Location location, String moodImage, String socialSituation, String userName) {
+            , GeoPoint location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
@@ -105,8 +103,8 @@ public class Mood implements Moodable{
         this.moodImage = moodImage;
     }
 
-    public Location getLocation() {return location;}
-    public void setLocation(Location location) {this.location = location;}
+    public GeoPoint getLocation() {return location;}
+    public void setLocation(GeoPoint location) {this.location = location;}
 
     public String getUsername() {
         return username;
@@ -116,20 +114,5 @@ public class Mood implements Moodable{
         this.username = userName;
     }
 
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
 
 }
