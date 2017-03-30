@@ -155,16 +155,19 @@ public class MainPageActivity extends AppCompatActivity {
                 startActivity(friendsIntent);
                 //TO-DO Start Friends Activity
             }
-        });
+        });*/
 
         mapButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
+                Intent mapIntent = new Intent(v.getContext(), Osm_mapView.class);
+
+                mapIntent.putExtra("username", username);
+
                 startActivity(mapIntent);
             }
-        });*/
+        });
 
         /* Listener to detect a mood that has been clicked.
                 *  This will also launch the ViewEditMood activity**/
