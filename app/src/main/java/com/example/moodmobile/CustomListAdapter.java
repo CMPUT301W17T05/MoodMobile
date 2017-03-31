@@ -25,12 +25,12 @@ import java.util.Locale;
 
 public class CustomListAdapter extends ArrayAdapter<Mood> {
 
-    private Activity context;
-    private String[] reasons = new String[10];
-    private Integer[] emoteids = new Integer[10];
-    private String[] usernames = new String[10];
-    private String[] locations = new String[10];
-    private Bitmap[] images = new Bitmap[10];
+    private final Activity context;
+    private final String[] reasons = new String[10];
+    private final Integer[] emoteids = new Integer[10];
+    private final String[] usernames = new String[10];
+    private final String[] locations = new String[10];
+    private final Bitmap[] images = new Bitmap[10];
     private List<Address> addresses;
     private Integer position;
     private byte[] decodedString;

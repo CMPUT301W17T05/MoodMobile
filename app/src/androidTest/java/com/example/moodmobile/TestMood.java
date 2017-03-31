@@ -7,12 +7,6 @@ package com.example.moodmobile;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
-import org.junit.Test;
-
-import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -176,8 +170,6 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         assertFalse(mood.getSituation() == "Alone");
         assertTrue(mood.getSituation() == "In A Crowd");
     }
-
-    public void testGetMoodImage(){}
 
 }
 

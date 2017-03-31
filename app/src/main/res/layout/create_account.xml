@@ -27,14 +27,13 @@
         android:layout_alignEnd="@+id/username"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/username"
-        android:onClick="create"
         android:text="Save Account"
         android:textStyle="normal|italic" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:ems="10"
         android:id="@+id/username"
         android:layout_above="@+id/SaveBot"
