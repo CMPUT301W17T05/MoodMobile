@@ -73,6 +73,18 @@ public class AddNewFriendActivity extends AppCompatActivity {
         }
 
 
+
+        getFriendRequests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(AddNewFriendActivity.this, FriendsActivity.class);
+                intent.putExtra("username", username);
+
+                startActivityForResult(intent, 1);
+            }
+        });
+
         /**WORKS!**/
         sendRequest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -112,6 +124,7 @@ public class AddNewFriendActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         requestsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

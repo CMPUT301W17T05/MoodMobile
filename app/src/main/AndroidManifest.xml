@@ -33,7 +33,7 @@
             android:exported="true" />
         <activity android:name=".MainPageActivity" />
         <activity android:name=".ViewEditMood" />
-        <activity android:name=".ViewGuestProfile"/>
+        <activity android:name=".ViewGuestProfile" />
 
         <service
             android:name=".SyncService"
@@ -47,6 +47,7 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".AddNewFriendActivity" />
         <activity android:name=".FriendsActivity"></activity>
     </application>
 

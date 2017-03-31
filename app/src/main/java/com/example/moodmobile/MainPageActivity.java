@@ -136,7 +136,7 @@ public class MainPageActivity extends AppCompatActivity {
         friendsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
+                Intent friendsIntent = new Intent(v.getContext(), AddNewFriendActivity.class);
                 friendsIntent.putExtra("username", username); //Sends the logged in username to the next activity.
 
                 startActivityForResult(friendsIntent, 1);

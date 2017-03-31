@@ -2,6 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <TextView
+        android:text="Latest Location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/GuestLatestMoodTextview"
+        android:layout_alignStart="@+id/GuestLatestMoodTextview"
+        android:id="@+id/GuestLatestLocationTextview" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -45,11 +53,4 @@
         android:layout_toStartOf="@+id/GuestProfileName"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="Latest Location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/GuestLatestMoodTextview"
-        android:layout_alignStart="@+id/GuestLatestMoodTextview"
-        android:id="@+id/GuestLatestLocationTextview" />
 </RelativeLayout>
