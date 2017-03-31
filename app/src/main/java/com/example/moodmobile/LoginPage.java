@@ -1,7 +1,10 @@
 package com.example.moodmobile;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +18,12 @@ import java.util.ArrayList;
 public class LoginPage extends AppCompatActivity {
     private EditText username;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
+
         final ArrayList<Account> accountList = new ArrayList<>();
 
         Button loginButton = (Button) findViewById(R.id.loginBot);
@@ -77,5 +82,7 @@ public class LoginPage extends AppCompatActivity {
         Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);
     }
+
+
 
 }
