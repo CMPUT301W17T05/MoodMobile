@@ -16,7 +16,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -110,7 +109,7 @@ public class ViewEditMood extends AppCompatActivity {
                     if (IsConnected()){
                         updateMoodTask.execute(mood);
                     } else {
-                        SaveToFile(mood, 2);
+                        SaveToFile(mood);
                     }
                     finish();
 
@@ -134,12 +133,11 @@ public class ViewEditMood extends AppCompatActivity {
         Context context = this;
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        return isConnected;
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    private void SaveToFile(Mood mood, int task){
-        SyncMood syncMood = new SyncMood(mood, task);
+    private void SaveToFile(Mood mood){
+        SyncMood syncMood = new SyncMood(mood, 2);
         ArrayList<SyncMood> syncList;
 
         try {
@@ -156,8 +154,6 @@ public class ViewEditMood extends AppCompatActivity {
             gson = new Gson();
             gson.toJson(syncList, writer);
             writer.flush();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException();
         } catch (IOException e) {
             throw new RuntimeException();
         }

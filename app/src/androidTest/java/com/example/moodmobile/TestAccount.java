@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class TestAccount extends ActivityInstrumentationTestCase2{
 
-    public TestAccount(Class activityClass) {
-        super(activityClass);
+    public TestAccount() {
+        super(Account.class);
     }
 
     public void testGetUsername(){
@@ -56,9 +56,6 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
         assertEquals(username, "PokeTrainer");
     }
 
-
-    public void testSetProfilePhoto(){
-    }
 
     public void testSetNickname(){
         Account account = new Account();
@@ -117,7 +114,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testCreateAccount(){
-        ArrayList<Account> AccountList = new ArrayList<Account>();
+        ArrayList<Account> AccountList = new ArrayList<>();
 
         assertEquals(AccountList.size(), 0);
 
@@ -141,7 +138,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
     }
 
     public void testGetCurrentAccount(){
-        ArrayList<Account> AccountList = new ArrayList<Account>();
+        ArrayList<Account> AccountList = new ArrayList<>();
 
         Account account = new Account();
         account.setUsername("Ash");

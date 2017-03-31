@@ -69,21 +69,24 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="center|bottom"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="145dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:text="Cancel" />
+            android:text="Cancel"
+            />
 
         <Button
             android:id="@+id/filterButton"
             android:layout_width="145dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:text="Filter" />
+            android:text="Filter"
+            />
 
     </LinearLayout>
 

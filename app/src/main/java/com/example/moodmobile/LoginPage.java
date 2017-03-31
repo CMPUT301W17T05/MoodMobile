@@ -67,13 +67,6 @@ public class LoginPage extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-
-    }
-
     public void createAccount(View view) {
         Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/emoticon"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:textAlignment="viewStart" />
 
     <!-- Location and date -->
@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/emoticon"
-        android:textSize="10sp" />
+        android:textSize="12sp" />
 
     <!-- Mood Reason -->
     <TextView

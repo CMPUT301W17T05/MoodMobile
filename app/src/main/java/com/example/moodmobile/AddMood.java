@@ -35,7 +35,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     private Intent getUsernameIntent;
     private String username;
-    public static final int IMG_REQUEST = 21;
+    private static final int IMG_REQUEST = 21;
     private EditText reasonText;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
@@ -264,8 +264,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteFormat = stream.toByteArray();
         // get the base 64 string
-        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-        return imgString;
+        return Base64.encodeToString(byteFormat, Base64.NO_WRAP);
     }
 
     @Override

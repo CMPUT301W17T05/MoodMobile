@@ -32,12 +32,12 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+//TODO r.id.SaveBot is never used
 public class UserProfile extends AppCompatActivity {
 
-    public static final int IMAGE_REQUEST = 20;
+    private static final int IMAGE_REQUEST = 20;
     private Intent getUsernameIntent;
-    public String username;
-    private ImageView imageView;
+    private String username;
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
@@ -45,8 +45,7 @@ public class UserProfile extends AppCompatActivity {
     private String encodeImage;
     private ImageView userProfile;
 
-    private ArrayList<String> genderArray = new ArrayList<>();
-    int position;
+    private final ArrayList<String> genderArray = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class UserProfile extends AppCompatActivity {
         setContentView(R.layout.user_profile);
         getUsernameIntent = getIntent();
 
-        imageView = (ImageView) findViewById(R.id.profileImage);
+        //TODO remove doulbe reference to R.id.profileImage
         usernameTxt = (TextView) findViewById(R.id.username);
         nicknameTxt = (EditText) findViewById(R.id.nickname);
         regionTxt = (EditText) findViewById(R.id.region);
@@ -103,7 +102,7 @@ public class UserProfile extends AppCompatActivity {
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());
 
-        position = genderArray.indexOf(accountList.get(0).getGender());
+        int position = genderArray.indexOf(accountList.get(0).getGender());
         genderSpinner.setSelection(position);
 
     }
@@ -139,7 +138,7 @@ public class UserProfile extends AppCompatActivity {
                     encodeImage = getEncoded64ImageStringFromBitmap(image);
 
 
-                    imageView.setImageBitmap(image);
+                    userProfile.setImageBitmap(image);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -190,7 +189,7 @@ public class UserProfile extends AppCompatActivity {
         finish();
     }
 
-    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+    private String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteFormat = stream.toByteArray();

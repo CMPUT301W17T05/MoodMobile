@@ -1,14 +1,27 @@
-/*public class TestLogin extends ActivityInstrumentationTestCase2 {
+package com.example.moodmobile.activities;
+
+import android.app.Activity;
+import android.test.ActivityInstrumentationTestCase2;
+import android.widget.Button;
+import android.widget.EditText;
+
+
+public class TestLogin extends ActivityInstrumentationTestCase2 {
+    private EditText username;
+    private Button loginButton;
+
     public TestLogin() {
-        super(LoginActivity.class);
+        super(LoginPage.class);
     }
     
-    public void testToCreate(){
-    
+    public void testStart() throws Exception{
+        Activity activity = getActivity();
     }
-    
-    public void testToMainPage(){
-    
+/*
+    public void testLogin() {
+        LogInPage main = (LoginPage) getActivity();
+
+        main.runOnUiThread()
     }
-}
 */
+}

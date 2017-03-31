@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.system.Os;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
@@ -32,8 +31,8 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
     private ArrayList<Account> currentAccount = new ArrayList<>();
-    private ArrayList<String> followingUsernameList = new ArrayList<String>();
-    private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
+    private ArrayList<String> followingUsernameList = new ArrayList<>();
+    private ArrayList<Mood> followingLatestMoods = new ArrayList<>();
 
     private RadioButton rb1;
     private RadioButton rb2;
@@ -146,32 +145,34 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         Marker marker = new Marker(MapView);
         marker.setPosition(center);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
-        if (color.equals("Anger")){
-            markerColor = getResources().getDrawable(R.drawable.red);
-        }
-        else if (color.equals("Confusion")){
-            markerColor = getResources().getDrawable(R.drawable.blue);
-        }
-        else if (color.equals("Disgust")){
-            markerColor = getResources().getDrawable(R.drawable.pinkheart);
-        }
-        else if (color.equals("Fear")){
-            markerColor = getResources().getDrawable(R.drawable.black);
-        }
-        else if (color.equals("Happiness")){
-            markerColor = getResources().getDrawable(R.drawable.green);
-        }
-        else if (color.equals("Sadness")){
-            markerColor = getResources().getDrawable(R.drawable.grey);
-        }
-        else if (color.equals("Shame")){
-            markerColor = getResources().getDrawable(R.drawable.white);
-        }
-        else if (color.equals("Surprise")){
-            markerColor = getResources().getDrawable(R.drawable.pink);
-        }
-        else if (color.equals("origin")){
-            markerColor = getResources().getDrawable(R.drawable.origin);
+        switch (color) {
+            case "Anger":
+                markerColor = getResources().getDrawable(R.drawable.red);
+                break;
+            case "Confusion":
+                markerColor = getResources().getDrawable(R.drawable.blue);
+                break;
+            case "Disgust":
+                markerColor = getResources().getDrawable(R.drawable.pinkheart);
+                break;
+            case "Fear":
+                markerColor = getResources().getDrawable(R.drawable.black);
+                break;
+            case "Happiness":
+                markerColor = getResources().getDrawable(R.drawable.green);
+                break;
+            case "Sadness":
+                markerColor = getResources().getDrawable(R.drawable.grey);
+                break;
+            case "Shame":
+                markerColor = getResources().getDrawable(R.drawable.white);
+                break;
+            case "Surprise":
+                markerColor = getResources().getDrawable(R.drawable.pink);
+                break;
+            case "origin":
+                markerColor = getResources().getDrawable(R.drawable.origin);
+                break;
         }
         marker.setIcon(markerColor);
         marker.setTitle(title);
