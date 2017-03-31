@@ -9,6 +9,8 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import junit.framework.Assert;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 
 
@@ -19,17 +21,47 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         super(activityClass);
     }
 
-    public void testToString(){
+    public void testToString() {
         Mood mood = new Mood("Happy");
-        String message1 = "This is good";
-        String message2 = "";
-        String message3 = "This message is way too long and should throw some type of exception";
+        String shortMessage = "This is good";
+        String noMessage = "";
 
-        //TODO iterate over messages
+        assertTrue(mood.toString() == null);
 
+        try {
+            mood.setMessage(shortMessage);
+            assertTrue(mood.toString() == shortMessage);
+        } catch (ReasonTooLongException e) {
+            //TODO add something
+        }
+
+        try {
+            mood.setMessage(noMessage);
+            assertTrue(mood.toString() == noMessage);
+        } catch (ReasonTooLongException e) {
+            //TODO add something
+        }
     }
 
-    public void testSetMessage(){}
+    //@Test(expected=ReasonTooLongException.class)
+    public void testReasonTooLongException(){
+        Mood mood = new Mood("Happy");
+        String longMessage = "This Message is way too long and should be shortened";
+
+        assertTrue(mood.toString() == null);
+
+        try {
+            mood.setMessage(longMessage);
+        } catch (ReasonTooLongException e){
+            assertTrue(mood.toString() == null);
+        }
+    }
+
+    public void testSetMessage(){
+        Mood mood = new Mood("Happy");
+
+
+    }
     public void testSetDate(){}
     public void testSetFeeling(){
 
