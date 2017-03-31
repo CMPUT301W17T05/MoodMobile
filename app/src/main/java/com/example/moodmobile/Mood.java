@@ -31,7 +31,6 @@ public class Mood implements Moodable{
     private Double latitude;
     private Double longitude;
 
-
     @JestId
     private String id;
     public String getId() {
