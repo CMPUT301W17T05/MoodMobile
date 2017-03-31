@@ -10,14 +10,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_height="350dp"
-        android:id="@+id/FriendsListView" />
-
     <Button
         android:text="Add a New Friend"
         android:layout_height="wrap_content"
@@ -35,4 +27,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="17dp"
         android:id="@+id/FilterFollowingListButton" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:id="@+id/FriendsListView"
+        android:layout_above="@+id/AddNewFriendButton"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="You are following 0 people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/NumberFriendsTextView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

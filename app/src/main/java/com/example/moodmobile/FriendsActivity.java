@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,8 @@ public class FriendsActivity extends AppCompatActivity {
 
     private Button AddNewFriendButton;
     private Button FilterFollowingListButton;
+
+    private TextView NumberFriendsTextView;
 
     private ListView FriendsListView;
     private ArrayList<String> FriendsList;
@@ -35,6 +38,7 @@ public class FriendsActivity extends AppCompatActivity {
         }
 
         FriendsList.addAll(userAccount.getFollowing());
+        NumberFriendsTextView.setText("You are following " + FriendsList.size() + " people");
     }
 
     @Override
@@ -46,12 +50,17 @@ public class FriendsActivity extends AppCompatActivity {
 
         FriendsList = new ArrayList<>();
 
-        AddNewFriendButton = (Button) findViewById(R.id.AddNewFriendButton);
-        FilterFollowingListButton = (Button) findViewById(R.id.FilterFollowingListButton);
+        NumberFriendsTextView =         (TextView) findViewById(R.id.NumberFriendsTextView);
+        AddNewFriendButton =            (Button) findViewById(R.id.AddNewFriendButton);
+        FilterFollowingListButton =     (Button) findViewById(R.id.FilterFollowingListButton);
 
         FriendsListView = (ListView) findViewById(R.id.FriendsListView);
         FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
         FriendsListView.setAdapter(FriendsListViewAdapter);
+
+        /** Will populate friendlist**/
+        getFriends();
+        FriendsListViewAdapter.notifyDataSetChanged();
 
         FriendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -60,13 +69,6 @@ public class FriendsActivity extends AppCompatActivity {
 
             }
         });
-
-
-        /** Will populate friendlist**/
-        getFriends();
-
-        FriendsListViewAdapter.notifyDataSetChanged();
-
     }
 
     @Override
