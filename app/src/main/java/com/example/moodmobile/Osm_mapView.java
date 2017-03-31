@@ -256,6 +256,8 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         GeoPoint center = new GeoPoint(location.getLatitude(), location.getLongitude());
+        mlocation.setLatitude(location.getLatitude());
+        mlocation.setLongitude(location.getLongitude());
         MapController.animateTo(center);
 
 
@@ -312,6 +314,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
                 Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
                 finish();
                 startActivity(getIntent());
+
             } else {
                 Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
             }
