@@ -1,6 +1,5 @@
-package com.example.moodmobile;
 
-import org.osmdroid.util.GeoPoint;
+package com.example.moodmobile;
 
 import java.util.Date;
 
@@ -8,10 +7,9 @@ import io.searchbox.annotations.JestId;
 
 /**
  * Created by Repka on 2017-03-07.
-   Modified by Jia on 2017-03-12.
-   Modified by Repka on 2017-03-21.
-   Modified by Haozhou on 2017-03-27.
-
+ Modified by Jia on 2017-03-12.
+ Modified by Repka on 2017-03-21.
+ Modified by Haozhou on 2017-03-27.
  */
 
 public class Mood implements Moodable{
@@ -20,9 +18,10 @@ public class Mood implements Moodable{
     private String feeling;
     private String socialSituation;
     private String moodImage;
-    private GeoPoint location;
+    private String location;
     private String username;
-
+    private Double latitude;
+    private Double longitude;
 
     @JestId
     private String id;
@@ -45,7 +44,7 @@ public class Mood implements Moodable{
     }
 
     public Mood(String feeling, String moodMessage
-            , GeoPoint location, String moodImage, String socialSituation, String userName) {
+            , String location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
@@ -103,8 +102,8 @@ public class Mood implements Moodable{
         this.moodImage = moodImage;
     }
 
-    public GeoPoint getLocation() {return location;}
-    public void setLocation(GeoPoint location) {this.location = location;}
+    public String getLocation() {return location;}
+    public void setLocation(String location) {this.location = location;}
 
     public String getUsername() {
         return username;
@@ -112,6 +111,23 @@ public class Mood implements Moodable{
 
     public void setUsername(String userName) {
         this.username = userName;
+    }
+
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 

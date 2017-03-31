@@ -1,7 +1,11 @@
 package com.example.moodmobile;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,12 +18,27 @@ import java.util.ArrayList;
 
 public class LoginPage extends AppCompatActivity {
     private EditText username;
+    int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
         final ArrayList<Account> accountList = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(LoginPage.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(LoginPage.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+        }
+
+        if (ContextCompat.checkSelfPermission(LoginPage.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(LoginPage.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+        }
 
         Button loginButton = (Button) findViewById(R.id.loginBot);
         username = (EditText) findViewById(R.id.username);

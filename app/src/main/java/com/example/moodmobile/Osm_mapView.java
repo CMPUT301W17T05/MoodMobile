@@ -204,7 +204,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
                 //Log.i("Latitude is: ",String.valueOf(mood.getLatitude()));
 
                 String titleTxt = mood.getUsername() + " feels " + mood.getFeeling() + " here.";
-                addMarker(mood.getLocation(), titleTxt, mood.getFeeling());
+                addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, mood.getFeeling());
 
                 switch (mood.getFeeling()) {
                     case "Anger":

@@ -5,6 +5,8 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.moodmobile.LoginPage;
+
 
 public class TestLogin extends ActivityInstrumentationTestCase2 {
     private EditText username;

@@ -19,6 +19,7 @@
     </string-array>
 
     <string-array name="situation_array">
+        <item></item>
         <item>Alone</item>
         <item>With one other person</item>
         <item>With multiple people</item>

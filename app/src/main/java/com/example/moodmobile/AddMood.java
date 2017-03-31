@@ -43,8 +43,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String Feeling;
     private String socialSituation;
     private String reason;
-    private GeoPoint geoPoint;
     private Location location;
+    private String locationString;
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
@@ -181,15 +181,15 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+
+                        currentMood.setLatitude(location.getLatitude());
+                        currentMood.setLongitude(location.getLongitude());
+                        currentMood.setLocation(location.getLatitude() + ", " + location.getLongitude());
                     }
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    geoPoint = new GeoPoint(latitude, longitude);
-
-                    currentMood.setLocation(geoPoint);
-
                 }
 
                 addMoodTask.execute(currentMood);
