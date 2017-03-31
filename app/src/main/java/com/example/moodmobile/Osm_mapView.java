@@ -36,6 +36,8 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.Circle;
+
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
@@ -267,8 +269,17 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     public void showNearby(){
         MapView.getOverlays().clear();
+
+        GeoPoint center = new GeoPoint(latitude, longitude);
+        MapController.animateTo(center);
+        addMarker(center, "This is where you are.","origin");
+
+        // Make a circle
+
+
         ElasticsearchMoodController.GetNearMoodsTask getNearMoodsTask = new ElasticsearchMoodController.GetNearMoodsTask();
         getNearMoodsTask.execute(String.valueOf(latitude),String.valueOf(longitude));
+
 
         try {
             moodsList = getNearMoodsTask.get();
@@ -332,4 +343,6 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         }
     }
 
+
 }
+

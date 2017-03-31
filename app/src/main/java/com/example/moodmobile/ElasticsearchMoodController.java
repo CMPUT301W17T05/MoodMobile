@@ -247,9 +247,10 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"match_all\" : {} }, \"filter\" : \" { \"geo_distance\" : { \"distance\" : \"5km\",\"mood.location\" :{"
-                        +"\"lat\" :" + search_parameters[0]+","+"\"lon\" :"+search_parameters[1]
-                                                                                          + "\" }}}}}}";
+                MoodQuery = "{\"query\":{ \"match_all\":{}}, \"filter\":{ \"geo_distance\":{ \"distance\" : \"5km\",\"location\" : \""
+                        + search_parameters[0] + ", " + search_parameters[1]
+                        + "\" }}}";
+                Log.i("HHHHAHHA",MoodQuery);
             }
             // TODO Build the query
             Search search = new Search.Builder(MoodQuery)
