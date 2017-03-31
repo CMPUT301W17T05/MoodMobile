@@ -28,7 +28,8 @@ public class LoginPage extends AppCompatActivity {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Account newUser = new Account(username.getText().toString());
+                //TODO Unused Variable
+                //Account newUser = new Account(username.getText().toString());
 
                 ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
                 getUser.execute(username.getText().toString());
@@ -56,6 +57,7 @@ public class LoginPage extends AppCompatActivity {
                     mainIntent.putExtra("username", accountList.get(0).getUsername());
 
                     startActivity(mainIntent);
+                    finish();
 
                 }
 

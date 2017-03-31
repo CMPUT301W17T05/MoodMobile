@@ -7,7 +7,7 @@ import java.util.Date;
  */
 
 public interface Moodable {
-    public String getMessage();
+    String getMessage();
 
-    public Date getDate();
+    Date getDate();
 }

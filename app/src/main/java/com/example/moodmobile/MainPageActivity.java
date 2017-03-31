@@ -2,6 +2,8 @@ package com.example.moodmobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -17,17 +19,27 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainPageActivity extends AppCompatActivity {
     private Intent intent;
+    private static final String SYNC_FILE = "syncmood.sav";
 
-    private ListView oldMoodsList;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
-    private ArrayAdapter<Mood> adapter;
-    private ArrayAdapter<String> spinAdapter;
-    private String situationArray[];
+    private ListView moodsListView;
+    private ArrayList<Mood> moodsList = new ArrayList<>();
+    private CustomListAdapter adapter;
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
@@ -44,14 +56,15 @@ public class MainPageActivity extends AppCompatActivity {
         reasonText = (EditText) findViewById(R.id.reasonText);
         chkDate = (CheckBox) findViewById(R.id.weekBox);
         spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        situationArray = getResources().getStringArray(R.array.situation_array);
+        String[] situationArray = getResources().getStringArray(R.array.situation_array);
         Button editProfileButton = (Button) findViewById(R.id.editButton);
         Button addMoodButton = (Button) findViewById(R.id.addMood);
-        Button friendsButton = (Button) findViewById(R.id.friends);
+        //TODO Unused variable?
+        //Button friendsButton = (Button) findViewById(R.id.friends);
         Button mapButton = (Button) findViewById(R.id.map);
-        spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
         spinnerSituation.setAdapter(spinAdapter);
-        oldMoodsList = (ListView) findViewById(R.id.moodList);
+        moodsListView = (ListView) findViewById(R.id.moodList);
 
         chkDate.setOnClickListener(new View.OnClickListener() {
 
@@ -82,12 +95,12 @@ public class MainPageActivity extends AppCompatActivity {
         spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterMoods();
+                //filterMoods();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                filterMoods();
+                //filterMoods();
             }
 
         });
@@ -117,8 +130,8 @@ public class MainPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
+                newMoodIntent.putExtra("username", username);
                 startActivity(newMoodIntent);
-                finish();
                 //TO-DO Start New Mood Activity
                 /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
                 String message = bodyText.getText().toString();
@@ -141,31 +154,36 @@ public class MainPageActivity extends AppCompatActivity {
                 startActivity(friendsIntent);
                 //TO-DO Start Friends Activity
             }
-        });
+        });*/
 
         mapButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
+                Intent mapIntent = new Intent(v.getContext(), Osm_mapView.class);
+
+                mapIntent.putExtra("username", username);
+
                 startActivity(mapIntent);
             }
-        });*/
+        });
 
         /* Listener to detect a mood that has been clicked.
                 *  This will also launch the ViewEditMood activity**/
 
-        oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
-                Mood moodToEdit = moodsList.get(index);
+                if (index < moodsList.size()) {
+                    Mood moodToEdit = moodsList.get(index);
 
-                Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
-                intent.putExtra("moodID", moodToEdit.getId());
+                    Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
+                    intent.putExtra("moodID", moodToEdit.getId());
 
-                startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -173,14 +191,18 @@ public class MainPageActivity extends AppCompatActivity {
                 *  Will delete a long-clicked mood.**/
 
 
-        oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        moodsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                deletemood.execute(moodsList.get(index));
+                if (IsConnected()) {
+                    deletemood.execute(moodsList.get(index));
+                } else {
+                    SaveToFile(moodsList.get(index), 3);
+                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
@@ -210,7 +232,7 @@ public class MainPageActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
 
         try {
             moodsList = getMoodsTask.get();
@@ -218,14 +240,19 @@ public class MainPageActivity extends AppCompatActivity {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
 
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
     }
 
+    protected void onResume() {
+
+        super.onResume();
+        //zfilterMoods();
+    }
     private void filterMoods(){
-        ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
+        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
         String reason;
         String situation;
 
@@ -242,19 +269,25 @@ public class MainPageActivity extends AppCompatActivity {
                 Date moodDate = mood.getDate();
                 if (!(moodDate.compareTo(week) < 0)) {
                     reason = reasonText.getText().toString();
-                    if (mood.getMessage().contains(reason)) {
+                    if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
+                            //TODO add something?
                             continue;
                         } else if (mood.getSituation().contains(situation)) {
                             filteredMoodsList.add(mood);
+                            //TODO ADD SOMETHING?
                             continue;
                         }
-                    } else {
+                    }
+
+                    else {
+                        //TODO ADD SOMETHING?
                         continue;
                     }
                 }
                 else{
+                    //TODO ADD SOMETHING?
                     continue;
                 }
             }
@@ -277,8 +310,40 @@ public class MainPageActivity extends AppCompatActivity {
         moodsList.clear();
         adapter.clear();
         moodsList.addAll(filteredMoodsList);
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void SaveToFile(Mood mood, int task){
+        SyncMood syncMood = new SyncMood(mood, task);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }

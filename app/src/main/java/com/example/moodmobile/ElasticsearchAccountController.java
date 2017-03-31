@@ -59,7 +59,7 @@ public class ElasticsearchAccountController {
         protected ArrayList<Account> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Account> accounts = new ArrayList<Account>();
+            ArrayList<Account> accounts = new ArrayList<>();
             //Search string here
             String UserQuery;
             if (search_parameters[0].equals("")){
@@ -124,6 +124,7 @@ public class ElasticsearchAccountController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{

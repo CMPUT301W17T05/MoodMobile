@@ -1,7 +1,6 @@
 package com.example.moodmobile;
 
 import android.location.Location;
-import android.media.Image;
 
 import java.util.Date;
 
@@ -10,6 +9,9 @@ import io.searchbox.annotations.JestId;
 /**
  * Created by Repka on 2017-03-07.
    Modified by Jia on 2017-03-12.
+   Modified by Repka on 2017-03-21.
+   Modified by Haozhou on 2017-03-27.
+
  */
 
 public class Mood implements Moodable{
@@ -17,8 +19,11 @@ public class Mood implements Moodable{
     private Date date;
     private String feeling;
     private String socialSituation;
-//    private Image moodImage;
-//    private Location location;
+    private String moodImage;
+    private Double latitude;
+    private Double longitude;
+    private Location location;
+    private String username;
 
 
     @JestId
@@ -34,20 +39,22 @@ public class Mood implements Moodable{
     public Mood(String feeling){
         this.message = null;
         this.feeling = feeling;
-//        this.location = null;
-//        this.moodImage = null;
+        this.location = null;
+        this.moodImage = null;
         this.socialSituation = null;
         this.date = new Date();
+        this.username = null;
     }
 
     public Mood(String feeling, String moodMessage
-            , Location location, Image moodImage, String socialSituation) {
+            , Location location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
-  //      this.location = location;
-    //    this.moodImage = moodImage;
+        this.location = location;
+        this.moodImage = moodImage;
         this.socialSituation = socialSituation;
+        this.username = userName;
     }
 
     @Override
@@ -91,16 +98,38 @@ public class Mood implements Moodable{
         return socialSituation;
     }
 
-/*    public Image getMoodImage() {
+    public String getMoodImage() {
         return moodImage;
     }
-    public void setMoodImage(Image moodImage) {
+    public void setMoodImage(String moodImage) {
         this.moodImage = moodImage;
     }
-    public Location getLocation() {
-        return location;
+
+    public Location getLocation() {return location;}
+    public void setLocation(Location location) {this.location = location;}
+
+    public String getUsername() {
+        return username;
     }
-    public void setLocation(Location location) {
-        this.location = location;
-    }*/
+
+    public void setUsername(String userName) {
+        this.username = userName;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
 }

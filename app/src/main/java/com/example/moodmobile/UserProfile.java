@@ -16,22 +16,25 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
+<<<<<<< Updated upstream
+=======
 
+>>>>>>> Stashed changes
 
 public class UserProfile extends AppCompatActivity {
 
@@ -39,13 +42,16 @@ public class UserProfile extends AppCompatActivity {
     private Intent getUsernameIntent;
     public String username;
     private ImageView imageView;
-
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
     private Spinner genderSpinner;
+    private String encodeImage;
+    private ImageView userProfile;
 
-    private Account account;
+    private ArrayList<String> genderArray = new ArrayList<>();
+    int position;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +63,7 @@ public class UserProfile extends AppCompatActivity {
         nicknameTxt = (EditText) findViewById(R.id.nickname);
         regionTxt = (EditText) findViewById(R.id.region);
         genderSpinner = (Spinner) findViewById(R.id.gender);
-
+        userProfile = (ImageView) findViewById(R.id.profileImage);
 
         // Create an ArrayAdapter using the mood_array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -88,10 +94,25 @@ public class UserProfile extends AppCompatActivity {
         }
 
         Log.d("LALALA: ", String.valueOf(accountList.size()));
+        genderArray.add("Male");
+        genderArray.add("Female");
+        if (accountList.get(0).getProfileImage() != null) {
+            byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            userProfile.setImageBitmap(decodedByte);
+
+        }
+
+
+
 
         usernameTxt.setText(username);
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());
+
+        position = genderArray.indexOf(accountList.get(0).getGender());
+        genderSpinner.setSelection(position);
+
     }
 
 
@@ -122,6 +143,9 @@ public class UserProfile extends AppCompatActivity {
 
                     Bitmap image =  BitmapFactory.decodeStream(inputStream);
 
+                    encodeImage = getEncoded64ImageStringFromBitmap(image);
+
+
                     imageView.setImageBitmap(image);
 
                 } catch (FileNotFoundException e) {
@@ -144,13 +168,16 @@ public class UserProfile extends AppCompatActivity {
             Log.i("Error", "Failed to get the tweets out of asyc object");
         }
 
-        account = accountList.get(0);
+        Account account = accountList.get(0);
 
         ElasticsearchAccountController.UpdateAccountTask updateAccountTask =
                 new ElasticsearchAccountController.UpdateAccountTask();
 
 
         try {
+            if (encodeImage != null) {
+                account.setProfileImage(encodeImage);
+            }
             account.setNickname(nicknameTxt.getText().toString());
             account.setGender(genderSpinner.getSelectedItem().toString());
             account.setRegion(regionTxt.getText().toString());
@@ -166,13 +193,18 @@ public class UserProfile extends AppCompatActivity {
         Context context = getApplicationContext();
         Toast.makeText(context, "Edit profile successfully", Toast.LENGTH_SHORT).show();
 
-        Intent MainpageIntent = new Intent(this, MainPageActivity.class);
 
-        MainpageIntent.putExtra("username", account.getUsername());
-
-
-        startActivity(MainpageIntent);
         finish();
+    }
+
+    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+        Log.i("HAHAHA", imgString);
+        return imgString;
     }
 
 

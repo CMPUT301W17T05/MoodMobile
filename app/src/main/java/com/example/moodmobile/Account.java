@@ -1,6 +1,6 @@
 package com.example.moodmobile;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 import io.searchbox.annotations.JestId;
 
@@ -9,10 +9,24 @@ import io.searchbox.annotations.JestId;
  */
 
 public class Account{
+    private String profileImage;
     private String username;
     private String nickname;
     private String gender;
     private String region;
+    private ArrayList<String> following;
+    private ArrayList<String> followRequests;
+
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+
 
     @JestId
     private String id;
@@ -63,4 +77,12 @@ public class Account{
     public void setRegion(String region) {
         this.region = region;
     }
+
+    public ArrayList<String> getFollowing() {return following;}
+
+    public void setFollowing(ArrayList<String> following) {this.following = following;}
+
+    public ArrayList<String> getFollowRequests() {return followRequests;}
+
+    public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
 }

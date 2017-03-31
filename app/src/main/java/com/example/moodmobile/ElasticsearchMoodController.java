@@ -7,15 +7,13 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 
 /**
  * Modified by Jia on 2017-03-12.
@@ -87,6 +85,7 @@ public class ElasticsearchMoodController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{
@@ -131,14 +130,14 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){
                 MoodQuery = search_parameters[0];
             }
             else{
-                MoodQuery = "{\"query\": {\"term\" : { \"message\" : \"" + search_parameters[0] + "\" }}}";
+                MoodQuery = "{\"query\": {\"term\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
 
 
@@ -154,6 +153,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
@@ -172,7 +177,7 @@ public class ElasticsearchMoodController {
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Mood> moods = new ArrayList<Mood>();
+            ArrayList<Mood> moods = new ArrayList<>();
             //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){
@@ -195,6 +200,12 @@ public class ElasticsearchMoodController {
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
                     moods.addAll(foundMoods);
+                    Collections.sort(moods, new Comparator<Mood>() {
+                        @Override
+                        public int compare(Mood mood1, Mood mood2) {
+                            return mood2.getDate().compareTo(mood1.getDate());
+                        }
+                    });
                 }
                 else{
                     Log.i("Error", "The search query failed to find any mood that matched");
@@ -221,4 +232,5 @@ public class ElasticsearchMoodController {
             client = (JestDroidClient) factory.getObject();
         }
     }
+
 }
