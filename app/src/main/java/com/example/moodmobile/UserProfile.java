@@ -38,7 +38,6 @@ public class UserProfile extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 20;
     private Intent getUsernameIntent;
     private String username;
-    private ImageView imageView;
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
@@ -55,7 +54,6 @@ public class UserProfile extends AppCompatActivity {
         getUsernameIntent = getIntent();
 
         //TODO remove doulbe reference to R.id.profileImage
-        imageView = (ImageView) findViewById(R.id.profileImage);
         usernameTxt = (TextView) findViewById(R.id.username);
         nicknameTxt = (EditText) findViewById(R.id.nickname);
         regionTxt = (EditText) findViewById(R.id.region);
@@ -140,7 +138,7 @@ public class UserProfile extends AppCompatActivity {
                     encodeImage = getEncoded64ImageStringFromBitmap(image);
 
 
-                    imageView.setImageBitmap(image);
+                    userProfile.setImageBitmap(image);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
