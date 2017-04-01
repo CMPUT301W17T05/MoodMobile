@@ -1,11 +1,11 @@
 package com.example.moodmobile;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
 /**
+ * TODO Default File Template
  * Created by Derek.R on 2017-03-07.
  */
 
@@ -36,7 +36,7 @@ public class Account{
         this.username = username;
     }
 
-
+    public Account(){}
 
     public void setId(String id) {
         this.id = id;
@@ -87,11 +87,9 @@ public class Account{
 
     public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
 
-    public String getIMEI() {
-        return IMEI;
-    }
 
-    public void setIMEI(String IMEI) {
-        this.IMEI = IMEI;
-    }
+    public String getIMEI() {return IMEI;}
+
+    public void setIMEI(String IMEI) {this.IMEI = IMEI;}
+
 }

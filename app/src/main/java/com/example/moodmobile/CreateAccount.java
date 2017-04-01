@@ -68,14 +68,6 @@ public class CreateAccount extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-    }
-
-
 
 }
 

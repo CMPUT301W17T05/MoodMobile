@@ -18,6 +18,7 @@ import io.searchbox.core.SearchResult;
 import io.searchbox.indices.mapping.PutMapping;
 
 /**
+ * TODO Defult File Template
  * Created by Derek.R on 2017-03-07.
  */
 
@@ -72,7 +73,7 @@ public class ElasticsearchAccountController {
         protected ArrayList<Account> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Account> accounts = new ArrayList<Account>();
+            ArrayList<Account> accounts = new ArrayList<>();
             //Search string here
             String UserQuery;
             if (search_parameters[0].equals("")){
@@ -137,6 +138,7 @@ public class ElasticsearchAccountController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{
@@ -156,7 +158,7 @@ public class ElasticsearchAccountController {
 
 
 
-    public static void verifySettings() {
+    private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             DroidClientConfig config = builder.build();

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,12 +31,10 @@ import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.OverlayItem;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class AddMood extends AppCompatActivity implements LocationListener {
 
@@ -43,25 +42,22 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private String username;
     public static final int IMG_REQUEST = 21;
     private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
+
     private EditText reasonText;
-    private Button publishButton;
-    private ImageButton addImageButton;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private CheckBox locationCheckBox;
     private String Feeling;
     private String socialSituation;
-    private Mood currentMood;
     private String reason;
+
     private Location mlocation;
 
     private String location;
-
-
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     private LocationManager locationManager;
     private String encodeImage;
     ImageButton ivCamera;
@@ -79,13 +75,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
-        publishButton = (Button) findViewById(R.id.publish);
-        addImageButton = (ImageButton) findViewById(R.id.ivGallery);
+        Button publishButton = (Button) findViewById(R.id.publish);
+        ImageButton addImageButton = (ImageButton) findViewById(R.id.ivGallery);
         moodSpinner = (Spinner) findViewById(R.id.moodSpinner);
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
-
 
         if (ContextCompat.checkSelfPermission(AddMood.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -121,6 +116,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         longitude = mlocation.getLongitude();
         latitude  = mlocation.getLatitude();
         Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
+
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,33 +196,31 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
-                    Toast toast2 = Toast.makeText(context, text, duration);
+                    Toast toast2 = Toast.makeText(context, text2, duration2);
                     toast2.show();
-                };
+                }
                 currentMood.setSituation(socialSituation);
 
 
+                currentMood.setUsername(getIntent().getStringExtra("username"));
+
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                    GeoPoint location = new GeoPoint(mlocation.getLatitude(), mlocation.getLongitude());
-                    currentMood.setLatitude(mlocation.getLatitude());
-                    currentMood.setLongitude(mlocation.getLongitude());
-
-
-
-                    currentMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
-
-
+                        currentMood.setLatitude(location.getLatitude());
+                        currentMood.setLongitude(location.getLongitude());
+                        currentMood.setLocation(location.getLatitude() + ", " + location.getLongitude());
+                    }
                 }
 
                 addMoodTask.execute(currentMood);
 
-                Toast toast = Toast.makeText(context, String.valueOf(currentMood.getMoodImage()), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
 
-                Intent MainpageIntent = new Intent(v.getContext(), MainPageActivity.class);
-                startActivity(MainpageIntent);
                 finish();
 
 
@@ -281,7 +275,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     protected void onStart() {
         super.onStart();
         username = getUsernameIntent.getStringExtra("username");
-
     }
 
     public void takeAPhoto(){
@@ -295,8 +288,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteFormat = stream.toByteArray();
         // get the base 64 string
-        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-        return imgString;
+        return Base64.encodeToString(byteFormat, Base64.NO_WRAP);
     }
 
     @Override

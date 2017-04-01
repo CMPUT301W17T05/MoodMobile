@@ -20,7 +20,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,19 +30,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
-
+//TODO r.id.SaveBot is never used
 public class UserProfile extends AppCompatActivity {
 
-    public static final int IMAGE_REQUEST = 20;
+    private static final int IMAGE_REQUEST = 20;
     private Intent getUsernameIntent;
-    public String username;
-    private ImageView imageView;
+    private String username;
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
@@ -51,17 +45,15 @@ public class UserProfile extends AppCompatActivity {
     private String encodeImage;
     private ImageView userProfile;
 
-    private ArrayList<String> genderArray = new ArrayList<String>();
-    int position;
+    private final ArrayList<String> genderArray = new ArrayList<>();
 
-    private Account account;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         getUsernameIntent = getIntent();
 
-        imageView = (ImageView) findViewById(R.id.profileImage);
+        //TODO remove doulbe reference to R.id.profileImage
         usernameTxt = (TextView) findViewById(R.id.username);
         nicknameTxt = (EditText) findViewById(R.id.nickname);
         regionTxt = (EditText) findViewById(R.id.region);
@@ -106,14 +98,11 @@ public class UserProfile extends AppCompatActivity {
 
         }
 
-
-
-
         usernameTxt.setText(username);
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());
 
-        position = genderArray.indexOf(accountList.get(0).getGender());
+        int position = genderArray.indexOf(accountList.get(0).getGender());
         genderSpinner.setSelection(position);
 
     }
@@ -149,7 +138,7 @@ public class UserProfile extends AppCompatActivity {
                     encodeImage = getEncoded64ImageStringFromBitmap(image);
 
 
-                    imageView.setImageBitmap(image);
+                    userProfile.setImageBitmap(image);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -171,7 +160,7 @@ public class UserProfile extends AppCompatActivity {
             Log.i("Error", "Failed to get the tweets out of asyc object");
         }
 
-        account = accountList.get(0);
+        Account account = accountList.get(0);
 
         ElasticsearchAccountController.UpdateAccountTask updateAccountTask =
                 new ElasticsearchAccountController.UpdateAccountTask();
@@ -200,7 +189,7 @@ public class UserProfile extends AppCompatActivity {
         finish();
     }
 
-    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+    private String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
         byte[] byteFormat = stream.toByteArray();

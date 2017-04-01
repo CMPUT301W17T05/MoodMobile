@@ -19,6 +19,7 @@
     </string-array>
 
     <string-array name="situation_array">
+        <item></item>
         <item>Alone</item>
         <item>With one other person</item>
         <item>With multiple people</item>
@@ -31,5 +32,9 @@
         <item>Array Item Three</item>
     </string-array>
     <string name="title_activity_main_test">MainActivityTest</string>
+    <string name="action_mood">Add Mood</string>
+    <string name="action_filter">Filter Moods</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
 
