@@ -208,11 +208,11 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 if(locationCheckBox.isChecked()){
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        mlocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                        currentMood.setLatitude(location.getLatitude());
-                        currentMood.setLongitude(location.getLongitude());
-                        currentMood.setLocation(location.getLatitude() + ", " + location.getLongitude());
+                        currentMood.setLatitude(mlocation.getLatitude());
+                        currentMood.setLongitude(mlocation.getLongitude());
+                        currentMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
                     }
                 }
 

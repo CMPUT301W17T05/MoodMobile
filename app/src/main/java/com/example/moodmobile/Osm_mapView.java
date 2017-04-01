@@ -9,6 +9,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.Manifest;
@@ -31,19 +32,16 @@ import java.util.ArrayList;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.system.Os;
+
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
-import com.google.android.gms.maps.model.Circle;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
     private ArrayList<Account> currentAccount = new ArrayList<>();
     private ArrayList<String> followingUsernameList = new ArrayList<String>();
     private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
@@ -158,21 +156,11 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);
         mlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
-        GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
+        GeoPoint center = new GeoPoint(mlocation.getLatitude(), mlocation.getLongitude());
         MapController.animateTo(center);
-        addMarker(center, "This is where you are.","origin");
-
-
-
-    public void showMyMood(){
-        MapView.getOverlays().clear();
-
-        GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
-        MapController.animateTo(center);
-        addMarker(center, "This is where you are.","origin");
-
-
+        addMarker(center, "This is where you are.", "origin");
     }
+
 
 
     public void addMarker (GeoPoint center, String title, String color){
@@ -370,7 +358,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             // The permission is NOT already granted.
             // Check if the user has been asked about this permission already and denied
             // it. If so, we want to give more explanation about why the permission is needed.
-            if (shouldShowRequestPermissionRationale(
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 // Show our own UI to explain to the user why we need to read the contacts
                 // before actually requesting the permission and showing the default UI
@@ -378,7 +366,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
             // Fire off an async request to actually get the permission
             // This will show the standard permission request dialog UI
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE);
         }
     }
@@ -403,51 +391,3 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         }
     }
 }
-
-
-public class CircleOverlay extends Overlay {
-
-    Context context;
-    double mLat;
-    double mLon;
-    float mRadius;
-
-    public CircleOverlay(Context _context, double _lat, double _lon, float radius ) {
-        context = _context;
-        mLat = _lat;
-        mLon = _lon;
-        mRadius = radius;
-    }
-
-    public CircleOverlay(Context _context, double _lat, double _lon, float radius ) {
-        context = _context;
-        mLat = _lat;
-        mLon = _lon;
-        mRadius = radius;
-    }
-
-    public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-        super.draw(canvas, mapView, shadow);
-
-        if(shadow) return; // Ignore the shadow layer
-
-        Projection projection = mapView.getProjection();
-
-        Point pt = new Point();
-
-        GeoPoint geo = new GeoPoint((int) (mLat *1e6), (int)(mLon * 1e6));
-
-        projection.toPixels(geo ,pt);
-        float circleRadius = projection.metersToEquatorPixels(mRadius) * (1/ FloatMath.cos((float) Math.toRadians(mLat)));
-
-        Paint innerCirclePaint;
-
-        innerCirclePaint = new Paint();
-        innerCirclePaint.setColor(Color.BLUE);
-        innerCirclePaint.setAlpha(25);
-        innerCirclePaint.setAntiAlias(true);
-
-        innerCirclePaint.setStyle(Paint.Style.FILL);
-
-        canvas.drawCircle((float)pt.x, (float)pt.y, circleRadius, innerCirclePaint);
-    }
