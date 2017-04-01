@@ -6,16 +6,12 @@ import android.util.Log;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
-
 import java.util.*;
-
 import io.searchbox.core.Delete;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-
-import io.searchbox.indices.mapping.PutMapping;
 
 
 /**
@@ -268,6 +264,20 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
+                /*
+                * {
+                    "query": {
+                    "match_all" : {}
+                   },
+                "filter" : {
+                        "geo_distance" : {
+                        "distance" : "10km",
+                        "location" : "54,-113"
+                        }
+                    }
+                }
+                *
+                * */
                 MoodQuery = "{\"query\":{ \"match_all\":{}}, \"filter\":{ \"geo_distance\":{ \"distance\" : \"5km\",\"location\" : \""
                         + search_parameters[0] + ", " + search_parameters[1]
                         + "\" }}}";
