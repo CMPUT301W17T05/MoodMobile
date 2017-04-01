@@ -29,17 +29,22 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+/**
+ * The type Add mood.
+ */
 public class AddMood extends AppCompatActivity implements LocationListener {
 
     private Intent getUsernameIntent;
     private String username;
+    /**
+     * The constant IMG_REQUEST.
+     */
     public static final int IMG_REQUEST = 21;
     private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
 
@@ -53,18 +58,26 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     private Location mlocation;
 
-    private String location;
     private double latitude; // Latitude
     private double longitude; // Longitude
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
     private LocationManager locationManager;
     private String encodeImage;
+    /**
+     * The Iv camera.
+     */
     ImageButton ivCamera;
 
 
+    /**
+     * The constant TAG.
+     */
     protected static final String TAG = "AddMood";
 
+    /**
+     * The Camera request.
+     */
     final int CAMERA_REQUEST = 10000;
 
     @Override
@@ -82,6 +95,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
         ivCamera = (ImageButton) findViewById(R.id.ivCamera);
 
+        //Check the permission for Access_Fine_Location and Permission_Granted
         if (ContextCompat.checkSelfPermission(AddMood.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -142,7 +156,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ssSpinner.setAdapter(adapter2);
 
-
+        /*
+        * Toast if the location box is checked or not checked.
+        * */
         locationCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +182,10 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         });
 
 
-
+        /*
+        * The following is when the publishButton is pushed.
+        * T
+        * */
         publishButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -186,6 +205,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
                 int duration = Toast.LENGTH_LONG;
 
+                //Encode the Image
                 currentMood.setMoodImage(encodeImage);
 
                 reason = reasonText.getText().toString();
@@ -193,15 +213,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 setResult(RESULT_OK);
                 try {currentMood.setMessage(reason);
                 } catch (ReasonTooLongException e) {
-
                     CharSequence text2 = "Reason is too long.";
                     int duration2 = Toast.LENGTH_SHORT;
                     Toast toast2 = Toast.makeText(context, text2, duration2);
                     toast2.show();
                 }
                 currentMood.setSituation(socialSituation);
-
-
                 currentMood.setUsername(getIntent().getStringExtra("username"));
 
                 // Set the location if box is checked.
@@ -209,7 +226,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mlocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
                         currentMood.setLatitude(mlocation.getLatitude());
                         currentMood.setLongitude(mlocation.getLongitude());
                         currentMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
@@ -217,10 +233,8 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 }
 
                 addMoodTask.execute(currentMood);
-
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
-
                 finish();
 
 
@@ -231,9 +245,15 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 
-    //When click the add Image button
+    /**
+     * Add image.
+     *
+     * @param v the v
+     */
+//When click the add Image button
     public void addImage(View v){
         Intent intent = new Intent(Intent.ACTION_PICK);
+        //Add a pictire from local
         File pictureDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String path = pictureDir.getPath();
         Uri data = Uri.parse(path);
@@ -243,25 +263,33 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
-
         if (resultCode == RESULT_OK){
+            //If the request is to get image from gallery.
             if (requestCode == IMG_REQUEST){
                 Uri imageUri = data.getData();
-
                 InputStream inputStream;
-
                 try{
                     inputStream = getContentResolver().openInputStream(imageUri);
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    //Resize the image to addressed format.
                     Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
+
+                    //Compress the image.
+                    ByteArrayOutputStream bmpStream = new ByteArrayOutputStream();
+                    resized.compress(Bitmap.CompressFormat.PNG, 5 , bmpStream);
+                    byte[] bitmapdata = bmpStream.toByteArray();
+                    resized = BitmapFactory.decodeByteArray(bitmapdata , 0, bitmapdata .length);
+
                     ImageView moodImage = (ImageView) findViewById(R.id.moodImage);
                     moodImage.setImageBitmap(resized);
-                    encodeImage = getEncoded64ImageStringFromBitmap(bitmap);
+                    encodeImage = getEncoded64ImageStringFromBitmap(resized);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
+            //If the request is camera request.
             else if (requestCode == CAMERA_REQUEST) {
                 Bitmap bitmap = (Bitmap)data.getExtras().get("data");
                 Bitmap resized = Bitmap.createScaledBitmap(bitmap, 320, 240,true);
@@ -277,12 +305,21 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         username = getUsernameIntent.getStringExtra("username");
     }
 
+    /**
+     * Take a photo.
+     */
     public void takeAPhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         startActivityForResult(intent, CAMERA_REQUEST);
     }
 
+    /**
+     * Gets encoded 64 image string from bitmap.
+     *
+     * @param bitmap the bitmap
+     * @return the encoded 64 image string from bitmap
+     */
     public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
@@ -291,6 +328,9 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         return Base64.encodeToString(byteFormat, Base64.NO_WRAP);
     }
 
+    /*
+    * When the app detect location changes. It will change the longitude and latitude and also print out a log/
+    * */
     @Override
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
@@ -313,7 +353,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
     }
 
-
+    //Check the permission Result.
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
