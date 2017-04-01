@@ -20,10 +20,12 @@ public class LoginPage extends AppCompatActivity {
     private EditText username;
     int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
+
         final ArrayList<Account> accountList = new ArrayList<>();
 
         if (ContextCompat.checkSelfPermission(LoginPage.this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -90,5 +92,7 @@ public class LoginPage extends AppCompatActivity {
         Intent intent = new Intent(this, CreateAccount.class);
         startActivity(intent);
     }
+
+
 
 }

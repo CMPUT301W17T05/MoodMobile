@@ -19,7 +19,6 @@ public class Account{
     private ArrayList<String> followRequests;
     private String IMEI;
 
-
     public String getProfileImage() {
         return profileImage;
     }
@@ -88,7 +87,9 @@ public class Account{
 
     public void setFollowRequests(ArrayList<String> followRequests) {this.followRequests = followRequests;}
 
+
     public String getIMEI() {return IMEI;}
 
     public void setIMEI(String IMEI) {this.IMEI = IMEI;}
+
 }

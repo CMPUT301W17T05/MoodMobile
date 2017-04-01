@@ -12,7 +12,7 @@
         android:clickable="true"/>
 
     <RadioGroup
-        android:id="@+id/radio_group_list_selector"
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="#80000000"

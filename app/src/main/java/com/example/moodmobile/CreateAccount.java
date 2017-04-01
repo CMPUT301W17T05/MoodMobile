@@ -1,14 +1,7 @@
-/*
- * Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.example.moodmobile;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +28,14 @@ public class CreateAccount extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Account newUser = new Account(newUserName.getText().toString());
+                newUser.setProfileImage(null);
+                newUser.setNickname(null);
+                newUser.setGender(null);
+                newUser.setRegion(null);
+                newUser.setFollowing(new ArrayList<String>());
+                newUser.setFollowRequests(new ArrayList<String>());
+                String myAndroidDeviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                newUser.setIMEI(myAndroidDeviceId);
 
                 ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
                 getUser.execute(newUserName.getText().toString());
@@ -65,12 +66,8 @@ public class CreateAccount extends AppCompatActivity {
         });
 
 
-        }
+    }
 
 
 }
-
-
-
-
 
