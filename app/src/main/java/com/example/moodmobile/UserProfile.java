@@ -32,6 +32,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+/**
+ * This is the activity that allows users to edit their profile
+ */
 //TODO r.id.SaveBot is never used
 public class UserProfile extends AppCompatActivity {
 
@@ -70,6 +73,11 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
+    /**
+     * When activity starts, ElasticsearchAccountController.GetUser(username) is used to download
+     * the account information of the user, and the view "user_profile" is filled with the account
+     * info.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -108,6 +116,14 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
+    /**
+     * Photo.
+     *
+     * this is the onClickListener for Edit Image button, it creates an intent to Gallery, and it
+     * allows users to select a image from Gallery.
+     *
+     * @param v the v
+     */
     public void photo(View v) {
         Intent intent = new Intent(Intent.ACTION_PICK);
 
@@ -122,6 +138,10 @@ public class UserProfile extends AppCompatActivity {
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
+    /**
+     * onActivityResult receive the image that selected from Gallery, and it set the user profile photo
+     * to be the image selected.
+     */
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
         if (resultCode == RESULT_OK){
@@ -149,6 +169,14 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Save profile.
+     *  This is the onClickListener for the "save" button, ElasticsearchAccountController.UpdateAccountTask()
+     *  is used to update the account information of current user. Note that the image is encoded to
+     *  a Base64 form and stored in database as a String type.
+     * @param view the view
+     */
     public void saveProfile(View view) {
         final ArrayList<Account> accountList = new ArrayList<>();
         ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
@@ -189,6 +217,11 @@ public class UserProfile extends AppCompatActivity {
         finish();
     }
 
+
+    /**
+     * This method takes a Bitmap type image, to use Base64.encodeToString() to convert the image
+     * to a Base64 String.
+     */
     private String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);

@@ -39,6 +39,18 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+/** this is the MapView activity. In MoMo, OpenStreetMap is used to perform mapView functionality.
+ * there are three radio buttons on the top: "MyMood", "Following", "Nearby" that allows users
+ * to switch from different map modes.
+ *
+ * MyMood will show all the user's mood that attached with a location on mapView
+ *
+ * Following will show the most recent mood of all following users that attached with a
+ * location on mapView.
+ *
+ * Nearby will show the most recent Mood of all users that within 5 kilometers of the
+ * login user.
+ */
 public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
@@ -46,8 +58,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     private ArrayList<String> followingUsernameList = new ArrayList<String>();
     private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
     private static final int MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE = 3;
-    private Double latitude;
-    private Double longitude;
+
 
 
     private RadioButton rb1;
@@ -61,12 +72,16 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     private MapView         MapView;
     private MapController   MapController;
-    private Location location; // Location
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
+
     private int i;
 
+    /**
+     * The Overlay item array.
+     */
     ArrayList<OverlayItem> overlayItemArray;
+    /**
+     * The Marker color.
+     */
     Drawable markerColor;
 
     @Override
@@ -162,7 +177,17 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     }
 
 
-
+    /**
+     * Add marker.
+     *
+     * This methods take a GeoPoint, a description and a String that represent color,
+     * and it will add a marker on the given point with the given color and description.
+     * All the marker icons are stored in R.drawable.
+     *
+     * @param center the center
+     * @param title  the title
+     * @param color  the color
+     */
     public void addMarker (GeoPoint center, String title, String color){
         Marker marker = new Marker(MapView);
         marker.setPosition(center);
@@ -204,8 +229,17 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     }
 
 
+    /**
+     * showMyMood() use ElasticsearchMoodController.GetMoodsTask(username) to take all moods of the user.
+     * the a for loop is used to go through all Moods, and put a marker on map if the mood is attached
+     * with a location.
+     */
     public void showMyMood(){
         MapView.getOverlays().clear();
+
+        GeoPoint center = new GeoPoint(mlocation.getLatitude(), mlocation.getLongitude());
+        MapController.animateTo(center);
+        addMarker(center, "This is where you are.", "origin");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
         getMoodsTask.execute(username);
@@ -234,7 +268,11 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         Toast.makeText(Osm_mapView.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
 
     }
-
+    /**
+     * show Following use ElasticsearchAccountController.GetUser to find the List of users that the login
+     * user is following. and use ElasticsearchMoodController.GetMoodsTaskByName to get the most recent
+     * mood of all the following. If the mood has a location, then put a marker on map.
+     */
     public void showFollowing(){
         MapView.getOverlays().clear();
 
@@ -280,10 +318,13 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     }
 
+    /**
+     * Show nearby.
+     */
     public void showNearby(){
         MapView.getOverlays().clear();
 
-        GeoPoint center = new GeoPoint(latitude, longitude);
+        GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
         MapController.animateTo(center);
         addMarker(center, "This is where you are.","origin");
 
@@ -291,7 +332,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
 
         ElasticsearchMoodController.GetNearMoodsTask getNearMoodsTask = new ElasticsearchMoodController.GetNearMoodsTask();
-        getNearMoodsTask.execute(String.valueOf(latitude),String.valueOf(longitude));
+        getNearMoodsTask.execute(String.valueOf(mlocation.getLatitude()),String.valueOf(mlocation.getLongitude()));
 
 
         try {
@@ -319,13 +360,16 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         MapView.invalidate();
     }
 
+    /**
+     * if location change is detected, change mlocation to the new location, and move mapView
+     * to the new center.
+     */
     @Override
     public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        GeoPoint center = new GeoPoint(latitude, longitude);
         mlocation.setLatitude(location.getLatitude());
         mlocation.setLongitude(location.getLongitude());
+        GeoPoint center = new GeoPoint(location.getLatitude(), location.getLongitude());
+
         MapController.animateTo(center);
 
 
@@ -346,6 +390,9 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     }
 
+    /**
+     * Gets external permission.
+     */
     public void getExternalPermission() {
         // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
         // checking the build version since Context.checkSelfPermission(...) is only available

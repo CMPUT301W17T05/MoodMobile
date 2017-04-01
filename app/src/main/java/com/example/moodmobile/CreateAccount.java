@@ -12,6 +12,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+/**
+ * This activity allows users to create a new account, ElasticsearchAccountController.GetUser(username)
+ * is used to test if the username is already exist in database. If the username is not in database,
+ * then user can successfully create an account.
+ *
+ * An account is attached with the IMEI code of the device that create the account, users can only
+ * login with the same device as they created the account.
+ */
 public class CreateAccount extends AppCompatActivity {
     private EditText newUserName;
 
