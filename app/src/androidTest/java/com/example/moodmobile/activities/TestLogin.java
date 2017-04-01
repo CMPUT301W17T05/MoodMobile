@@ -1,29 +1,37 @@
 package com.example.moodmobile.activities;
-
-import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.Button;
 import android.widget.EditText;
-
 import com.example.moodmobile.LoginPage;
+import com.example.moodmobile.MainPageActivity;
+import com.example.moodmobile.R;
+import com.robotium.solo.Solo;
 
+public class TestLogin extends ActivityInstrumentationTestCase2 <LoginPage> {
 
-public class TestLogin extends ActivityInstrumentationTestCase2 {
-    private EditText username;
-    private Button loginButton;
+    private Solo solo;
 
     public TestLogin() {
-        super(LoginPage.class);
+        super(com.example.moodmobile.LoginPage.class);
     }
-    
-    public void testStart() throws Exception{
-        Activity activity = getActivity();
-    }
-/*
-    public void testLogin() {
-        LogInPage main = (LoginPage) getActivity();
 
-        main.runOnUiThread()
+    public void setUp() throws Exception{
+        solo = new Solo(getInstrumentation(), getActivity());
     }
-*/
+
+    public void testLogin() {
+        solo.assertCurrentActivity("Wrong Activity", LoginPage.class);
+        solo.enterText((EditText) solo.getView(R.id.username), "haozhou");
+        solo.clickOnButton("Login");
+
+        assertTrue(solo.waitForActivity(MainPageActivity.class));
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        solo.finishOpenedActivities();
+    }
+
+
 }
+
+

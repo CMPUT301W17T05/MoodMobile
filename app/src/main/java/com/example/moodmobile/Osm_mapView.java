@@ -306,6 +306,9 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
     /**
      * Show nearby.
+     * ShowNearby get every mood around the User in 5km. It will use ElasticsearchMoodController's
+     * getNearbyMoodsTask.
+     * It basically just use a query to use the filter in elasticSearch by geo_point.
      */
     public void showNearby(){
         MapView.getOverlays().clear();
@@ -313,8 +316,6 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         GeoPoint center = new GeoPoint(mlocation.getLatitude(),mlocation.getLongitude());
         MapController.animateTo(center);
         addMarker(center, "This is where you are.","origin");
-
-        //Todo: Make a circle
 
 
         ElasticsearchMoodController.GetNearMoodsTask getNearMoodsTask = new ElasticsearchMoodController.GetNearMoodsTask();
