@@ -1,8 +1,5 @@
+
 package com.example.moodmobile;
-
-import android.location.Location;
-import android.media.Image;
-
 import java.util.Date;
 
 import io.searchbox.annotations.JestId;
@@ -11,6 +8,10 @@ import io.searchbox.annotations.JestId;
  * Created by Repka on 2017-03-07.
  Modified by Jia on 2017-03-12.
  Modified by Repka on 2017-03-21.
+<<<<<<< HEAD
+=======
+ Modified by Haozhou on 2017-03-27.
+>>>>>>> c46c6441e9285e300e2c0c48cd88a73ca817d75a
  */
 
 public class Mood implements Moodable{
@@ -19,11 +20,10 @@ public class Mood implements Moodable{
     private String feeling;
     private String socialSituation;
     private String moodImage;
+    private String location;
+    private String username;
     private Double latitude;
     private Double longitude;
-    private Location location;
-    private String username;
-
 
     @JestId
     private String id;
@@ -45,8 +45,7 @@ public class Mood implements Moodable{
         this.username = null;
     }
 
-    public Mood(String feeling, String moodMessage
-            , Location location, String moodImage, String socialSituation, String userName) {
+    public Mood(String feeling, String moodMessage, String location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
@@ -104,8 +103,9 @@ public class Mood implements Moodable{
         this.moodImage = moodImage;
     }
 
-    public Location getLocation() {return location;}
-    public void setLocation(Location location) {this.location = location;}
+
+    public String getLocation() {return location;}
+    public void setLocation(String location) {this.location = location;}
 
     public String getUsername() {
         return username;
@@ -114,6 +114,7 @@ public class Mood implements Moodable{
     public void setUsername(String userName) {
         this.username = userName;
     }
+
 
     public Double getLatitude() {
         return latitude;
@@ -130,4 +131,6 @@ public class Mood implements Moodable{
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
+
+
 }

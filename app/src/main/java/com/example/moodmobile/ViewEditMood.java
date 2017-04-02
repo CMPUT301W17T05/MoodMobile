@@ -4,16 +4,23 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,11 +32,10 @@ import java.util.Date;
  */
 public class ViewEditMood extends AppCompatActivity {
 
+    private static final String SYNC_FILE = "syncmood.sav";
     private EditText moodEdittext;
     private EditText moodSituationEdittext;
     private EditText moodReasonEdittext;
-
-    private Button saveButton;
 
     private Mood mood;
 
@@ -41,10 +47,11 @@ public class ViewEditMood extends AppCompatActivity {
 
         ArrayList<Mood> moodList = new ArrayList<>();
 
+        Button saveButton = (Button) findViewById(R.id.moodSaveButton);
         moodEdittext = (EditText) findViewById(R.id.moodEdittext);
         moodSituationEdittext = (EditText) findViewById(R.id.moodSituationEdittext);
         moodReasonEdittext = (EditText) findViewById(R.id.moodReasonEdittext);
-        saveButton = (Button) findViewById(R.id.moodSaveButton);
+        //saveButton = (Button) findViewById(R.id.moodSaveButton);
 
         String moodID = getIntent().getStringExtra("moodID");
 
@@ -103,7 +110,11 @@ public class ViewEditMood extends AppCompatActivity {
                      *
                      * **/
                     //setResult(RESULT_OK, intent);
-                    updateMoodTask.execute(mood);
+                    if (IsConnected()){
+                        updateMoodTask.execute(mood);
+                    } else {
+                        SaveToFile(mood);
+                    }
                     finish();
 
                 } else {
@@ -126,8 +137,30 @@ public class ViewEditMood extends AppCompatActivity {
         Context context = this;
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        return isConnected;
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    private void SaveToFile(Mood mood){
+        SyncMood syncMood = new SyncMood(mood, 2);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
 }

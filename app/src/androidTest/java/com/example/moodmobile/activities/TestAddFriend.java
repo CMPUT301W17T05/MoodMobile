@@ -1,6 +1,3 @@
-import android.test.ActivityInstrumentationTestCase2;
-
-import junit.framework.Assert;
 /*
 public class TestAddFriend extends ActivityInstrumentationTestCase2 {
 	public TestAddFriend() {

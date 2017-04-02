@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
 
@@ -96,8 +98,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/moodSpinner"
-        tools:entries="@array/moods_array"
+        tools:entries="@array/mood_array"
         android:layout_alignTop="@+id/textView6"
         android:layout_alignParentStart="true" />
+
+
+
+    <ImageButton
+        android:id="@+id/ivCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        android:layout_below="@+id/reason"
+        android:layout_toStartOf="@+id/textView7" />
+
+    <ImageView
+        android:id="@+id/moodImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivGallery"
+        android:layout_toStartOf="@+id/ivGallery"
+        app:srcCompat="@android:drawable/screen_background_light_transparent" />
+
+    <ImageButton
+        android:id="@+id/ivGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/publish"
+        android:layout_below="@+id/reason"
+        android:onClick="addImage"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
 </RelativeLayout>

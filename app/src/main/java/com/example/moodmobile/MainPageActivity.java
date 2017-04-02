@@ -1,196 +1,192 @@
 package com.example.moodmobile;
 
+
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainPageActivity extends AppCompatActivity {
+public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Intent intent;
-
-    private ListView oldMoodsList;
-    private ArrayList<Mood> moodsList = new ArrayList<Mood>();
-    private ArrayAdapter<Mood> adapter;
+    private static final String SYNC_FILE = "syncmood.sav";
+    private ImageView userImage;
+    private TextView userText;
+    private TextView welcomeText;
+    private ListView moodsListView;
+    private ArrayList<Mood> moodsList = new ArrayList<>();
+    private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
     private String situationArray[];
     private Spinner spinnerSituation;
     private EditText reasonText;
     private CheckBox chkDate;
-    public String username;
+    private String username;
+
+    private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_screen);
+        setContentView(R.layout.activity_main);
+        getLocationPermission();
 
         intent = getIntent();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        reasonText = (EditText) findViewById(R.id.reasonText);
-        chkDate = (CheckBox) findViewById(R.id.weekBox);
-        spinnerSituation = (Spinner) findViewById(R.id.sitSpinner);
-        situationArray = getResources().getStringArray(R.array.situation_array);
-        Button editProfileButton = (Button) findViewById(R.id.editButton);
-        Button addMoodButton = (Button) findViewById(R.id.addMood);
-        final Button friendsButton = (Button) findViewById(R.id.friends);
-        Button mapButton = (Button) findViewById(R.id.map);
-        spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
-        spinnerSituation.setAdapter(spinAdapter);
-        oldMoodsList = (ListView) findViewById(R.id.moodList);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        chkDate.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View v) {
-                filterMoods();
-            }
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View hView = navigationView.getHeaderView(0);
 
-        });
+        username = getIntent().getStringExtra("username");
+        welcomeText = (TextView) findViewById(R.id.welcomeText);
+        welcomeText.setText("Welcome " + username + "!");
+        userImage = (ImageView) hView.findViewById(R.id.navImage);
+        userText = (TextView) hView.findViewById(R.id.navText);
 
-        reasonText.addTextChangedListener(new TextWatcher() {
+        moodsListView = (ListView) findViewById(R.id.moodList);
 
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                filterMoods();
 
-            }
+        final ArrayList<Account> accountList = new ArrayList<>();
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                filterMoods();
-            }
+        ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
+        getUser.execute(username);
 
-            public void afterTextChanged(Editable s) {
-                filterMoods();
-            }
-        });
+        try {
+            accountList.clear();
+            accountList.addAll(getUser.get());
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the tweets out of asyc object");
+        }
 
-        spinnerSituation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        if (accountList.get(0).getProfileImage() != null) {
+            byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            userImage.setImageBitmap(decodedByte);
+        }
+        userText.setText(username);
+
+
+        userImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                filterMoods(); //Causing nullpointer exception
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                filterMoods();
-            }
-
-        });
-
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent profileIntent = new Intent(v.getContext(), UserProfile.class);
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
 
                 profileIntent.putExtra("username", username);
 
                 startActivity(profileIntent);
-                //finish();
-                //TO-DO Start Edit Profile Activity
-                /*String text = bodyText.getText().toString();
-                NormalTweet newTweet = new NormalTweet(text);
-                tweetList.add(newTweet);
-                adapter.notifyDataSetChanged();
-                ElasticsearchTweetController.AddTweetsTask addTweetsTask = new ElasticsearchTweetController.AddTweetsTask();
-                addTweetsTask.execute(newTweet);*/
             }
         });
 
-        addMoodButton.setOnClickListener(new View.OnClickListener() {
-
+        userText.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent newMoodIntent = new Intent(v.getContext(), AddMood.class);
-                startActivity(newMoodIntent);
-                finish();
-                //TO-DO Start New Mood Activity
-                /*ElasticsearchTweetController.GetTweetsTask getTweetsTask = new ElasticsearchTweetController.GetTweetsTask();
-                String message = bodyText.getText().toString();
-                getTweetsTask.execute(message);
-                try {
-                    tweetList.clear();
-                    tweetList.addAll(getTweetsTask.get());
-                } catch (Exception e) {
-                    Log.i("Error", "Failed to get the tweets out of the async object");
-                }
-                adapter.notifyDataSetChanged();*/
+                drawer.closeDrawer(GravityCompat.START);
+                Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
+                profileIntent.putExtra("username", username);
+                startActivity(profileIntent);
             }
+
         });
 
-        friendsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent friendsIntent = new Intent(v.getContext(), AddNewFriendActivity.class);
-                friendsIntent.putExtra("username", username); //Sends the logged in username to the next activity.
-
-                startActivityForResult(friendsIntent, 1);
-                //TO-DO Start Friends Activity
-            }
-        });
-/*
-        mapButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
-                startActivity(mapIntent);
-            }
-        });*/
-
-        /* Listener to detect a mood that has been clicked.
-                *  This will also launch the ViewEditMood activity**/
-
-        oldMoodsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
-                Mood moodToEdit = moodsList.get(index);
+                if (index < moodsList.size()) {
+                    Mood moodToEdit = moodsList.get(index);
 
-                Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
-                intent.putExtra("moodID", moodToEdit.getId());
+                    Intent intent = new Intent(MainPageActivity.this, ViewEditMood.class);
+                    intent.putExtra("moodID", moodToEdit.getId());
 
-                startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
         /** Long click listener for the mood list.
-                *  Will delete a long-clicked mood.**/
+         *  Will delete a long-clicked mood.
+         */
 
 
-        oldMoodsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        moodsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
                 ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
 
-                deletemood.execute(moodsList.get(index));
+                if (IsConnected()) {
+                    deletemood.execute(moodsList.get(index));
+                } else {
+                    SaveToFile(moodsList.get(index));
+                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
-                /** TODO notify elasticsearch**/
+                /** TODO notify elasticsearch
+                 */
 
 
                 /**
                  Display a user message that the selected person was deleted
-                 **/
+                 */
 
                 Context context = getApplicationContext();
                 String text = "Mood Deleted";
@@ -211,7 +207,7 @@ public class MainPageActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
 
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
 
         try {
             moodsList = getMoodsTask.get();
@@ -219,14 +215,137 @@ public class MainPageActivity extends AppCompatActivity {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
 
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_filter) {
+
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.filter_dialog);
+            dialog.setTitle("Filter Moods");
+
+            Button filterButton = (Button) dialog.findViewById(R.id.filterButton);
+            Button cancelButton = (Button) dialog.findViewById(R.id.cancelButton);
+            reasonText = (EditText) dialog.findViewById(R.id.reasonText);
+            chkDate = (CheckBox) dialog.findViewById(R.id.weekBox);
+            spinnerSituation = (Spinner) dialog.findViewById(R.id.sitSpinner);
+            situationArray = getResources().getStringArray(R.array.situation_array);
+            spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
+            spinnerSituation.setAdapter(spinAdapter);
+
+            filterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    filterMoods();
+                }
+            });
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            //TODO popup filter dialog
+            dialog.show();
+        }
+
+        else if (id == R.id.action_mood){
+            setResult(RESULT_OK);
+            Intent newMoodIntent = new Intent(this, AddMood.class);
+            newMoodIntent.putExtra("username", username);
+            startActivity(newMoodIntent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_moods) {
+            if (this.getClass() != MainPageActivity.class){
+                setResult(RESULT_OK);
+                Intent mainIntent = new Intent(this, MainPageActivity.class);
+                mainIntent.putExtra("username", username);
+                startActivity(mainIntent);
+            }
+        } else if (id == R.id.nav_following) {
+            /*
+                setResult(RESULT_OK);
+                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
+                startActivity(friendsIntent);*/
+
+        } else if (id == R.id.nav_requests) {
+
+        } else if (id == R.id.nav_map) {
+            setResult(RESULT_OK);
+            Intent mapIntent = new Intent(this, Osm_mapView.class);
+
+            mapIntent.putExtra("username", username);
+
+            startActivity(mapIntent);
+
+        } else if (id == R.id.nav_logout) {
+            finish();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void filterMoods(){
-        ArrayList<Mood> filteredMoodsList = new ArrayList<Mood>();
+        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
         ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(username);
         String reason;
         String situation;
 
@@ -243,19 +362,25 @@ public class MainPageActivity extends AppCompatActivity {
                 Date moodDate = mood.getDate();
                 if (!(moodDate.compareTo(week) < 0)) {
                     reason = reasonText.getText().toString();
-                    if (mood.getMessage().contains(reason)) {
+                    if (mood.getMessage().contains(reason) || reason.isEmpty()) {
                         situation = spinnerSituation.getSelectedItem().toString();
                         if (mood.getSituation() == null) {
+                            //TODO add something?
                             continue;
                         } else if (mood.getSituation().contains(situation)) {
                             filteredMoodsList.add(mood);
+                            //TODO ADD SOMETHING?
                             continue;
                         }
-                    } else {
+                    }
+
+                    else {
+                        //TODO ADD SOMETHING?
                         continue;
                     }
                 }
                 else{
+                    //TODO ADD SOMETHING?
                     continue;
                 }
             }
@@ -278,8 +403,81 @@ public class MainPageActivity extends AppCompatActivity {
         moodsList.clear();
         adapter.clear();
         moodsList.addAll(filteredMoodsList);
-        adapter = new ArrayAdapter<Mood>(this, R.layout.list_item, moodsList);
-        oldMoodsList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+    }
+
+    public void getLocationPermission() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION);
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        // Make sure it's our original READ_CONTACTS request
+        if (requestCode == MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    private void SaveToFile(Mood mood){
+        SyncMood syncMood = new SyncMood(mood, 3);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }

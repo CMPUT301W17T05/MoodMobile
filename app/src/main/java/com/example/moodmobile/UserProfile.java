@@ -16,48 +16,52 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Spinner;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 
-
+/**
+ * This is the activity that allows users to edit their profile
+ */
+//TODO r.id.SaveBot is never used
 public class UserProfile extends AppCompatActivity {
 
-    public static final int IMAGE_REQUEST = 20;
+    private static final int IMAGE_REQUEST = 20;
     private Intent getUsernameIntent;
-    public String username;
-    private ImageView imageView;
-
+    private String username;
     private TextView usernameTxt;
     private EditText nicknameTxt;
     private EditText regionTxt;
     private Spinner genderSpinner;
+    private String encodeImage;
+    private ImageView userProfile;
 
-    private Account account;
+    private final ArrayList<String> genderArray = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         getUsernameIntent = getIntent();
 
-        imageView = (ImageView) findViewById(R.id.profileImage);
+        //TODO remove doulbe reference to R.id.profileImage
         usernameTxt = (TextView) findViewById(R.id.username);
         nicknameTxt = (EditText) findViewById(R.id.nickname);
         regionTxt = (EditText) findViewById(R.id.region);
         genderSpinner = (Spinner) findViewById(R.id.gender);
-
+        userProfile = (ImageView) findViewById(R.id.profileImage);
 
         // Create an ArrayAdapter using the mood_array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -69,6 +73,11 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
+    /**
+     * When activity starts, ElasticsearchAccountController.GetUser(username) is used to download
+     * the account information of the user, and the view "user_profile" is filled with the account
+     * info.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -88,13 +97,33 @@ public class UserProfile extends AppCompatActivity {
         }
 
         Log.d("LALALA: ", String.valueOf(accountList.size()));
+        genderArray.add("Male");
+        genderArray.add("Female");
+        if (accountList.get(0).getProfileImage() != null) {
+            byte[] decodedString = Base64.decode(accountList.get(0).getProfileImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            userProfile.setImageBitmap(decodedByte);
+
+        }
 
         usernameTxt.setText(username);
         nicknameTxt.setText(accountList.get(0).getNickname());
         regionTxt.setText(accountList.get(0).getRegion());
+
+        int position = genderArray.indexOf(accountList.get(0).getGender());
+        genderSpinner.setSelection(position);
+
     }
 
 
+    /**
+     * Photo.
+     *
+     * this is the onClickListener for Edit Image button, it creates an intent to Gallery, and it
+     * allows users to select a image from Gallery.
+     *
+     * @param v the v
+     */
     public void photo(View v) {
         Intent intent = new Intent(Intent.ACTION_PICK);
 
@@ -109,6 +138,10 @@ public class UserProfile extends AppCompatActivity {
         startActivityForResult(intent, IMAGE_REQUEST);
     }
 
+    /**
+     * onActivityResult receive the image that selected from Gallery, and it set the user profile photo
+     * to be the image selected.
+     */
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
         if (resultCode == RESULT_OK){
@@ -122,7 +155,10 @@ public class UserProfile extends AppCompatActivity {
 
                     Bitmap image =  BitmapFactory.decodeStream(inputStream);
 
-                    imageView.setImageBitmap(image);
+                    encodeImage = getEncoded64ImageStringFromBitmap(image);
+
+
+                    userProfile.setImageBitmap(image);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -133,6 +169,14 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Save profile.
+     *  This is the onClickListener for the "save" button, ElasticsearchAccountController.UpdateAccountTask()
+     *  is used to update the account information of current user. Note that the image is encoded to
+     *  a Base64 form and stored in database as a String type.
+     * @param view the view
+     */
     public void saveProfile(View view) {
         final ArrayList<Account> accountList = new ArrayList<>();
         ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
@@ -144,13 +188,16 @@ public class UserProfile extends AppCompatActivity {
             Log.i("Error", "Failed to get the tweets out of asyc object");
         }
 
-        account = accountList.get(0);
+        Account account = accountList.get(0);
 
         ElasticsearchAccountController.UpdateAccountTask updateAccountTask =
                 new ElasticsearchAccountController.UpdateAccountTask();
 
 
         try {
+            if (encodeImage != null) {
+                account.setProfileImage(encodeImage);
+            }
             account.setNickname(nicknameTxt.getText().toString());
             account.setGender(genderSpinner.getSelectedItem().toString());
             account.setRegion(regionTxt.getText().toString());
@@ -166,13 +213,23 @@ public class UserProfile extends AppCompatActivity {
         Context context = getApplicationContext();
         Toast.makeText(context, "Edit profile successfully", Toast.LENGTH_SHORT).show();
 
-        Intent MainpageIntent = new Intent(this, MainPageActivity.class);
 
-        MainpageIntent.putExtra("username", account.getUsername());
-
-
-        startActivity(MainpageIntent);
         finish();
+    }
+
+
+    /**
+     * This method takes a Bitmap type image, to use Base64.encodeToString() to convert the image
+     * to a Base64 String.
+     */
+    private String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+        Log.i("HAHAHA", imgString);
+        return imgString;
     }
 
 

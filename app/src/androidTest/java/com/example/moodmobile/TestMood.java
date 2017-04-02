@@ -1,152 +1,180 @@
 package com.example.moodmobile;
 
 /**
+ * TODO Default File Template
  * Created by juice on 27/02/17.
  */
-/*
+
 import android.test.ActivityInstrumentationTestCase2;
 
-import junit.framework.Assert;
-
-import java.util.ArrayList;
+import java.util.Date;
 
 
 public class TestMood extends ActivityInstrumentationTestCase2{
 
 
-    public TestMood(Class activityClass) {
-        super(activityClass);
+    public TestMood() {
+        super(Mood.class);
     }
 
 
+    public void testToString() {
+        Mood mood = new Mood("Happy");
+        String shortMessage = "This is good";
+        String noMessage = "";
 
-    public void testSetType(){
-        Mood mood = new Mood();
+        assertTrue(mood.toString() == null);
 
-        mood.setType("Happy");
+        try {
+            mood.setMessage(shortMessage);
+            assertTrue(mood.toString() == shortMessage);
+        } catch (ReasonTooLongException e) {
+            //TODO add something
+        }
 
-        String type = mood.getType();
-        assertEquals(type, "Happy");
+        try {
+            mood.setMessage(noMessage);
+            assertTrue(mood.toString() == noMessage);
+        } catch (ReasonTooLongException e) {
+            //TODO add something
+        }
+    }
 
-        mood.setType("Salty");
+    //@Test(expected=ReasonTooLongException.class)
+    public void testReasonTooLongException(){
+        Mood mood = new Mood("Happy");
+        String longMessage = "This Message is way too long and should be shortened";
 
-        type = mood.getType();
-        assertNotSame(type, "Happy");
+        assertTrue(mood.toString() == null);
 
+        try {
+            mood.setMessage(longMessage);
+        } catch (ReasonTooLongException e){
+            assertTrue(mood.toString() == null);
+        }
+    }
+
+    public void testSetMessage(){
+        Mood mood = new Mood("Happy");
+        String shortMessage = "This is good";
+        String noMessage = "";
+
+        assertTrue(mood.getMessage() == null);
+
+        try {
+            mood.setMessage(shortMessage);
+            assertTrue(mood.getMessage() == shortMessage);
+        } catch (ReasonTooLongException e) {
+            assertTrue(mood.getMessage() == null);
+        }
+
+        try {
+            mood.setMessage(noMessage);
+            assertTrue(mood.getMessage() == noMessage);
+        } catch (ReasonTooLongException e) {
+            assertTrue(mood.getMessage() == null);
+        }
+    }
+
+    public void testSetDate(){
+        Mood mood = new Mood("Happy");
+        Date date1 = mood.getDate();
+        assertTrue(date1 == mood.getDate());
+        Date date2 = new Date();
+        assertFalse(mood.getDate() == date2);
+        mood.setDate(date2);
+        assertTrue(mood.getDate() == date2);
+    }
+
+    public void testSetFeeling(){
+        Mood mood1 = new Mood("Happy");
+        Mood mood2 = new Mood("Sad");
+
+        assertTrue(mood1.getFeeling() == "Happy");
+        assertTrue(mood2.getFeeling() == "Sad");
+
+        mood1.setFeeling(mood2.getFeeling());
+        assertTrue(mood1.getFeeling() == mood2.getFeeling());
+        assertFalse(mood1.getFeeling() == "Happy");
     }
 
     public void testSetSituation(){
-        Mood mood = new Mood();
+        Mood mood = new Mood("Happy");
+        assertTrue(mood.getSituation() == null);
+        mood.setSituation("Alone");
+        assertTrue(mood.getSituation() == "Alone");
 
-        mood.setSituation("In Da Club");
-
-        String situation = mood.getSituation();
-        assertEquals(situation, "In Da Club");
-
-        mood.setSituation("");
-
-        situation = mood.getSituation();
-        assertEquals(situation, "");
-
-    }
-
-    public void testSetReason(){
-        Mood mood = new Mood();
-
-        mood.setReason("Caught Blaziken");
-        String reason = mood.getReason();
-
-        assertEquals(reason, "Caught Blaziken");
-
-
-        mood.setReason("Long Live Valor");
-        String reason = mood.getReason();
-
-        assertEquals(reason, "Long Live Valor");
-    }
-
-    public void testSetImage(){
-        Mood mood = new Mood();
+        mood = new Mood("Happy", "Message", null, null, "Alone", null);
+        assertFalse(mood.getSituation() == null);
+        assertTrue(mood.getSituation() == "Alone");
+        mood.setSituation("In A Crowd");
+        assertFalse(mood.getSituation() == "Alone");
+        assertTrue(mood.getSituation() == "In A Crowd");
 
     }
 
-    public void testSetTime(){
-        Mood mood = new Mood();
+    public void testGetMessage(){
+        Mood mood = new Mood("Happy");
+        String shortMessage = "This is good";
+        String noMessage = "";
 
-        long time = System.currentTimeMillis();
+        assertTrue(mood.getMessage() == null);
 
-        mood.setTime(time);
-        assertEquals(time, mood.getTime());
+        try {
+            mood.setMessage(shortMessage);
+            assertTrue(mood.getMessage() == shortMessage);
+        } catch (ReasonTooLongException e) {
+            assertTrue(mood.getMessage() == null);
+        }
 
+        try {
+            mood.setMessage(noMessage);
+            assertTrue(mood.getMessage() == noMessage);
+        } catch (ReasonTooLongException e) {
+            assertTrue(mood.getMessage() == null);
+        }
     }
 
-    public void testSetLocation(){
-        Mood mood = new Mood();
-
-        mood.setLocation("Johto");
-
-        String location = mood.getLocation();
-        assertEquals(location, "Johto");
-
-        mood.setLocation("PokeStop");
-
-        location = mood.getLocation();
-        assertEquals(location, "PokeStop");
+    public void testGetDate(){
+        Mood mood = new Mood("Happy");
+        Date date1 = mood.getDate();
+        assertTrue(date1 == mood.getDate());
+        Date date2 = new Date();
+        assertFalse(mood.getDate() == date2);
+        mood.setDate(date2);
+        assertTrue(mood.getDate() == date2);
     }
 
-    public void testGetCurrentMood(){
-        Mood mood = new Mood();
+    public void testGetFeelign(){
+        Mood mood1 = new Mood("Happy");
+        Mood mood2 = new Mood("Sad");
 
-        Mood.updateCurrentMood("Happy");
-        String currentMood = Mood.getCurrentMood();
-        assertEquals(currentMood, "Happy");
+        assertTrue(mood1.getFeeling() == "Happy");
+        assertTrue(mood2.getFeeling() == "Sad");
 
-        Mood.updateCurrentMood("Salty");
-        currentMood = Mood.getCurrentMood();
-        assertEquals(currentMood, "Salty");
+        mood1.setFeeling(mood2.getFeeling());
+        assertTrue(mood1.getFeeling() == mood2.getFeeling());
+        assertFalse(mood1.getFeeling() == "Happy");
     }
 
-    public void testUpdateMood(){
-        Moodlist moodlist = new Moodlist();
-        Mood mood = new Mood();
+    public void testGetSituation(){
+        Mood mood = new Mood("Happy");
+        assertTrue(mood.getSituation() == null);
+        mood.setSituation("Alone");
+        assertTrue(mood.getSituation() == "Alone");
 
-        mood.setMood("Happy");
-        mood.setReason("Finished Assignment");
-
-        moodlist.add(mood);
-
-        Mood newmood = moodlist.get(0);
-
-        mood.setMood("Sad");
-        mood.setReason("Out of money");
-
-        assertNotSame(newmood.getMood(), "Sad");
-        assertNotSame(newmood.getReason(), "Out of money");
-
-        moodlist.updateMood();
-
-        newmood = moodlist.get(0);
-        assertSame(newmood.getMood(), "Sad");
-        assertSame(newmood.getReason(), "Out of money");
+        mood = new Mood("Happy", "Message", null, null, "Alone", null);
+        assertFalse(mood.getSituation() == null);
+        assertTrue(mood.getSituation() == "Alone");
+        mood.setSituation("In A Crowd");
+        assertFalse(mood.getSituation() == "Alone");
+        assertTrue(mood.getSituation() == "In A Crowd");
     }
 
-    public void testPostMood(){
-        Moodlist moodlist = new Moodlist();
-
-        Mood mood = new Mood();
-
-        mood.setMood("Happy");
-
-        assertEquals(moodlist.size(), 0);
-        assertTrue(moodlist.postMood(mood)); //Should return true of posted successfully4
-        assertTrue(moodlist.size(), 1);
-
-
-    }
 }
 
 
-*/
+
 
 
 

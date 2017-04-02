@@ -15,14 +15,27 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.indices.mapping.PutMapping;
 
 /**
+ * TODO Defult File Template
  * Created by Derek.R on 2017-03-07.
  */
 
 public class ElasticsearchAccountController {
     private static JestDroidClient client;
 
+    static PutMapping followingMapping = new PutMapping.Builder(
+            "cmput301w17t5",
+            "users",
+            "{ \"users\" : { \"properties\" : { \"following\" : {\"type\" : \"string\"} } } }"
+    ).refresh(true).build();
+
+    static PutMapping followingRequestMapping = new PutMapping.Builder(
+            "cmput301w17t5",
+            "users",
+            "{ \"users\" : { \"properties\" : { \"followRequests\" : {\"type\" : \"string\"} } } }"
+    ).refresh(true).build();
 
     // TODO we need a function which adds Account to elastic search
     public static class AddUser extends AsyncTask<Account, Void, Void> {
@@ -35,7 +48,8 @@ public class ElasticsearchAccountController {
                 Index index = new Index.Builder(account).index("cmput301w17t5").type("users").build();
 
                 try {
-                    // where is the client?
+                    client.execute(followingMapping);
+                    client.execute(followingRequestMapping);
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
                         account.setId(result.getId());
@@ -59,7 +73,7 @@ public class ElasticsearchAccountController {
         protected ArrayList<Account> doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<Account> accounts = new ArrayList<Account>();
+            ArrayList<Account> accounts = new ArrayList<>();
             //Search string here
             String UserQuery;
             if (search_parameters[0].equals("")){
@@ -124,6 +138,7 @@ public class ElasticsearchAccountController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
+                        //TODO add statement
                         //mood.setId(result.getId());
                     }
                     else{
@@ -143,7 +158,7 @@ public class ElasticsearchAccountController {
 
 
 
-    public static void verifySettings() {
+    private static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             DroidClientConfig config = builder.build();
