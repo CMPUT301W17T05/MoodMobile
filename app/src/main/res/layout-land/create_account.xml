@@ -24,11 +24,10 @@
         style="@android:style/Widget.Holo.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/username"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/username"
         android:text="Save Account"
-        android:textStyle="normal|italic" />
+        android:textStyle="normal|italic"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -36,9 +35,8 @@
         android:inputType="text"
         android:ems="10"
         android:id="@+id/username"
-        android:layout_above="@+id/SaveBot"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -55,15 +53,13 @@
         android:id="@+id/textView3"
         tools:textSize="24sp"
         android:textStyle="normal|italic"
-        android:layout_above="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="140dp" />
+        android:layout_above="@+id/test"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/test"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="20dp"
         android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
