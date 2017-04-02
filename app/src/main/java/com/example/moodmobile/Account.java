@@ -1,6 +1,7 @@
 package com.example.moodmobile;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
@@ -16,6 +17,16 @@ public class Account{
     private String region;
     private ArrayList<String> following;
     private ArrayList<String> followRequests;
+
+    /**
+     * Instantiates a new Account.
+     */
+    public Account() {
+        following = new ArrayList<>();
+        followRequests = new ArrayList<>();
+    }
+
+
     private String IMEI;
 
     /**
@@ -50,10 +61,6 @@ public class Account{
         this.username = username;
     }
 
-    /**
-     * Instantiates a new Account.
-     */
-    public Account(){}
 
     /**
      * Sets id.
@@ -146,6 +153,11 @@ public class Account{
         this.region = region;
     }
 
+
+    public void addFollowing(String username) {this.following.add(username);}
+
+
+    public void addFollowRequest(String username){this.followRequests.add(username);}
     /**
      * Gets following.
      *

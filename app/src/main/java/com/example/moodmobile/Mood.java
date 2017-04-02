@@ -8,7 +8,10 @@ import io.searchbox.annotations.JestId;
  * Created by Repka on 2017-03-07.
  Modified by Jia on 2017-03-12.
  Modified by Repka on 2017-03-21.
+<<<<<<< HEAD
+=======
  Modified by Haozhou on 2017-03-27.
+>>>>>>> c46c6441e9285e300e2c0c48cd88a73ca817d75a
  */
 
 public class Mood implements Moodable{
@@ -42,8 +45,7 @@ public class Mood implements Moodable{
         this.username = null;
     }
 
-    public Mood(String feeling, String moodMessage
-            , String location, String moodImage, String socialSituation, String userName) {
+    public Mood(String feeling, String moodMessage, String location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
@@ -100,6 +102,7 @@ public class Mood implements Moodable{
     public void setMoodImage(String moodImage) {
         this.moodImage = moodImage;
     }
+
 
     public String getLocation() {return location;}
     public void setLocation(String location) {this.location = location;}

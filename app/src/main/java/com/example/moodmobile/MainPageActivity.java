@@ -232,6 +232,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         adapter = new CustomListAdapter(this, moodsList);
         moodsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
     }
 
     @Override
