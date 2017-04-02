@@ -50,6 +50,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This is the main page activity that the user sees when the log into
+ * the application.
+ */
+
 public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private Intent intent;
     private static final String SYNC_FILE = "syncmood.sav";
@@ -68,6 +73,11 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
 
+
+    /**
+     * When the
+     * @param savedInstanceState
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -206,7 +216,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
         username = intent.getStringExtra("username");
 
-        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
         getMoodsTask.execute(username);
 
         try {
@@ -221,7 +231,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     protected void onResume() {
         super.onResume();
-        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
         getMoodsTask.execute(username);
 
         try {
@@ -345,7 +355,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     private void filterMoods(){
         ArrayList<Mood> filteredMoodsList = new ArrayList<>();
-        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
         getMoodsTask.execute(username);
         String reason;
         String situation;
