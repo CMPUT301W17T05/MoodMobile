@@ -20,16 +20,26 @@ import java.util.ArrayList;
  * receiving of friend requests
  *
  */
+
 public class AddNewFriendActivity extends AppCompatActivity {
 
     private ArrayList<String> followRequestsList = new ArrayList<String>();
     private ArrayAdapter<String> followRequestsAdapter;
     public ListView requestsList;
 
+    /**
+     * This method populates the follow requests ListView
+     * @param user Takes the users Account as an argument
+     */
     public void populateRequestsList(Account user){
         followRequestsList.addAll(user.getFollowRequests());
     }
 
+
+    /**
+     * This method logs an error and notifies the user
+     * if his search for a user does not return anything.
+     */
     public void displayUserNotFoundMessage(){
         Log.i("Error", "User does not exist.");
 
@@ -42,6 +52,10 @@ public class AddNewFriendActivity extends AppCompatActivity {
         toast.show();
     }
 
+    /**
+     * Called upon creation of the class.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +75,6 @@ public class AddNewFriendActivity extends AppCompatActivity {
         followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
         requestsList.setAdapter(followRequestsAdapter);
 
-
         ElasticsearchAccountController.GetUser loggedInUserTask = new ElasticsearchAccountController.GetUser();
 
         try{
@@ -71,7 +84,6 @@ public class AddNewFriendActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.i("Error", "Could not download account details for logged in user..");
         }
-
 
 
         getFriendRequests.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +156,11 @@ public class AddNewFriendActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Called upon starting the activity.
+     * It creates a new adapter for the ListView
+     */
     @Override
     public void onStart(){
         super.onStart();

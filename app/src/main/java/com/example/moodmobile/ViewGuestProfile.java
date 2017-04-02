@@ -15,6 +15,14 @@ import java.util.Collections;
  * Created by juice on 27/03/17.
  */
 
+/**
+ * This class is to view the information of a person who
+ * has sent you a following request.
+ *
+ * It allows you to view their mood and latest location,
+ * and also allows you to accept or deny their request.
+ *
+ */
 public class ViewGuestProfile extends AppCompatActivity {
     //private TextView guestProfileName;
    // private TextView guestLatestMoodTextview;
@@ -25,6 +33,9 @@ public class ViewGuestProfile extends AppCompatActivity {
     private Button guestDenyRequestButton;
     private Button guestAcceptRequestButton;
 
+    /**
+     * Method to log and display an error if the request could not be sent.
+     */
     public void displayRequestNotSent(){
         Log.i("Error", "Could not accept follow request.");
 
@@ -37,6 +48,10 @@ public class ViewGuestProfile extends AppCompatActivity {
         toast.show();
     }
 
+    /**
+     * Method to display a notification if the request was accepted.
+     * @param username is the username of the currently logged in user.
+     */
     public void displaySuccessfullyAcceptedRequest(String username){
         Context context = getApplicationContext();
 
@@ -48,6 +63,10 @@ public class ViewGuestProfile extends AppCompatActivity {
         toast.show();
     }
 
+    /**
+     * Method called upon creation of the class.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +114,9 @@ public class ViewGuestProfile extends AppCompatActivity {
              */
         }
 
-
-
+        /**
+         * Onclick listener for Deny request
+         */
         guestDenyRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +139,9 @@ public class ViewGuestProfile extends AppCompatActivity {
             }
         });
 
+        /**
+         * Onclick listener for accept request. 
+         */
         guestAcceptRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

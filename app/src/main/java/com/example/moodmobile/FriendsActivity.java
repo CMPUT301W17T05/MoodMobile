@@ -12,6 +12,21 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * This class controlls the functionality of displaying your following list.
+ * It takes in your username as an argument via an intent.
+ *
+ * It displays your following list, the number of people you
+ * are following, and their latest mood.
+ *
+ */
+
+
+/**
+ * TODO
+ * Write custom adapter for listview
+ *
+ */
 public class FriendsActivity extends AppCompatActivity {
 
     private String username;
@@ -27,6 +42,12 @@ public class FriendsActivity extends AppCompatActivity {
     private ArrayList<String> FriendsList;
     private ArrayAdapter<String> FriendsListViewAdapter;
 
+
+    /**
+     *
+     * function which downloads the users following list, and then
+     * populates the listview with the followers.
+     */
     private void getFriends() {
         ElasticsearchAccountController.GetUser getAccountTask = new ElasticsearchAccountController.GetUser();
 
@@ -41,6 +62,10 @@ public class FriendsActivity extends AppCompatActivity {
         NumberFriendsTextView.setText("You are following " + FriendsList.size() + " people");
     }
 
+    /**
+     * OnCreate method called upon creation of the class
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +96,10 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * onStart called every time activity is entered.
+     * It will create a new ArrayAdapter
+     */
     @Override
     public void onStart(){
         super.onStart();
