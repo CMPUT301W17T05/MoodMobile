@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,9 +50,9 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
 
             if (mood.getLocation() != null){
                 try {
-                    addresses = gcd.getFromLocation(mood.getLocation().getLatitude(), mood.getLocation().getLongitude(), 1);
+                    addresses = gcd.getFromLocation(mood.getLatitude(), mood.getLongitude(), 1);
                     locations[position] = addresses.get(0).getLocality() + " @ " + mood.getDate();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     locations[position] = mood.getDate().toString();
                 }
             }

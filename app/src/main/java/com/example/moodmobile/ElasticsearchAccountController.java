@@ -15,6 +15,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.indices.mapping.PutMapping;
 
 /**
  * TODO Defult File Template
@@ -24,6 +25,17 @@ import io.searchbox.core.SearchResult;
 public class ElasticsearchAccountController {
     private static JestDroidClient client;
 
+    static PutMapping followingMapping = new PutMapping.Builder(
+            "cmput301w17t5",
+            "users",
+            "{ \"users\" : { \"properties\" : { \"following\" : {\"type\" : \"string\"} } } }"
+    ).refresh(true).build();
+
+    static PutMapping followingRequestMapping = new PutMapping.Builder(
+            "cmput301w17t5",
+            "users",
+            "{ \"users\" : { \"properties\" : { \"followRequests\" : {\"type\" : \"string\"} } } }"
+    ).refresh(true).build();
 
     // TODO we need a function which adds Account to elastic search
     public static class AddUser extends AsyncTask<Account, Void, Void> {
@@ -36,7 +48,8 @@ public class ElasticsearchAccountController {
                 Index index = new Index.Builder(account).index("cmput301w17t5").type("users").build();
 
                 try {
-                    // where is the client?
+                    client.execute(followingMapping);
+                    client.execute(followingRequestMapping);
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
                         account.setId(result.getId());

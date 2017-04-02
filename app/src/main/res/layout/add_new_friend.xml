@@ -12,51 +12,46 @@
 
 
     <TextView
-        android:text="Add Friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:id="@+id/textView2"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:text="Search by username"
+        android:text="Add followers by Username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView7"
         android:layout_alignBottom="@+id/username"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="56dp" />
+        android:layout_marginBottom="56dp"
+        android:textSize="24sp" />
+
+    <Button
+        android:text="See who added me "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/GetFriendRequests"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Send a friend request"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/SendRequest"
+        android:layout_below="@+id/GetFriendRequests"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/username"
+        android:id="@+id/usernameSearch"
         android:hint="MoMo username"
-        android:layout_marginTop="134dp"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/GetFriendRequests"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:text="Send a friend request"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView7"
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/SendRequest"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="72dp"
-        android:id="@+id/SaveBot" />
-
-    <Button
-        android:text="See who added me "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/SaveBot"
-        android:id="@+id/button5"
-        android:layout_alignEnd="@+id/SaveBot"
-        android:layout_alignStart="@+id/SaveBot" />
+        android:layout_marginTop="42dp"
+        android:id="@+id/RequestsList" />
 </RelativeLayout>

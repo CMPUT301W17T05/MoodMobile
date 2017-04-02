@@ -18,31 +18,31 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
 
     public void testGetUsername(){
         Account account = new Account();
-
+        account.setUsername("haozhou");
         String username = account.getUsername();
 
         assertNotSame(username, "notreal");
-        assertEquals(username, "PokeTrainer");
+        assertEquals(username, "haozhou");
     }
-    /*
+
     public void testGetDeviceIMEI(){
         Account account = new Account();
 
         account.setIMEI("IMEIstringNUMBERS1234567890");
-        String IMEI = account.getDeviceIMEI();
+        String IMEI = account.getIMEI();
 
         assertEquals(IMEI, "IMEIstringNUMBERS1234567890");
     }
 
     public void testSetDeviceIMEI(){
         Account account = new Account();
-        account.setDeviceIMEI("IMEIstringNUMBERS1234567890");
+        account.setIMEI("IMEIstringNUMBERS1234567890");
 
-        String IMEI = account.getDeviceIMEI();
+        String IMEI = account.getIMEI();
         assertEquals(IMEI, "IMEIstringNUMBERS1234567890");
         assertNotSame(IMEI, "imeiSTRINGnumbers1234567890"); // Test for case sensitivity
     }
-    */
+
     public void testSetUsername(){
         Account account = new Account();
         account.setUsername("PokeTrainer");
@@ -96,7 +96,7 @@ public class TestAccount extends ActivityInstrumentationTestCase2{
 
         region = account.getRegion();
         assertEquals(region, "Johto");
-        assertEquals(region, "johto"); // Testing for caase sensitivity
+        assertNotSame(region, "johto"); // Testing for caase sensitivity
     }
 
     public void testCheckName(){

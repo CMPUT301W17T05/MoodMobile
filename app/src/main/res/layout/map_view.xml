@@ -4,12 +4,15 @@
 
 
 
-    <org.osmdroid.views.MapView android:id="@+id/map"
+    <org.osmdroid.views.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:clickable="true"/>
 
     <RadioGroup
-        android:id="@+id/radio_group_list_selector"
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="#80000000"

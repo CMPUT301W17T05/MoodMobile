@@ -52,6 +52,7 @@ public class ViewEditMood extends AppCompatActivity {
         moodEdittext = (EditText) findViewById(R.id.moodEdittext);
         moodSituationEdittext = (EditText) findViewById(R.id.moodSituationEdittext);
         moodReasonEdittext = (EditText) findViewById(R.id.moodReasonEdittext);
+        //saveButton = (Button) findViewById(R.id.moodSaveButton);
 
         String moodID = getIntent().getStringExtra("moodID");
 
@@ -70,9 +71,9 @@ public class ViewEditMood extends AppCompatActivity {
          */
 
 
-        moodEdittext.setText(mood.getFeeling());
+        moodEdittext.setText(mood.getMessage());
         moodSituationEdittext.setText(mood.getSituation());
-        moodReasonEdittext.setText(mood.getMessage());
+        moodReasonEdittext.setText(mood.getFeeling());
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
@@ -86,9 +87,9 @@ public class ViewEditMood extends AppCompatActivity {
                     /** Setting new values **/
                     try{
 
-                    mood.setMessage(moodReasonEdittext.getText().toString());
+                    mood.setMessage(moodEdittext.getText().toString());
                     mood.setSituation(moodSituationEdittext.getText().toString());
-                    mood.setFeeling(moodEdittext.getText().toString());
+                    mood.setFeeling(moodReasonEdittext.getText().toString());
                     mood.setDate(new Date());}
                     catch (ReasonTooLongException e) {
 
@@ -100,6 +101,9 @@ public class ViewEditMood extends AppCompatActivity {
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.show();
                     }
+
+
+
 
                     /** save data to server
                      *
