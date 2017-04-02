@@ -109,9 +109,9 @@ public class SyncService extends IntentService {
             SyncMood currentSyncMood = syncList.get(0);
             if (currentSyncMood.getSyncTask() == 1){
                 AddToServer(currentSyncMood.getSyncMood());
-            }else if (currentSyncMood.getSyncTask() == 2){
+            } else if (currentSyncMood.getSyncTask() == 2){
                 UpdateOnServer(currentSyncMood.getSyncMood());
-            } else if (currentSyncMood.getSyncTask() == 3) {
+            } else if (currentSyncMood.getSyncTask() == 3){
                 DeleteFromServer(currentSyncMood.getSyncMood());
             }
             syncList.remove(0);

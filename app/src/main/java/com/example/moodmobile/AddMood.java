@@ -323,7 +323,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     }
 
     private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 2);
+        SyncMood syncMood = new SyncMood(mood, 1);
         ArrayList<SyncMood> syncList;
 
         try {
