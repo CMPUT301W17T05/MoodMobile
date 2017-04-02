@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:text="Username: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_above="@+id/username"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginBot"
+        android:layout_alignParentBottom="true"
+        style="@android:style/Widget.Holo.Light.Button"
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/SendFriendRequestButto " />
+
+    <Button
+        android:id="@+id/SendFriendRequestButto "
+        style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/loginBot"
+        android:layout_alignEnd="@+id/username"
+        android:layout_alignStart="@+id/username"
+        android:onClick="createAccount"
+        android:text="*Create an account*"
+        android:textStyle="normal|italic" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/momologo"
+        android:id="@+id/imageView2"
+        android:layout_above="@+id/username"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/username"
+        android:layout_above="@+id/SendFriendRequestButto "
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
