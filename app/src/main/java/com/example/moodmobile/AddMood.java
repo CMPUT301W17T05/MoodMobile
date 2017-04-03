@@ -299,7 +299,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     //Compress the image.
                     ByteArrayOutputStream bmpStream = new ByteArrayOutputStream();
-                    resized.compress(Bitmap.CompressFormat.PNG, 5 , bmpStream);
+                    resized.compress(Bitmap.CompressFormat.JPEG, 5 , bmpStream);
                     byte[] bitmapdata = bmpStream.toByteArray();
                     resized = BitmapFactory.decodeByteArray(bitmapdata , 0, bitmapdata .length);
 
