@@ -1,6 +1,9 @@
 package com.example.moodmobile;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by juice on 27/03/17.
@@ -23,11 +28,8 @@ import java.util.Collections;
  * and also allows you to accept or deny their request.
  *
  */
-public class ViewGuestProfile extends AppCompatActivity {
-    //private TextView guestProfileName;
-   // private TextView guestLatestMoodTextview;
-    //private TextView guestLatestLocationTextview;
-    private Account guestUserAccount;
+public class ViewRequest extends AppCompatActivity {
+    private Account UserAccount;
     private Mood LatestMood;
 
     private Button guestDenyRequestButton;
@@ -86,12 +88,10 @@ public class ViewGuestProfile extends AppCompatActivity {
         ElasticsearchMoodController.GetMoodsTaskByName getUserLatestMood = new ElasticsearchMoodController.GetMoodsTaskByName();
 
         try {
-            guestUserAccount = (Account) getUserActivity.execute(guestUsername).get().get(0);
-            guestProfileName.setText(guestUserAccount.getUsername());
+            UserAccount = (Account) getUserActivity.execute(guestUsername).get().get(0);
+            guestProfileName.setText(UserAccount.getUsername());
         } catch (Exception e) {
             /**
-             * TODO
-             * handle this exception
              */
         }
 
@@ -99,21 +99,14 @@ public class ViewGuestProfile extends AppCompatActivity {
             LatestMood = (Mood) getUserLatestMood.execute(guestUsername).get().get(0);//Should get latest mood
             guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
 
-            /**
-             * TODO
-             * change getLatitude,Longiture to
-             * getLocation once location functionality is implimented.
-             */
-            /**guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
-            guestLatestLocationTextview.setText("Latest Location: "
-                    + "Latitude: " + LatestMood.getLatitude() + " "
-                    + "Longitude: " + LatestMood.getLongitude());**/
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = gcd.getFromLocation(LatestMood.getLatitude(), LatestMood.getLongitude(), 1);
+            guestLatestLocationTextview.setText("Latest Location: " + addresses.get(0).getLocality());
 
-            guestLatestLocationTextview.setText("Latest Location: " + LatestMood.getLocation().toString());
         } catch (Exception e) {
-            /**
-             */
+            guestLatestLocationTextview.setText("Latest Location:");
         }
+
 
         /**
          * Onclick listener for Deny request

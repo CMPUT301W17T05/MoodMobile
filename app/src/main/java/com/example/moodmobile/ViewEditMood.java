@@ -43,8 +43,6 @@ import java.util.Locale;
  */
 public class ViewEditMood extends AppCompatActivity {
 
-    private static final String SYNC_FILE = "syncmood.sav";
-
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private EditText moodReason;

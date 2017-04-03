@@ -84,7 +84,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     private LocationManager locationManager;
     private String encodeImage;
 
-    private static final String SYNC_FILE = "syncmood.sav";
 
     /**
      * The constant TAG.
@@ -104,7 +103,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
         reasonText = (EditText) findViewById(R.id.reason);
         Button publishButton = (Button) findViewById(R.id.publish);
-        ImageButton addImageButton = (ImageButton) findViewById(R.id.ivGallery);
         moodSpinner = (Spinner) findViewById(R.id.moodSpinner);
         ssSpinner = (Spinner) findViewById(R.id.ssSpinner);
         locationCheckBox = (CheckBox) findViewById(R.id.checkBox);
@@ -120,7 +118,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                 Toast.makeText(AddMood.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
 
-                // Show an expanation to the user *asynchronously* -- don't block
+                // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 

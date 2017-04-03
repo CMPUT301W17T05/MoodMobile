@@ -28,20 +28,6 @@ import io.searchbox.indices.mapping.PutMapping;
 public class ElasticsearchAccountController {
     private static JestDroidClient client;
 
-    /*
-    static PutMapping followingMapping = new PutMapping.Builder(
-            "cmput301w17t5",
-            "users",
-            "{ \"users\" : { \"properties\" : { \"following\" : {\"type\" : \"string\"} } } }"
-    ).refresh(true).build();
-
-    static PutMapping followingRequestMapping = new PutMapping.Builder(
-            "cmput301w17t5",
-            "users",
-            "{ \"users\" : { \"properties\" : { \"followRequests\" : {\"type\" : \"string\"} } } }"
-    ).refresh(true).build();
-    */
-
     /**
      * When a new user is created, the method is called to create the user in the ElasticSearch server.
      */

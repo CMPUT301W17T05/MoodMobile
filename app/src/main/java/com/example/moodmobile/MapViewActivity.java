@@ -37,12 +37,11 @@ import android.widget.Toast;
  * Nearby will show the most recent Mood of all users that within 5 kilometers of the
  * login user.
  */
-public class Osm_mapView extends AppCompatActivity implements LocationListener {
+public class MapViewActivity extends AppCompatActivity implements LocationListener {
     private Intent getUsernameIntent;
     private String username;
     private ArrayList<Account> currentAccount = new ArrayList<>();
     private ArrayList<String> followingUsernameList = new ArrayList<String>();
-    private ArrayList<Mood> followingLatestMoods = new ArrayList<Mood>();
     private static final int MY_PERMISSIONS_REQUEST_FOR_EXTERNAL_STORAGE = 3;
 
 
@@ -64,14 +63,14 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
     /**
      * The Overlay item array.
      */
-    ArrayList<OverlayItem> overlayItemArray;
+    public ArrayList<OverlayItem> overlayItemArray;
     /**
      * The Marker color.
      */
-    Drawable markerColor;
+    private Drawable markerColor;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_view);
 
@@ -126,14 +125,14 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         rb3 = (RadioButton) findViewById(R.id.nearby);
         overlayItemArray = new ArrayList<>();
 
-        if (ContextCompat.checkSelfPermission(Osm_mapView.this,
+        if (ContextCompat.checkSelfPermission(MapViewActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(Osm_mapView.this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapViewActivity.this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                Toast.makeText(Osm_mapView.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapViewActivity.this, "MoMo need the permission to access your location.!", Toast.LENGTH_SHORT).show();
 
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -143,7 +142,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
 
                 // No explanation needed, we can request the permission.
 
-                ActivityCompat.requestPermissions(Osm_mapView.this,
+                ActivityCompat.requestPermissions(MapViewActivity.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_FOR_LOCATION);
 
@@ -251,7 +250,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             }
 
         }
-        Toast.makeText(Osm_mapView.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MapViewActivity.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
 
     }
     /**
@@ -274,7 +273,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
             currentAccount.clear();
             currentAccount.addAll(getCurrentUser.get());
             followingUsernameList = currentAccount.get(0).getFollowing();
-            Toast.makeText(Osm_mapView.this, "Size of following user: "+String.valueOf(currentAccount.get(0).getFollowing().size()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapViewActivity.this, "Size of following user: "+String.valueOf(currentAccount.get(0).getFollowing().size()), Toast.LENGTH_SHORT).show();
 
 
         } catch (Exception e) {
@@ -337,7 +336,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
                 addMarker(new GeoPoint(mood.getLatitude(), mood.getLongitude()), titleTxt, mood.getFeeling());
             }
         }
-        Toast.makeText(Osm_mapView.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MapViewActivity.this, "Mood size: "+String.valueOf(moodsList.size()), Toast.LENGTH_SHORT).show();
 
 
 

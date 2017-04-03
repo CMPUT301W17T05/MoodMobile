@@ -41,7 +41,7 @@
         <activity
             android:name=".AddMood"
             android:exported="true" />
-        <activity android:name=".ViewGuestProfile" />
+        <activity android:name=".ViewRequest" />
         <activity
             android:name=".MainPageActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -62,7 +62,7 @@
 
         <activity android:name=".AddNewFriendActivity" />
         <activity android:name=".FriendsActivity" />
-        <activity android:name=".Osm_mapView" />
+        <activity android:name=".MapViewActivity" />
         <activity android:name=".ViewFriendRequests" />
     </application>
 

@@ -73,7 +73,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
      */
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -344,7 +344,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
             case(R.id.nav_map):
                 setResult(RESULT_OK);
-                Intent mapIntent = new Intent(this, Osm_mapView.class);
+                Intent mapIntent = new Intent(this, MapViewActivity.class);
                 mapIntent.putExtra("username", username);
                 startActivity(mapIntent);
                 break;
