@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -456,7 +457,13 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         Context context = this;
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        try {
+            //TODO get server address
+            InetAddress inetAddress = InetAddress.getByName("google.com");
+            return !inetAddress.equals("");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void SaveToFile(Mood mood){

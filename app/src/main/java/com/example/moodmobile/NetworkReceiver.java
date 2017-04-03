@@ -9,17 +9,26 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 /**
- * TODO Default File Template
+ * This class runs in the background is waiting for a change in the device's connection.
+ * If connection is newly established it launches a SyncService in order to sync the device with the server.
+ * If connection is lost, a log is made and the NetworkReceiver continues to wait.
  * Created by zindi on 3/16/17.
  */
-
 public class NetworkReceiver extends WakefulBroadcastReceiver {
+    /**
+     * onReceive checks whether a new connection has been established or has been lost.
+     * It logs this information.
+     * If a new connection has been established it starts a SyncService in order to sync the device with the server.
+     * If the connection has been lost the NetworkReciever continues to wait.
+     * @param context from the device, needed to call the service.
+     * @param intent from the device with information with regards to the connection.
+     */
     @Override
     public void onReceive(Context context, Intent intent){
         Intent service = new Intent(context, SyncService.class);
 
         /*
-        Code Addapted from
+        Code adapted from
         http://stackoverflow.com/questions/31689513/broadcastreceiver-to-detect-network-is-connected
         on Mar 16, 2017
          */

@@ -8,10 +8,7 @@ import io.searchbox.annotations.JestId;
  * Created by Repka on 2017-03-07.
  Modified by Jia on 2017-03-12.
  Modified by Repka on 2017-03-21.
-<<<<<<< HEAD
-=======
  Modified by Haozhou on 2017-03-27.
->>>>>>> c46c6441e9285e300e2c0c48cd88a73ca817d75a
  */
 
 public class Mood implements Moodable{

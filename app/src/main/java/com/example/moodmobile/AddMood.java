@@ -9,11 +9,12 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,11 +30,24 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.osmdroid.util.GeoPoint;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.util.ArrayList;
 
 /**
  * The type Add mood.
@@ -68,7 +82,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
      * The Iv camera.
      */
     ImageButton ivCamera;
-
+    private static final String SYNC_FILE = "syncmood.sav";
 
     /**
      * The constant TAG.
@@ -232,7 +246,12 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     }
                 }
 
-                addMoodTask.execute(currentMood);
+                if (IsConnected()) {
+                    addMoodTask.execute(currentMood);
+                } else {
+                    SaveToFile(currentMood);
+                }
+
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
                 finish();
@@ -364,6 +383,42 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 } else {
                     Toast.makeText(AddMood.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
+        }
+    }
+
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        try {
+            //TODO get server address
+            InetAddress inetAddress = InetAddress.getByName("google.com");
+            return !inetAddress.equals("");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void SaveToFile(Mood mood){
+        SyncMood syncMood = new SyncMood(mood, 1);
+        ArrayList<SyncMood> syncList;
+
+        try {
+            FileInputStream fis = openFileInput(SYNC_FILE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
+            syncList = gson.fromJson(in, listType);
+
+            syncList.add(syncMood);
+
+            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            gson = new Gson();
+            gson.toJson(syncList, writer);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException();
         }
     }
 }
