@@ -50,7 +50,6 @@ import java.util.Date;
  */
 
 public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-    private static final String SYNC_FILE = "syncmood.sav";
     private ImageView userImage;
     private TextView userText;
     private TextView welcomeText;
@@ -192,8 +191,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 scheduler.schedule(job);
 
 
-                updateList();
-
                 /**
                  Display a user message that the selected person was deleted
                  */
@@ -222,20 +219,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         super.onResume();
         updateList();
 
-    }
-    protected void onStart(){
-        super.onStart();
-        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
-        getMoodsTask.execute(username);
-
-        try {
-            moodsList = getMoodsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the moods out of the async object");
-        }
-        adapter = new CustomListAdapter(this, moodsList);
-        moodsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
 
