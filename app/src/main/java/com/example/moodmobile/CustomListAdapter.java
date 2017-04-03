@@ -3,6 +3,9 @@ package com.example.moodmobile;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Base64;
@@ -15,7 +18,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.awt.Color;
+import android.support.v7.app.AppCompatActivity;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.BLUE;
+import static android.graphics.Color.GRAY;
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.MAGENTA;
+import static android.graphics.Color.RED;
+import static android.graphics.Color.WHITE;
+import static com.example.moodmobile.R.drawable.grey;
 
 /**
  * The adapter to the ArrayList that contains the moods belonging to a user.
@@ -45,7 +57,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
     private final String[] usernames = new String[size];
     private final String[] locations = new String[size];
     private final Bitmap[] images = new Bitmap[size];
-    private final Color = new Color;
+    private final ColorDrawable[] markerColor = new ColorDrawable[size];
     private List<Address> addresses;
     private Integer position;
     private byte[] decodedString;
@@ -69,7 +81,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         for (Mood mood : MoodsList) {
             reasons[position] = mood.getMessage();
             emoteids[position] = getEmoticon(mood.getFeeling());
-            color[position] = getColor(mood.getFeeling());
+            markerColor[position] = getColor(mood.getFeeling());
             usernames[position] = mood.getUsername() + " " + mood.getSituation();
             // Get the moodImage stored as a string, and convert it to a Bitmap Picture.
             if (mood.getMoodImage() != null) {
@@ -122,7 +134,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         usernametxt.setText(usernames[position]);
         locationtxt.setText(locations[position]);
         imageView.setImageBitmap(images[position]);
-        rowView.setBackground(color[position]);
+        rowView.setBackground(markerColor[position]);
         return rowView;
 
     }
@@ -167,37 +179,37 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         return emoticon;
     }
 
-    private Color getColor(String emotion){
-        Color color;
+    private ColorDrawable getColor(String emotion){
+        ColorDrawable markerColor;
         switch (emotion) {
             case "Anger":
-                color = red;
+                markerColor = new ColorDrawable(RED);
                 break;
             case "Confusion":
-                color = gray;
+                markerColor = new ColorDrawable(BLUE);
                 break;
             case "Disgust":
-                color = green;
+                markerColor = new ColorDrawable(MAGENTA);
                 break;
             case "Fear":
-                color = pink;
+                markerColor = new ColorDrawable(BLACK);
                 break;
             case "Happiness":
-                color = orange;
+                markerColor = new ColorDrawable(GREEN);
                 break;
             case "Sadness":
-                color = blue;
+                markerColor = new ColorDrawable(GRAY);
                 break;
             case "Shame":
-                color = white;
+                markerColor = new ColorDrawable(WHITE);
                 break;
             case "Surprise":
-                color = yellow;
+                markerColor = new ColorDrawable(MAGENTA + 77);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid emotion: " + emotion);
         }
-        return color;
+        return markerColor;
     }
 }
 
