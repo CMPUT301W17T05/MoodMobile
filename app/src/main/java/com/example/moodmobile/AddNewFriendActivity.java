@@ -162,7 +162,7 @@ public class AddNewFriendActivity extends AppCompatActivity {
      * It creates a new adapter for the ListView
      */
     @Override
-    public void onStart(){
+    protected void onStart(){
         super.onStart();
 
         followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);

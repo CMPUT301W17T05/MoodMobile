@@ -227,7 +227,7 @@ public class Osm_mapView extends AppCompatActivity implements LocationListener {
         MapController.animateTo(center);
         addMarker(center, "This is where you are.", "origin");
 
-        ElasticsearchMoodController.GetMoodsTask getMoodsTask = new ElasticsearchMoodController.GetMoodsTask();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
         getMoodsTask.execute(username);
 
         try {
