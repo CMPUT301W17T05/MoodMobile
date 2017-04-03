@@ -18,6 +18,18 @@
         <item>Surprise</item>
     </string-array>
 
+    <string-array name="filter_mood_array">
+        <item></item>
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+    </string-array>
+
     <string-array name="situation_array">
         <item></item>
         <item>Alone</item>

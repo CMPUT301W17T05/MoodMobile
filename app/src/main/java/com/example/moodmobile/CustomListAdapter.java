@@ -1,6 +1,7 @@
 package com.example.moodmobile;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -37,12 +38,11 @@ import java.util.Locale;
 
 public class CustomListAdapter extends ArrayAdapter<Mood> {
 
-    private final Activity context;
-    private final String[] reasons = new String[10];
-    private final Integer[] emoteids = new Integer[10];
-    private final String[] usernames = new String[10];
-    private final String[] locations = new String[10];
-    private final Bitmap[] images = new Bitmap[10];
+    private String[] reasons = new String[10];
+    private Integer[] emoteids = new Integer[10];
+    private String[] usernames = new String[10];
+    private String[] locations = new String[10];
+    private Bitmap[] images = new Bitmap[10];
 
     /**
      * The constructor for the CustomListAdapter class.
@@ -54,11 +54,16 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
 
     public CustomListAdapter(Activity activityContext, ArrayList<Mood> MoodsList) {
         super(activityContext, R.layout.list_item, MoodsList);
-        // TODO Auto-generated constructor stub
         context = activityContext;
         Integer position = 0;
-        // Setup the GeoCoder
+        // Setup the GeoCoder and initialize the lists
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
+        reasons = new String[MoodsList.size()];
+        emoteids = new Integer[MoodsList.size()];
+        usernames = new String[MoodsList.size()];
+        locations = new String[MoodsList.size()];
+        images = new Bitmap[MoodsList.size()];
+
         for (Mood mood : MoodsList) {
             reasons[position] = mood.getMessage();
             emoteids[position] = getEmoticon(mood.getFeeling());
