@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.awt.Color;
 
 /**
  * The adapter to the ArrayList that contains the moods belonging to a user.
@@ -44,6 +45,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
     private final String[] usernames = new String[size];
     private final String[] locations = new String[size];
     private final Bitmap[] images = new Bitmap[size];
+    private final Color = new Color;
     private List<Address> addresses;
     private Integer position;
     private byte[] decodedString;
@@ -67,6 +69,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         for (Mood mood : MoodsList) {
             reasons[position] = mood.getMessage();
             emoteids[position] = getEmoticon(mood.getFeeling());
+            color[position] = getColor(mood.getFeeling());
             usernames[position] = mood.getUsername() + " " + mood.getSituation();
             // Get the moodImage stored as a string, and convert it to a Bitmap Picture.
             if (mood.getMoodImage() != null) {
@@ -119,6 +122,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         usernametxt.setText(usernames[position]);
         locationtxt.setText(locations[position]);
         imageView.setImageBitmap(images[position]);
+        rowView.setBackground(color[position]);
         return rowView;
 
     }
@@ -161,6 +165,39 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
                 throw new IllegalArgumentException("Invalid emotion: " + emotion);
         }
         return emoticon;
+    }
+
+    private Color getColor(String emotion){
+        Color color;
+        switch (emotion) {
+            case "Anger":
+                color = red;
+                break;
+            case "Confusion":
+                color = gray;
+                break;
+            case "Disgust":
+                color = green;
+                break;
+            case "Fear":
+                color = pink;
+                break;
+            case "Happiness":
+                color = orange;
+                break;
+            case "Sadness":
+                color = blue;
+                break;
+            case "Shame":
+                color = white;
+                break;
+            case "Surprise":
+                color = yellow;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid emotion: " + emotion);
+        }
+        return color;
     }
 }
 
