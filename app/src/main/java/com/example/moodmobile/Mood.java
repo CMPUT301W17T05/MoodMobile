@@ -1,17 +1,31 @@
 
 package com.example.moodmobile;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
 /**
- * Created by Repka on 2017-03-07.
- Modified by Jia on 2017-03-12.
- Modified by Repka on 2017-03-21.
-<<<<<<< HEAD
-=======
- Modified by Haozhou on 2017-03-27.
->>>>>>> c46c6441e9285e300e2c0c48cd88a73ca817d75a
+ * This is the main class used to implement the moods in the application.
+ * The main parameters used for this class are as follows:
+ * <ul>
+ *     <li>message: Optional reason</li>
+ *     <li>date: Date when the mood was posted</li>
+ *     <li>feeling: Mandatory emotion</li>
+ *     <li>socialSituation: Optional situation</li>
+ *     <li>moodImage: Optional image to be attached</li>
+ *     <li>username: Name of the user that posted the mood</li>
+ *     <li>location: Location stored as string</li>
+ *     <li>latitude: Latitude of the mood</li>
+ *     <li>longitude: Longitude of the mood</li>
+ *     <li>id: ID of the mood returned by ElasticSearch</li>
+ * </ul>
+ * The location is stored as a string so that it can be stored as a geo_point
+ * type object in ElasticSearch to use when searching for nearby moods.
+ *
+ * @author Repka
+ * @version 1.4
  */
 
 public class Mood implements Moodable{
@@ -27,14 +41,13 @@ public class Mood implements Moodable{
 
     @JestId
     private String id;
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    /**
+     * The constructor for the Mood class. If a just an emotion is provided,
+     * then it is set as the mood's emotion and the current date is used.
+     * Alternatively, all parameters can be provided to avoid using the setters.
+     * @param feeling input message
+     */
     public Mood(String feeling){
         this.message = null;
         this.feeling = feeling;
@@ -45,7 +58,8 @@ public class Mood implements Moodable{
         this.username = null;
     }
 
-    public Mood(String feeling, String moodMessage, String location, String moodImage, String socialSituation, String userName) {
+    public Mood(String feeling, String moodMessage
+            , String location, String moodImage, String socialSituation, String userName) {
         this.message = moodMessage;
         this.feeling = feeling;
         this.date = new Date();
@@ -55,43 +69,40 @@ public class Mood implements Moodable{
         this.username = userName;
     }
 
-    @Override
-    public String toString(){
-        return message;
-    }
-
+    /**
+     * The following setters and getters simply either set the parameter or get
+     * the value stored in it.
+     * The exception is with the message setter, in which checks the input message
+     * to ensure it is either under 20 characters, or contains 3 or less words.
+     */
     public void setMessage(String message) throws ReasonTooLongException {
-        if (message.length() > 20){
+        if (message.length() > 20 || StringUtils.countMatches(message, " ") > 2){
             //Do Something!
             throw new ReasonTooLongException();
         }
         this.message = message;
     }
+    public String getMessage() {
+        return message;
+    }
 
     public void setDate(Date date) {
         this.date = date;
+    }
+    public Date getDate() {
+        return date;
     }
 
     public void setFeeling(String feeling) {
         this.feeling = feeling;
     }
-
-    public void setSituation(String situation) {
-        this.socialSituation = situation;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
     public String getFeeling() {
         return feeling;
     }
 
+    public void setSituation(String situation) {
+        this.socialSituation = situation;
+    }
     public String getSituation() {
         return socialSituation;
     }
@@ -103,14 +114,16 @@ public class Mood implements Moodable{
         this.moodImage = moodImage;
     }
 
-
-    public String getLocation() {return location;}
-    public void setLocation(String location) {this.location = location;}
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String userName) {
         this.username = userName;
     }
@@ -119,7 +132,6 @@ public class Mood implements Moodable{
     public Double getLatitude() {
         return latitude;
     }
-
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
@@ -127,10 +139,15 @@ public class Mood implements Moodable{
     public Double getLongitude() {
         return longitude;
     }
-
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }

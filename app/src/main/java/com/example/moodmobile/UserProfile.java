@@ -155,10 +155,21 @@ public class UserProfile extends AppCompatActivity {
 
                     Bitmap image =  BitmapFactory.decodeStream(inputStream);
 
-                    encodeImage = getEncoded64ImageStringFromBitmap(image);
+                    //Resize the image to addressed format.
+                    Bitmap resized = Bitmap.createScaledBitmap(image, 320, 240,true);
+
+                    //Compress the image.
+                    ByteArrayOutputStream bmpStream = new ByteArrayOutputStream();
+                    resized.compress(Bitmap.CompressFormat.PNG, 5 , bmpStream);
+                    byte[] bitmapdata = bmpStream.toByteArray();
+                    resized = BitmapFactory.decodeByteArray(bitmapdata , 0, bitmapdata .length);
+
+                    ImageView profileImage = (ImageView) findViewById(R.id.profileImage);
+                    profileImage.setImageBitmap(resized);
+                    encodeImage = getEncoded64ImageStringFromBitmap(resized);
 
 
-                    userProfile.setImageBitmap(image);
+                    userProfile.setImageBitmap(resized);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

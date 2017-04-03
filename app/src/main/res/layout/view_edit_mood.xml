@@ -1,100 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Alone"
-        android:ems="10"
-        android:id="@+id/moodSituationEdittext"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/textView18"
-        android:layout_alignLeft="@+id/moodSaveButton"
-        android:layout_alignStart="@+id/moodSaveButton" />
+        <TextView
+            android:text="View/Edit a Mood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editMoodTitle"
+            android:textStyle="normal|italic"
+            android:textSize="24sp"
+            android:layout_marginTop="13dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="Mood"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView6"
-        android:layout_marginTop="24dp"
-        android:layout_below="@+id/editMoodTitle"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Mood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:layout_marginTop="17dp"
+            android:layout_below="@+id/editMoodTitle"
+            android:layout_centerHorizontal="true" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Happy"
-        android:ems="10"
-        android:id="@+id/moodEdittext"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_below="@+id/textView6"
-        android:layout_centerHorizontal="true" />
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/moodSpinner"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_below="@+id/textView6"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp" />
 
-    <Button
-        android:text="Save"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/moodSaveButton"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Social Situation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:id="@+id/textView18"
+            android:layout_below="@+id/moodSpinner"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="Social Situation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:id="@+id/textView18"
-        android:layout_below="@+id/moodEdittext"
-        android:layout_centerHorizontal="true" />
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/moodSituationSpinner"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_below="@+id/textView18"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp" />
 
-    <TextView
-        android:text="View/Edit a Mood"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editMoodTitle"
-        android:textStyle="normal|italic"
-        android:textSize="24sp"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="Reason Why"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView20"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:text="Reason Why"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView20"
+            android:layout_below="@+id/moodSituationSpinner"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Have dinner with Steve"
-        android:ems="10"
-        android:id="@+id/moodReasonEdittext"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/textView20"
-        android:layout_alignLeft="@+id/moodSituationEdittext"
-        android:layout_alignStart="@+id/moodSituationEdittext" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/moodReasonEdittext"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/textView20"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="2017/2/28 2:22 @ University of Alberta"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/dateTimeLocationTextview"
-        android:layout_above="@+id/moodSaveButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp" />
 
-</RelativeLayout>
+        <TextView
+            android:text="Date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dateText"
+            android:layout_below="@+id/moodReasonEdittext"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dateEditText"
+            android:layout_below="@+id/dateText"
+            android:gravity="center_horizontal"
+            android:layout_alignEnd="@+id/moodReasonEdittext"
+            android:layout_alignStart="@+id/moodReasonEdittext" />
+
+        <TextView
+            android:text="Location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationText"
+            android:layout_marginTop="23dp"
+            android:layout_below="@+id/dateEditText"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationEditText"
+            android:layout_below="@+id/locationText"
+            android:gravity="center_horizontal"
+            android:layout_alignEnd="@+id/moodReasonEdittext"
+            android:layout_alignStart="@+id/moodReasonEdittext" />
+
+        <Button
+            android:text="Save"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/moodSaveButton"
+            android:layout_marginBottom="19dp"
+            android:layout_below="@+id/locationEditText"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+</ScrollView>

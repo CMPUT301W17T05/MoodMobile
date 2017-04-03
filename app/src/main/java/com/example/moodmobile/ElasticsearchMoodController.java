@@ -15,16 +15,19 @@ import io.searchbox.core.SearchResult;
 
 
 /**
- * Modified by Jia on 2017-03-12.
- * Created by Derek.R on 2017-03-07.
+ * The controller used by the application to get moods from ElasticSearch
+ *
+ * @author Repka
+ * @version 1.3
  */
 
 public class ElasticsearchMoodController {
 
     private static JestDroidClient client;
 
-
-    // TODO we need a function which adds mood to elastic search
+    /**
+     * Given a new mood, send it to the ElasticSearch server to store.
+     */
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
 
         @Override
@@ -35,7 +38,7 @@ public class ElasticsearchMoodController {
                 Index index = new Index.Builder(mood).index("cmput301w17t5").type("moods").build();
 
                 try {
-                    // where is the client?
+                    // Send request to the server to add the mood
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
                         mood.setId(result.getId());
@@ -66,6 +69,7 @@ public class ElasticsearchMoodController {
 
             for (Mood mood : moods) {
 
+                // Send request to the server to delete the mood
                 try {client.execute(new Delete.Builder(mood.getId())
                         .index("cmput301w17t5")
                         .type("moods")
@@ -76,18 +80,17 @@ public class ElasticsearchMoodController {
                 }
 
                 try {
-                    // where is the client?
                     Index index = new Index.Builder(mood)
                             .index("cmput301w17t5")
                             .type("moods")
                             .id(mood.getId()) //Added to preserve ID
                             .build();
 
-
+                    // Send request to the server to add modified mood
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()){
-                        //TODO add statement
-                        //mood.setId(result.getId());
+                        // Update the JestID of the mood
+                        mood.setId(result.getId());
                     }
                     else{
                         Log.i("Error", "ElasticSearch was not able to add the mood.");
@@ -102,6 +105,10 @@ public class ElasticsearchMoodController {
         }
     }
 
+    /**
+     * Sends request to the ElasticSearch server to delete a particular mood.
+     */
+
     public static class DeleteMoodsTask extends AsyncTask<Mood, Void, Void> {
 
         @Override
@@ -109,7 +116,7 @@ public class ElasticsearchMoodController {
             verifySettings();
 
             for (Mood mood : moods) {
-
+                // Send request to the server to delete a mood
                 try {client.execute(new Delete.Builder(mood.getId())
                         .index("cmput301w17t5")
                         .type("moods")
@@ -125,7 +132,7 @@ public class ElasticsearchMoodController {
         }
     }
 
-    // TODO we need a function which gets mood from elastic search
+    /*
     public static class GetMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
@@ -166,14 +173,17 @@ public class ElasticsearchMoodController {
             return moods;
         }
     }
+    */
 
+    /**
+     * Given a particular ID, searches the ElasticSearch server for the particular corresponding mood.
+     */
     public static class GetMoodsTaskByID extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
 
             ArrayList<Mood> moods = new ArrayList<>();
-            //Search string here
             String MoodQuery;
             if (search_parameters[0].equals("")){
                 MoodQuery = search_parameters[0];
@@ -253,44 +263,33 @@ public class ElasticsearchMoodController {
         }
     }
 
+    /**
+     * Given the users current location, returns the moods within a 5km radius.
+     */
+
     public static class GetNearMoodsTask extends AsyncTask<String, Void, ArrayList<Mood>> {
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
             ArrayList<Mood> moods = new ArrayList<Mood>();
-            //Search string here
             String MoodQuery;
+
             if (search_parameters[0].equals("")){
                 MoodQuery = search_parameters[0];
             }
             else{
-                /*
-                * {
-                    "query": {
-                    "match_all" : {}
-                   },
-                "filter" : {
-                        "geo_distance" : {
-                        "distance" : "10km",
-                        "location" : "54,-113"
-                        }
-                    }
-                }
-                *
-                * */
                 MoodQuery = "{\"query\":{ \"match_all\":{}}, \"filter\":{ \"geo_distance\":{ \"distance\" : \"5km\",\"location\" : \""
                         + search_parameters[0] + ", " + search_parameters[1]
                         + "\" }}}";
-                Log.i("HHHHAHHA",MoodQuery);
             }
-            // TODO Build the query
+
             Search search = new Search.Builder(MoodQuery)
                     .addIndex("cmput301w17t5")
                     .addType("moods")
                     .build();
 
             try {
-                // TODO get the results of the query
+                // Send request to the server to get nearby moods.
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()){
                     List<Mood> foundMoods = result.getSourceAsObjectList(Mood.class);
@@ -314,7 +313,9 @@ public class ElasticsearchMoodController {
         }
     }
 
-
+    /**
+     * Each of the above methods calls this method to verify that the client is valid and built.
+     */
 
     private static void verifySettings() {
         if (client == null) {
