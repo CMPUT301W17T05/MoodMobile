@@ -43,6 +43,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
     private String[] usernames = new String[10];
     private String[] locations = new String[10];
     private Bitmap[] images = new Bitmap[10];
+    private Activity context;
 
     /**
      * The constructor for the CustomListAdapter class.

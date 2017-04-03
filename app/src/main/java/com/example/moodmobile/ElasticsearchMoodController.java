@@ -233,6 +233,7 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
+                MoodQuery = "{\"size\": 50, \"query\": {\"term\" : { \"username\" : \"" + search_parameters[0] + "\" }}," +
                         "\"sort\": { \"date\": { \"order\": \"desc\" }}}";
             }
 
@@ -277,6 +278,7 @@ public class ElasticsearchMoodController {
                 MoodQuery = search_parameters[0];
             }
             else{
+                MoodQuery = "{\"size\": 50, \"query\":{ \"match_all\":{}}, \"filter\":{ \"geo_distance\":{ \"distance\" : \"5km\",\"location\" : \""
                         + search_parameters[0] + ", " + search_parameters[1]
                         + "\" }}}";
             }
