@@ -15,7 +15,10 @@ import com.google.gson.Gson;
  * Created by shingai on 02/04/17.
  */
 
-public class AddJobService extends JobService {
+public class AddJobService extends SyncJobService {
+    private Mood mood;
+    private String moodID;
+
     /**
      * Logs the time the Job was created.
      */
@@ -46,7 +49,8 @@ public class AddJobService extends JobService {
         Log.i("AddJobService", "Started at:" + SystemClock.elapsedRealtime());
         String json = job.getExtras().getString("mood");
         Gson gson = new Gson();
-        Mood mood = gson.fromJson(json, Mood.class);
+        mood = gson.fromJson(json, Mood.class);
+        moodID = mood.getId();
 
         ElasticsearchMoodController.AddMoodsTask addMoodTask =
                 new ElasticsearchMoodController.AddMoodsTask();
@@ -57,7 +61,7 @@ public class AddJobService extends JobService {
     }
 
     /**
-     *
+     * This method ends the Job and restarts it if necessary.
      * @param job Contains the information passed into the Job. To be used for rescheduling.
      * @return true if the job is to be rescheduled
      * @return false if the job doesn't need to be rescheduled.
@@ -66,5 +70,9 @@ public class AddJobService extends JobService {
     public boolean onStopJob(JobParameters job){
         Log.i("AddJobService", "Stopped at:" + SystemClock.elapsedRealtime());
         return true;
+    }
+
+    public boolean checkByID(String moodID){
+        return super.checkById(moodID);
     }
 }

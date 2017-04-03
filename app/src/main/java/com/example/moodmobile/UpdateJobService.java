@@ -11,7 +11,10 @@ import com.google.gson.Gson;
  * Created by shingai on 02/04/17.
  */
 
-public class UpdateJobService extends JobService {
+public class UpdateJobService extends SyncJobService {
+    Mood mood;
+    String moodID;
+
     /**
      * Logs when the service is created.
      */
@@ -41,13 +44,20 @@ public class UpdateJobService extends JobService {
         Log.i("UpdateJobService", "Started at:" + SystemClock.elapsedRealtime());
         String json = job.getExtras().getString("mood");
         Gson gson = new Gson();
-        Mood mood = gson.fromJson(json, Mood.class);
+        mood = gson.fromJson(json, Mood.class);
+        moodID = mood.getId();
 
-        ElasticsearchMoodController.UpdateMoodsTask updateMoodTask =
-                new ElasticsearchMoodController.UpdateMoodsTask();
-        updateMoodTask.execute(mood);
+        if (checkByID(moodID)){
+            ElasticsearchMoodController.UpdateMoodsTask updateMoodTask =
+                    new ElasticsearchMoodController.UpdateMoodsTask();
+            updateMoodTask.execute(mood);
+            Log.i("UpdateJobService", "Finished at:" + SystemClock.elapsedRealtime());
 
-        Log.i("UpdateJobService", "Finished at:" + SystemClock.elapsedRealtime());
+        } else {
+            Log.i("UpdateJobService", "Mood does not exist.");
+            Log.i("UpdateJobService", "Aborted at" + SystemClock.elapsedRealtime());
+        }
+
         return false;
     }
 
@@ -61,5 +71,9 @@ public class UpdateJobService extends JobService {
     public boolean onStopJob(JobParameters job){
         Log.i("UpdateJobService", "Stopped at:" + SystemClock.elapsedRealtime());
         return true;
+    }
+
+    public boolean checkByID(String moodID){
+        return super.checkById(moodID);
     }
 }

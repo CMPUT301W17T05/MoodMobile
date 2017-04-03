@@ -11,7 +11,10 @@ import com.google.gson.Gson;
  * Created by shingai on 02/04/17.
  */
 
-public class DeleteJobService extends JobService {
+public class DeleteJobService extends SyncJobService {
+    private Mood mood;
+    private String moodID;
+
     /**
      * Logs when the Service is created
      */
@@ -41,13 +44,19 @@ public class DeleteJobService extends JobService {
         Log.i("DeleteJobService", "Started at:" + SystemClock.elapsedRealtime());
         String json = job.getExtras().getString("mood");
         Gson gson = new Gson();
-        Mood mood = gson.fromJson(json, Mood.class);
+        mood = gson.fromJson(json, Mood.class);
+        moodID = mood.getId();
 
-        ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
-                new ElasticsearchMoodController.DeleteMoodsTask();
-        deleteMoodsTask.execute(mood);
+        if (checkByID(moodID)){
+            ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
+                    new ElasticsearchMoodController.DeleteMoodsTask();
+            deleteMoodsTask.execute(mood);
+            Log.i("DeleteJobservice", "Finished at:" + SystemClock.elapsedRealtime());
+        } else {
+            Log.i("DeleteJobService", "Mood does not exist");
+            Log.i("DeleteJobService", "Aborted at:" + SystemClock.elapsedRealtime());
+        }
 
-        Log.i("DeleteJobservice", "Finished at:" + SystemClock.elapsedRealtime());
         return false;
     }
 
@@ -61,5 +70,9 @@ public class DeleteJobService extends JobService {
     public boolean onStopJob(JobParameters job){
         Log.i("DeleteJobService", "Stopped at:" + SystemClock.elapsedRealtime());
         return true;
+    }
+
+    public boolean checkByID(String moodID){
+        return super.checkById(moodID);
     }
 }
