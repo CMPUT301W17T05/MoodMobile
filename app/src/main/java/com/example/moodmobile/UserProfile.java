@@ -51,7 +51,7 @@ public class UserProfile extends AppCompatActivity {
     private final ArrayList<String> genderArray = new ArrayList<>();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
         getUsernameIntent = getIntent();

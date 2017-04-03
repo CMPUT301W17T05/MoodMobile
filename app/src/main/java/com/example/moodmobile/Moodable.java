@@ -11,4 +11,22 @@ public interface Moodable {
     String getMessage();
 
     Date getDate();
+
+    String getId();
+
+    Double getLongitude();
+
+    Double getLatitude();
+
+    String getFeeling();
+
+    String getSituation();
+
+    String getMoodImage();
+
+    String getLocation();
+
+    String getUsername();
+
+
 }

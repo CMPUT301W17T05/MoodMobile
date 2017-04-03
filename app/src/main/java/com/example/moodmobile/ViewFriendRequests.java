@@ -80,7 +80,7 @@ public class ViewFriendRequests extends AppCompatActivity {
                  * Allow to view profile of requester
                  */
 
-                Intent intent = new Intent(ViewFriendRequests.this, ViewGuestProfile.class)
+                Intent intent = new Intent(ViewFriendRequests.this, ViewRequest.class)
                         .putExtra("guestUsername", followRequestsList.get(i))
                         .putExtra("username", username);
 

@@ -152,7 +152,7 @@ public class FriendsActivity extends AppCompatActivity {
     private void filterMoods(Boolean dateChecked, String emotion, String reason){
         long DAY_IN_MS = 1000 * 60 * 60 * 24;
         Date week = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
-        ArrayList<Mood> filteredMoodsList = new ArrayList<>();
+        ArrayList<Mood> filteredMoodsList;
         if (IsConnected()) {
             ElasticsearchAccountController.GetUser getAccountTask = new ElasticsearchAccountController.GetUser();
             try {

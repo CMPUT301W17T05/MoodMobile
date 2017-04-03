@@ -1,14 +1,15 @@
 package com.example.moodmobile.activities;
 import android.test.ActivityInstrumentationTestCase2;
-import com.example.moodmobile.Osm_mapView;
+
+import com.example.moodmobile.MapViewActivity;
 import com.robotium.solo.Solo;
 
-public class TestMapView extends ActivityInstrumentationTestCase2 <Osm_mapView> {
+public class TestMapView extends ActivityInstrumentationTestCase2 <MapViewActivity> {
 
     private Solo solo;
 
     public TestMapView() {
-        super(com.example.moodmobile.Osm_mapView.class);
+        super(MapViewActivity.class);
     }
 
     public void setUp() throws Exception{
