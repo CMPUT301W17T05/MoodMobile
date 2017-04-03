@@ -79,7 +79,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
         usernames = new String[MoodsList.size()];
         locations = new String[MoodsList.size()];
         images = new Bitmap[MoodsList.size()];
-        markerColor = new ColorDrawable[MoodList.size()];
+        markerColor = new ColorDrawable[MoodsList.size()];
 
         for (Mood mood : MoodsList) {
             reasons[position] = mood.getMessage();
