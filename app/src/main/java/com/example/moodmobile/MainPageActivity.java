@@ -210,25 +210,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        username = intent.getStringExtra("username");
-
-        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
-        getMoodsTask.execute(username);
-
-        try {
-            moodsList = getMoodsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the moods out of the async object");
-        }
-
-        adapter = new CustomListAdapter(this, moodsList);
-        moodsListView.setAdapter(adapter);
-    }
-
     protected void onResume() {
         super.onResume();
         ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();

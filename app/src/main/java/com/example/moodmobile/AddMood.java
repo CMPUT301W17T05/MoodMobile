@@ -18,7 +18,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,35 +44,27 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     /**
      * The constant IMG_REQUEST.
      */
-    public static final int IMG_REQUEST = 21;
+    private static final int IMG_REQUEST = 21;
     private static final int MY_PERMISSIONS_REQUEST_FOR_LOCATION = 1;
 
     private EditText reasonText;
     private Spinner moodSpinner;
     private Spinner ssSpinner;
     private CheckBox locationCheckBox;
-    private String Feeling;
+    private ImageButton ivCamera;
+    private String feeling;
     private String socialSituation;
     private String reason;
 
+    private Mood newMood = new Mood(null);
     private Location mlocation;
 
     private double latitude; // Latitude
     private double longitude; // Longitude
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;
+    /*private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60;*/
     private LocationManager locationManager;
     private String encodeImage;
-    /**
-     * The Iv camera.
-     */
-    ImageButton ivCamera;
-
-
-    /**
-     * The constant TAG.
-     */
-    protected static final String TAG = "AddMood";
 
     /**
      * The Camera request.
@@ -84,7 +75,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_mood);
-        final Mood currentMood = new Mood(null);
         getUsernameIntent = getIntent();
 
         reasonText = (EditText) findViewById(R.id.reason);
@@ -129,7 +119,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
         longitude = mlocation.getLongitude();
         latitude  = mlocation.getLatitude();
-        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
 
 
         ivCamera.setOnClickListener(new View.OnClickListener() {
@@ -166,16 +155,14 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     //Checked test
                     Context context = getApplicationContext();
                     CharSequence text = "Checked";
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(context, text, duration);
+                    Toast toast = Toast.makeText(context, text,Toast.LENGTH_LONG);
                     toast.show();
                 }
                 else{
                     //Unchecked test
                     Context context = getApplicationContext();
                     CharSequence text = "Unchecked";
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(context, text, duration);
+                    Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -193,46 +180,44 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 ElasticsearchMoodController.AddMoodsTask addMoodTask =
                         new ElasticsearchMoodController.AddMoodsTask();
 
-                Feeling = moodSpinner.getSelectedItem().toString();
-                currentMood.setUsername(username);
-                currentMood.setFeeling(Feeling);
+                feeling = moodSpinner.getSelectedItem().toString();
+                newMood.setUsername(username);
+                newMood.setFeeling(feeling);
 
                 socialSituation = ssSpinner.getSelectedItem().toString();
 
                 //This is for checking the value of CurrentMood and socialSituation
 
                 Context context = getApplicationContext();
-                CharSequence text = "Selected Mood: "+Feeling+"\nSocialSituation: "+socialSituation;
-                int duration = Toast.LENGTH_LONG;
 
                 //Encode the Image
-                currentMood.setMoodImage(encodeImage);
+                newMood.setMoodImage(encodeImage);
 
                 reason = reasonText.getText().toString();
 
                 setResult(RESULT_OK);
-                try {currentMood.setMessage(reason);
+                try {
+                    newMood.setMessage(reason);
                 } catch (ReasonTooLongException e) {
                     CharSequence text2 = "Reason is too long.";
-                    int duration2 = Toast.LENGTH_SHORT;
-                    Toast toast2 = Toast.makeText(context, text2, duration2);
+                    Toast toast2 = Toast.makeText(context, text2, Toast.LENGTH_LONG);
                     toast2.show();
                 }
-                currentMood.setSituation(socialSituation);
-                currentMood.setUsername(getIntent().getStringExtra("username"));
+                newMood.setSituation(socialSituation);
+                newMood.setUsername(getIntent().getStringExtra("username"));
 
                 // Set the location if box is checked.
                 if(locationCheckBox.isChecked()){
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     if(ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         mlocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        currentMood.setLatitude(mlocation.getLatitude());
-                        currentMood.setLongitude(mlocation.getLongitude());
-                        currentMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
+                        newMood.setLatitude(mlocation.getLatitude());
+                        newMood.setLongitude(mlocation.getLongitude());
+                        newMood.setLocation(mlocation.getLatitude() + ", " + mlocation.getLongitude());
                     }
                 }
 
-                addMoodTask.execute(currentMood);
+                addMoodTask.execute(newMood);
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
                 finish();
@@ -335,7 +320,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
     public void onLocationChanged(Location location) {
         longitude = location.getLongitude();
         latitude  = location.getLatitude();
-        Log.d(TAG,"Location longitude:"+ longitude +" latitude: "+ latitude );
     }
 
     @Override
