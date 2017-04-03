@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:text="Latest Location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/GuestLatestMoodTextview"
+        android:layout_alignStart="@+id/GuestLatestMoodTextview"
+        android:id="@+id/GuestLatestLocationTextview" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        >
+
+        <Button
+            android:text="Deny"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/GuestDenyRequest"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/GuestAcceptRequest"
+            android:layout_weight="0.86" />
+
+    </LinearLayout>
+
+    <TextView
+        android:text="Profile Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:id="@+id/GuestProfileName"
+        android:textSize="30sp"
+        android:textStyle="normal|italic"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Latest mood:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="49dp"
+        android:id="@+id/GuestLatestMoodTextview"
+        android:layout_below="@+id/GuestProfileName"
+        android:layout_toStartOf="@+id/GuestProfileName"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
