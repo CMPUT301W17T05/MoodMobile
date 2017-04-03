@@ -1,28 +1,25 @@
 package com.example.moodmobile;
 
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -42,27 +39,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * This is the main page activity that the user sees when the log into
- * the application.
+ * the application. From here, the user can access any of the other activities,
+ * as well as filter their moods.
  */
 
 public class MainPageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-    private Intent intent;
-    private static final String SYNC_FILE = "syncmood.sav";
     private ImageView userImage;
     private TextView userText;
     private TextView welcomeText;
@@ -71,17 +58,17 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private CustomListAdapter adapter;
     private ArrayAdapter<String> spinAdapter;
     private String situationArray[];
-    private Spinner spinnerSituation;
+    private Spinner spinnerEmotion;
     private EditText reasonText;
     private CheckBox chkDate;
     private String username;
     private Context context = this;
 
-    private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
-
 
     /**
-     * When the
+     * When the activity is first created, the various views are gathered and the user's profile is
+     * pulled from the ElasticSearch server. Using this, the user's moods are displayed and their
+     * profile picture is set up in the drawer along with their username.
      * @param savedInstanceState
      */
 
@@ -89,19 +76,19 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getLocationPermission();
 
-        intent = getIntent();
+        // Set up the toolbar for the activity.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Set up the side menu drawer.
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
+        // Setup the navigation view.
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View hView = navigationView.getHeaderView(0);
@@ -114,9 +101,8 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
         moodsListView = (ListView) findViewById(R.id.moodList);
 
-
+        // Get the user's profile picture and put it and their username into the drawer
         final ArrayList<Account> accountList = new ArrayList<>();
-
         ElasticsearchAccountController.GetUser getUser = new ElasticsearchAccountController.GetUser();
         getUser.execute(username);
 
@@ -135,15 +121,17 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         userText.setText(username);
 
 
+        /**
+         * When the user clicks either their username or their profile picture on the side menu,
+         * they are taken to edit their profile.
+         */
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 drawer.closeDrawer(GravityCompat.START);
                 Intent profileIntent = new Intent(MainPageActivity.this, UserProfile.class);
-
                 profileIntent.putExtra("username", username);
-
                 startActivity(profileIntent);
             }
         });
@@ -160,6 +148,9 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
         });
 
+        /**
+         * When the user clicks on a mood, they are taken to edit that mood event.
+         */
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
@@ -200,10 +191,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 scheduler.schedule(job);
 
 
-                /** TODO notify elasticsearch
-                 */
-
-
                 /**
                  Display a user message that the selected person was deleted
                  */
@@ -225,43 +212,39 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     }
 
+    /**
+     * When the activity is resumed, the moods are retrieved from the server, to show any changes or additions made.
+     */
     protected void onResume() {
         super.onResume();
-        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
-        getMoodsTask.execute(username);
-
-        try {
-            moodsList = getMoodsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the moods out of the async object");
-        }
-        adapter = new CustomListAdapter(this, moodsList);
-        moodsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        updateList();
 
     }
-    protected void onStart(){
-        super.onStart();
-        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
-        getMoodsTask.execute(username);
 
-        try {
-            moodsList = getMoodsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the moods out of the async object");
-        }
-        adapter = new CustomListAdapter(this, moodsList);
-        moodsListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
 
+    /**
+     * When the back button is pushed, a dialog is presented to confirm the
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Closing Activity")
+                    .setMessage("Are you sure you want to close this activity?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
     }
 
@@ -274,39 +257,40 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // Launch a dialog that allows the user to filter their moods.
         if (id == R.id.action_filter) {
 
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.filter_dialog);
             dialog.setTitle("Filter Moods");
 
+
             Button filterButton = (Button) dialog.findViewById(R.id.filterButton);
             Button cancelButton = (Button) dialog.findViewById(R.id.cancelButton);
             reasonText = (EditText) dialog.findViewById(R.id.reasonText);
             chkDate = (CheckBox) dialog.findViewById(R.id.weekBox);
-            spinnerSituation = (Spinner) dialog.findViewById(R.id.sitSpinner);
-            situationArray = getResources().getStringArray(R.array.situation_array);
+            spinnerEmotion = (Spinner) dialog.findViewById(R.id.emotionSpinner);
+            situationArray = getResources().getStringArray(R.array.filter_mood_array);
             spinAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, situationArray);
-            spinnerSituation.setAdapter(spinAdapter);
+            spinnerEmotion.setAdapter(spinAdapter);
 
+            // Filter the moods
             filterButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    filterMoods();
+                    filterMoods(chkDate.isChecked(), spinnerEmotion.getSelectedItem().toString(), reasonText.getText().toString());
                 }
             });
 
+            // Undo any filters that have been done.
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    updateList();
                 }
             });
 
@@ -315,6 +299,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             dialog.show();
         }
 
+        // Launch the add mood activity
         else if (id == R.id.action_mood){
             setResult(RESULT_OK);
             Intent newMoodIntent = new Intent(this, AddMood.class);
@@ -325,43 +310,52 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Switch used to determine which activity to go to.
+     * @param item The activity selected.
+     * @return the result of the item being selected
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_moods) {
-            if (this.getClass() != MainPageActivity.class){
+        switch (id){
+            case(R.id.nav_moods):
                 setResult(RESULT_OK);
                 Intent mainIntent = new Intent(this, MainPageActivity.class);
                 mainIntent.putExtra("username", username);
                 startActivity(mainIntent);
-            }
-        } else if (id == R.id.nav_following) {
-            Intent intent = new Intent(this, FriendsActivity.class);
-            intent.putExtra("username", username);
+                finish();
+                break;
 
-            startActivityForResult(intent, 1);
+            case(R.id.nav_following):
+                Intent intent = new Intent(this, FriendsActivity.class);
+                intent.putExtra("username", username);
+                startActivityForResult(intent, 1);
+                break;
 
+            case(R.id.nav_requests):
+                setResult(RESULT_OK);
+                Intent friendsIntent = new Intent(this, AddNewFriendActivity.class);
+                friendsIntent.putExtra("username", username);
+                startActivityForResult(friendsIntent, 1);
+                break;
 
+            case(R.id.nav_map):
+                setResult(RESULT_OK);
+                Intent mapIntent = new Intent(this, Osm_mapView.class);
+                mapIntent.putExtra("username", username);
+                startActivity(mapIntent);
+                break;
 
-        } else if (id == R.id.nav_requests) {
-            setResult(RESULT_OK);
-            Intent friendsIntent = new Intent(this, AddNewFriendActivity.class);
-            friendsIntent.putExtra("username", username);
-            startActivityForResult(friendsIntent, 1);
+            case(R.id.nav_logout):
+                setResult(RESULT_OK);
+                Intent loginIntent = new Intent(this, LoginPage.class);
+                startActivity(loginIntent);
+                finish();
+                break;
 
-        } else if (id == R.id.nav_map) {
-            setResult(RESULT_OK);
-            Intent mapIntent = new Intent(this, Osm_mapView.class);
-
-            mapIntent.putExtra("username", username);
-
-            startActivity(mapIntent);
-
-        } else if (id == R.id.nav_logout) {
-            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -369,112 +363,78 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    private void filterMoods(){
+    /**
+     * Method that filters the moods depending on the inputs passed to it.
+     * @param dateChecked If the user wants to sort by most recent week.
+     * @param emotion The emotion the user wants to sort by.
+     * @param reason The reason that the moods must contain.
+     */
+    private void filterMoods(Boolean dateChecked, String emotion, String reason){
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date week = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
         ArrayList<Mood> filteredMoodsList = new ArrayList<>();
+        if (IsConnected()) {
+            ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
+            getMoodsTask.execute(username);
+            try {
+                filteredMoodsList = getMoodsTask.get();
+            } catch (Exception e) {
+                Log.i("Error", "Failed to get the moods out of the async object");
+            }
+        }
+
+        else{filteredMoodsList = moodsList;}
+
+        // Go through each mood to see if it passes the criteria.
+        for (Mood mood : new ArrayList<Mood>(filteredMoodsList)) {
+            Date moodDate = mood.getDate();
+            if (dateChecked && (moodDate.compareTo(week) < 0)) {
+                filteredMoodsList.remove(mood);
+                continue;
+            }
+
+            if (!emotion.isEmpty() && !mood.getFeeling().equals(emotion)) {
+                filteredMoodsList.remove(mood);
+                continue;
+            }
+
+            if (!reason.isEmpty() && !mood.getMessage().contains(reason)) {
+                filteredMoodsList.remove(mood);
+                continue;
+            }
+        }
+
+        // Update the view.
+        adapter = new CustomListAdapter(this, filteredMoodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * This function checks the online connectivity on the application.
+     * @return true if connected to internet and false if not.
+     */
+    private boolean IsConnected(){
+        Context context = this;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
+    }
+
+    /**
+     * Method that tries to get the most recent moods form the ElasticSearch server and display them.
+     */
+    private void updateList(){
         ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
         getMoodsTask.execute(username);
-        String reason;
-        String situation;
 
         try {
             moodsList = getMoodsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the moods out of the async object");
         }
-
-        for (Mood mood : moodsList) {
-            if (chkDate.isChecked()){
-                long DAY_IN_MS = 1000 * 60 * 60 * 24;
-                Date week = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
-                Date moodDate = mood.getDate();
-                if (!(moodDate.compareTo(week) < 0)) {
-                    reason = reasonText.getText().toString();
-                    if (mood.getMessage().contains(reason) || reason.isEmpty()) {
-                        situation = spinnerSituation.getSelectedItem().toString();
-                        if (mood.getSituation() == null) {
-                            //TODO add something?
-                            continue;
-                        } else if (mood.getSituation().contains(situation)) {
-                            filteredMoodsList.add(mood);
-                            //TODO ADD SOMETHING?
-                            continue;
-                        }
-                    }
-
-                    else {
-                        //TODO ADD SOMETHING?
-                        continue;
-                    }
-                }
-                else{
-                    //TODO ADD SOMETHING?
-                    continue;
-                }
-            }
-
-            else {
-                reason = reasonText.getText().toString();
-                if (mood.getMessage().contains(reason)) {
-                    situation = spinnerSituation.getSelectedItem().toString();
-                    if (mood.getSituation() == null) {
-                        continue;
-                    } else if (mood.getSituation().contains(situation)) {
-                        filteredMoodsList.add(mood);
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-            }
-        }
-        moodsList.clear();
-        adapter.clear();
-        moodsList.addAll(filteredMoodsList);
         adapter = new CustomListAdapter(this, moodsList);
         moodsListView.setAdapter(adapter);
-    }
-
-    public void getLocationPermission() {
-        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
-        // checking the build version since Context.checkSelfPermission(...) is only available
-        // in Marshmallow
-        // 2) Always check for permission (even if permission has already been granted)
-        // since the user can revoke permissions at any time through Settings
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // The permission is NOT already granted.
-            // Check if the user has been asked about this permission already and denied
-            // it. If so, we want to give more explanation about why the permission is needed.
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show our own UI to explain to the user why we need to read the contacts
-                // before actually requesting the permission and showing the default UI
-            }
-
-            // Fire off an async request to actually get the permission
-            // This will show the standard permission request dialog UI
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION);
-        }
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        // Make sure it's our original READ_CONTACTS request
-        if (requestCode == MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        adapter.notifyDataSetChanged();
     }
 }
