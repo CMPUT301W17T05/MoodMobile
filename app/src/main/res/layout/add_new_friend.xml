@@ -22,19 +22,19 @@
         android:textSize="24sp" />
 
     <Button
-        android:text="See who added me "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/GetFriendRequests"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
         android:text="Send a friend request"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/SendRequest"
-        android:layout_below="@+id/GetFriendRequests"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="See who added me "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/GetFriendRequests"
+        android:layout_above="@+id/SendRequest"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -44,14 +44,8 @@
         android:ems="10"
         android:id="@+id/usernameSearch"
         android:hint="MoMo username"
-        android:layout_above="@+id/GetFriendRequests"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/SendRequest"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        android:id="@+id/RequestsList" />
+
 </RelativeLayout>

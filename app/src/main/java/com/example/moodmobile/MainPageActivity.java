@@ -311,12 +311,18 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 startActivity(mainIntent);
             }
         } else if (id == R.id.nav_following) {
-            /*
-                setResult(RESULT_OK);
-                Intent friendsIntent = new Intent(v.getContext(), FriendsActivity.class);
-                startActivity(friendsIntent);*/
+            Intent intent = new Intent(this, FriendsActivity.class);
+            intent.putExtra("username", username);
+
+            startActivityForResult(intent, 1);
+
+
 
         } else if (id == R.id.nav_requests) {
+            setResult(RESULT_OK);
+            Intent friendsIntent = new Intent(this, AddNewFriendActivity.class);
+            friendsIntent.putExtra("username", username);
+            startActivityForResult(friendsIntent, 1);
 
         } else if (id == R.id.nav_map) {
             setResult(RESULT_OK);
