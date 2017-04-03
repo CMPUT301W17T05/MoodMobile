@@ -45,5 +45,5 @@ public class TestFollowing extends ActivityInstrumentationTestCase2 <FriendsActi
 
 
 }
-
+**/
 
