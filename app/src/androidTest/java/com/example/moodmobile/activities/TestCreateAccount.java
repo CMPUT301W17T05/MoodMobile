@@ -1,4 +1,5 @@
 package com.example.moodmobile.activities;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.EditText;
 import com.example.moodmobile.CreateAccount;
@@ -14,6 +15,9 @@ public class TestCreateAccount extends ActivityInstrumentationTestCase2 <CreateA
     }
 
     public void setUp() throws Exception{
+
+        Intent intent = new Intent();
+        intent.putExtra("username", "haozhou");setActivityIntent(intent);
         solo = new Solo(getInstrumentation(), getActivity());
     }
 

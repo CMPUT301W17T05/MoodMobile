@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,37 +8,38 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:text="Add a New Friend"
-        android:layout_height="wrap_content"
-        android:id="@+id/AddNewFriendButton"
-        android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="65dp" />
 
-    <Button
-        android:text="Filter my following list"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="17dp"
-        android:id="@+id/FilterFollowingListButton" />
+        android:id="@+id/userView"
+        android:weightSum="1">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:id="@+id/FriendsListView"
-        android:layout_above="@+id/AddNewFriendButton"
-        android:layout_alignParentStart="true" />
+        <TextView
+            android:text="You are following 0 people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/NumberFriendsTextView"
+            android:textSize="24sp"
+            android:textStyle="normal|italic"
+            android:layout_above = "@+id/listContents"
+            android:layout_weight="1.00" />
+    </LinearLayout>
 
-    <TextView
-        android:text="You are following 0 people"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/NumberFriendsTextView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:layout_marginTop="5dp"
+        android:id="@+id/listContents"
+        android:layout_below="@+id/userView">
+        <ListView
+            android:id="@+id/FriendsListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

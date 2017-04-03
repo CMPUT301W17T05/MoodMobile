@@ -18,6 +18,18 @@
         <item>Surprise</item>
     </string-array>
 
+    <string-array name="filter_mood_array">
+        <item></item>
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+    </string-array>
+
     <string-array name="situation_array">
         <item></item>
         <item>Alone</item>
@@ -33,6 +45,7 @@
     </string-array>
     <string name="title_activity_main_test">MainActivityTest</string>
     <string name="action_mood">Add Mood</string>
+    <string name="action_friend">Add Friend</string>
     <string name="action_filter">Filter Moods</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
