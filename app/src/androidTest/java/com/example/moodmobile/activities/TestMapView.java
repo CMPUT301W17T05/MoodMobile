@@ -1,4 +1,5 @@
 package com.example.moodmobile.activities;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.example.moodmobile.MapViewActivity;
@@ -13,6 +14,8 @@ public class TestMapView extends ActivityInstrumentationTestCase2 <MapViewActivi
     }
 
     public void setUp() throws Exception{
+        Intent intent = new Intent();
+        intent.putExtra("username", "haozhou");setActivityIntent(intent);
         solo = new Solo(getInstrumentation(), getActivity());
     }
 
