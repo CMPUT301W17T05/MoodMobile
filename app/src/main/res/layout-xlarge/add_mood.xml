@@ -57,11 +57,12 @@
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/reason"
+        android:layout_alignStart="@+id/reason"
+        android:layout_below="@+id/reason"
         android:onClick="addImage"
         android:text="Add an image"
-        android:textStyle="normal|italic"
-        android:layout_below="@+id/reason"
-        android:layout_centerHorizontal="true" />
+        android:textStyle="normal|italic" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -123,9 +124,9 @@
         android:id="@+id/ivGallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="addImage"
-        app:srcCompat="@android:drawable/ic_menu_gallery"
+        android:layout_alignStart="@+id/publish"
         android:layout_below="@+id/reason"
-        android:layout_toEndOf="@+id/textView7" />
+        android:onClick="addImage"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
 
 </RelativeLayout>
