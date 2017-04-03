@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -79,14 +80,21 @@ public class LoginPage extends AppCompatActivity {
                 }
 
                 else {
-                    Context context = getApplicationContext();
-                    Toast.makeText(context, "Log in successfully!", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK);
-                    Intent mainIntent = new Intent(LoginPage.this, MainPageActivity.class);
-                    mainIntent.putExtra("username", accountList.get(0).getUsername());
+                    String myAndroidDeviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-                    startActivity(mainIntent);
-                    finish();
+                    if (accountList.get(0).getIMEI() != null && accountList.get(0).getIMEI().equals(myAndroidDeviceId)) {
+                        Context context = getApplicationContext();
+                        Toast.makeText(context, "Log in successfully!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        Intent mainIntent = new Intent(LoginPage.this, MainPageActivity.class);
+                        mainIntent.putExtra("username", accountList.get(0).getUsername());
+
+                        startActivity(mainIntent);
+                        finish();
+                    }else{
+                        Context context = getApplicationContext();
+                        Toast.makeText(context, "Device doesn't match!", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
