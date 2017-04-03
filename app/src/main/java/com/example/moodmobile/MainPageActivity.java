@@ -461,34 +461,4 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
-    private boolean IsConnected(){
-        Context context = this;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
-
-    private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 3);
-        ArrayList<SyncMood> syncList;
-
-        try {
-            FileInputStream fis = openFileInput(SYNC_FILE);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
-            syncList = gson.fromJson(in, listType);
-
-            syncList.add(syncMood);
-
-            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            gson = new Gson();
-            gson.toJson(syncList, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-    }
 }

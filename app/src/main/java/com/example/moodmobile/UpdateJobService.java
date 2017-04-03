@@ -12,18 +12,30 @@ import com.google.gson.Gson;
  */
 
 public class UpdateJobService extends JobService {
+    /**
+     * Logs when the service is created.
+     */
     @Override
     public void onCreate(){
         super.onCreate();
         Log.i("UpdateJobService", "Created At:" + SystemClock.elapsedRealtime());
     }
 
+    /**
+     * Logs when the service is destroyed.
+     */
     @Override
     public void onDestroy(){
         super.onDestroy();
         Log.i("UpdateJobService", "Destroyed at:" + SystemClock.elapsedRealtime());
     }
 
+    /**
+     * Updates the Mood on the server.
+     * @param job contains the mood that is to be updated.
+     * @return true if the job is still running.
+     * @return false if the job is finished.
+     */
     @Override
     public boolean onStartJob(JobParameters job){
         Log.i("UpdateJobService", "Started at:" + SystemClock.elapsedRealtime());
@@ -39,6 +51,12 @@ public class UpdateJobService extends JobService {
         return false;
     }
 
+    /**
+     * Called by the system if the job is interupted.
+     * @param job contains the information needed to stop the job and reschedule it.
+     * @return true if the job is to be rescheduled.
+     * @return false if the job doesn't need to be rescheduled.
+     */
     @Override
     public boolean onStopJob(JobParameters job){
         Log.i("UpdateJobService", "Stopped at:" + SystemClock.elapsedRealtime());
