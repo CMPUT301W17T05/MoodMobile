@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.moodmobile">
 
-
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="true" />
@@ -18,10 +17,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.location.gps"/>
+
+    <uses-feature android:name="android.hardware.location.gps" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-
 
     <application
         android:allowBackup="true"
@@ -44,7 +43,7 @@
         <activity android:name=".ViewGuestProfile" />
         <activity
             android:name=".MainPageActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ViewEditMood" />
 
         <service
@@ -60,8 +59,9 @@
         </receiver>
 
         <activity android:name=".AddNewFriendActivity" />
-        <activity android:name=".FriendsActivity"></activity>
-        <activity android:name=".Osm_mapView"></activity>
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".Osm_mapView" />
+        <activity android:name=".ViewFriendRequests"></activity>
     </application>
 
 </manifest>

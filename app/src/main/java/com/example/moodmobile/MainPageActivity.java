@@ -332,9 +332,19 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 break;
 
             case(R.id.nav_following):
+                Intent intent = new Intent(this, FriendsActivity.class);
+                intent.putExtra("username", username);
+
+                startActivityForResult(intent, 1);
+                finish();
                 break;
 
             case(R.id.nav_requests):
+                setResult(RESULT_OK);
+                Intent friendsIntent = new Intent(this, AddNewFriendActivity.class);
+                friendsIntent.putExtra("username", username);
+                startActivityForResult(friendsIntent, 1);
+                finish();
                 break;
 
             case(R.id.nav_map):

@@ -23,17 +23,6 @@ import java.util.ArrayList;
 
 public class AddNewFriendActivity extends AppCompatActivity {
 
-    private ArrayList<String> followRequestsList = new ArrayList<String>();
-    private ArrayAdapter<String> followRequestsAdapter;
-    public ListView requestsList;
-
-    /**
-     * This method populates the follow requests ListView
-     * @param user Takes the users Account as an argument
-     */
-    public void populateRequestsList(Account user){
-        followRequestsList.addAll(user.getFollowRequests());
-    }
 
 
     /**
@@ -61,8 +50,6 @@ public class AddNewFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_friend);
 
-        Account currentlyLoggedIn;
-
         final ArrayList<Account> searchResults = new ArrayList<Account>();
 
         final String username = getIntent().getStringExtra("username"); //User currently logged in
@@ -70,27 +57,13 @@ public class AddNewFriendActivity extends AppCompatActivity {
 
         Button sendRequest =        (Button) findViewById(R.id.SendRequest);
         Button getFriendRequests =  (Button) findViewById(R.id.GetFriendRequests);
-        ListView requestsList =     (ListView) findViewById(R.id.RequestsList);
-
-        followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
-        requestsList.setAdapter(followRequestsAdapter);
-
-        ElasticsearchAccountController.GetUser loggedInUserTask = new ElasticsearchAccountController.GetUser();
-
-        try{
-            currentlyLoggedIn = loggedInUserTask.execute(username).get().get(0);
-
-            populateRequestsList(currentlyLoggedIn);
-        } catch (Exception e) {
-            Log.i("Error", "Could not download account details for logged in user..");
-        }
 
 
         getFriendRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(AddNewFriendActivity.this, FriendsActivity.class);
+                Intent intent = new Intent(AddNewFriendActivity.this, ViewFriendRequests.class);
                 intent.putExtra("username", username);
 
                 startActivityForResult(intent, 1);
@@ -136,38 +109,6 @@ public class AddNewFriendActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-        requestsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /**
-                 * TODO
-                 * Allow to view profile of requester
-                 */
-
-                Intent intent = new Intent(AddNewFriendActivity.this, ViewGuestProfile.class)
-                        .putExtra("guestUsername", followRequestsList.get(i))
-                        .putExtra("username", username);
-
-                startActivityForResult(intent, 1);
-                followRequestsAdapter.notifyDataSetChanged();
-
-            }
-        });
-    }
-
-    /**
-     * Called upon starting the activity.
-     * It creates a new adapter for the ListView
-     */
-    @Override
-    protected void onStart(){
-        super.onStart();
-
-        followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
-        //requestsList.setAdapter(followRequestsAdapter); //Causes error
-        followRequestsAdapter.notifyDataSetChanged();
 
     }
 }

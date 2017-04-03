@@ -45,6 +45,7 @@ public class CustomListAdapter extends ArrayAdapter<Mood> {
     private Bitmap[] images = new Bitmap[10];
     private Activity context;
 
+
     /**
      * The constructor for the CustomListAdapter class.
      * By taking an ArrayList of moods, it formats them and stores them in lists to be
