@@ -49,6 +49,7 @@ public class LoginPage extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
         }
 
+
         Button loginButton = (Button) findViewById(R.id.loginBot);
         username = (EditText) findViewById(R.id.username);
 

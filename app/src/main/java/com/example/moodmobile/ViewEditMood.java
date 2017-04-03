@@ -125,11 +125,13 @@ public class ViewEditMood extends AppCompatActivity {
                 selectedMood.setSituation(ssSpinner.getSelectedItem().toString());
                 selectedMood.setFeeling(moodSpinner.getSelectedItem().toString());
                 selectedMood.setDate(new Date(moodDate.getText().toString()));
-                if (addresses.get(0).getLocality() != moodLocation.getText().toString()) {
-                    List<Address> addresses = gcd.getFromLocationName(moodLocation.getText().toString(), 1);
-                    selectedMood.setLatitude(addresses.get(0).getLatitude());
-                    selectedMood.setLongitude(addresses.get(0).getLongitude());
-                    selectedMood.setLocation(selectedMood.getLatitude() + ", " + selectedMood.getLongitude());
+                if (selectedMood.getLocation() != null) {
+                    if (addresses.get(0).getLocality() != moodLocation.getText().toString()) {
+                        List<Address> addresses = gcd.getFromLocationName(moodLocation.getText().toString(), 1);
+                        selectedMood.setLatitude(addresses.get(0).getLatitude());
+                        selectedMood.setLongitude(addresses.get(0).getLongitude());
+                        selectedMood.setLocation(selectedMood.getLatitude() + ", " + selectedMood.getLongitude());
+                    }
                 }
             }
             catch (ReasonTooLongException e) {
