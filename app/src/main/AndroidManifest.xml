@@ -21,6 +21,7 @@
     <uses-feature android:name="android.hardware.location.gps" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -47,21 +48,22 @@
         <activity android:name=".ViewEditMood" />
 
         <service
-            android:name=".SyncService"
-            android:exported="false" />
-
-        <receiver
-            android:name=".NetworkReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
+            android:name=".AddJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
+        <service
+            android:name=".UpdateJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
+        <service
+            android:name=".DeleteJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
 
         <activity android:name=".AddNewFriendActivity" />
         <activity android:name=".FriendsActivity" />
         <activity android:name=".Osm_mapView" />
-        <activity android:name=".ViewFriendRequests"></activity>
+        <activity android:name=".ViewFriendRequests" />
     </application>
 
 </manifest>

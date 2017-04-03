@@ -2,6 +2,9 @@ package com.example.moodmobile;
 
 
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -35,15 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -67,6 +63,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private EditText reasonText;
     private CheckBox chkDate;
     private String username;
+    private Context context = this;
 
 
     /**
@@ -181,13 +178,19 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
-                ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
+                Gson gson = new Gson();
+                String json = gson.toJson(moodsList.get(index));
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putString("mood", json);
+                int jobid = (int) System.currentTimeMillis();
+                JobInfo job = new JobInfo.Builder(jobid, new ComponentName(context, DeleteJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPersisted(true)
+                        .setExtras(bundle)
+                        .build();
+                JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                scheduler.schedule(job);
 
-                if (IsConnected()) {
-                    deletemood.execute(moodsList.get(index));
-                } else {
-                    SaveToFile(moodsList.get(index));
-                }
 
                 updateList();
 
@@ -201,7 +204,12 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-                return true;
+                moodsList.remove(index);
+                adapter = new CustomListAdapter(MainPageActivity.this , moodsList);
+                moodsListView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+                return false;
             }
         });
 
@@ -214,6 +222,20 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         super.onResume();
         updateList();
 
+    }
+    protected void onStart(){
+        super.onStart();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -414,33 +436,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
-
-    /**
-     * Save the mood to be deleted until online connectivity is regained.
-     * @param mood The mood to be deleted.
-     */
-    private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 3);
-        ArrayList<SyncMood> syncList;
-
-        try {
-            FileInputStream fis = openFileInput(SYNC_FILE);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
-            syncList = gson.fromJson(in, listType);
-
-            syncList.add(syncMood);
-
-            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            gson = new Gson();
-            gson.toJson(syncList, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
     }
 
     /**

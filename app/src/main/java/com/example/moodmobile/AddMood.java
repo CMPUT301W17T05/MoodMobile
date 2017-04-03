@@ -1,6 +1,9 @@
 package com.example.moodmobile;
 
 import android.Manifest;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -238,12 +242,19 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                     }
                 }
 
+                Gson gson = new Gson();
+                String json = gson.toJson(newMood);
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putString("mood", json);
+                int jobid = (int) System.currentTimeMillis();
+                JobInfo job = new JobInfo.Builder(jobid, new ComponentName(context, AddJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPersisted(true)
+                        .setExtras(bundle)
+                        .build();
+                JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                scheduler.schedule(job);
 
-                if (IsConnected()) {
-                    addMoodTask.execute(newMood);
-                } else {
-                    SaveToFile(newMood);
-                }
                 Toast toast = Toast.makeText(context, "Mood Created!", Toast.LENGTH_LONG);
                 toast.show();
                 finish();
@@ -288,7 +299,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
 
                     //Compress the image.
                     ByteArrayOutputStream bmpStream = new ByteArrayOutputStream();
-                    resized.compress(Bitmap.CompressFormat.PNG, 5 , bmpStream);
+                    resized.compress(Bitmap.CompressFormat.JPEG, 5 , bmpStream);
                     byte[] bitmapdata = bmpStream.toByteArray();
                     resized = BitmapFactory.decodeByteArray(bitmapdata , 0, bitmapdata .length);
 
@@ -374,36 +385,6 @@ public class AddMood extends AppCompatActivity implements LocationListener {
                 } else {
                     Toast.makeText(AddMood.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
                 }
-        }
-    }
-
-    private boolean IsConnected(){
-        Context context = this;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
-
-    private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 1);
-        ArrayList<SyncMood> syncList;
-
-        try {
-            FileInputStream fis = openFileInput(SYNC_FILE);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
-            syncList = gson.fromJson(in, listType);
-
-            syncList.add(syncMood);
-
-            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            gson = new Gson();
-            gson.toJson(syncList, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException();
         }
     }
 }
