@@ -1,21 +1,16 @@
 package com.example.moodmobile;
 
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -72,8 +67,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private EditText reasonText;
     private CheckBox chkDate;
     private String username;
-
-    private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
 
 
     /**
@@ -334,9 +327,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             case(R.id.nav_following):
                 Intent intent = new Intent(this, FriendsActivity.class);
                 intent.putExtra("username", username);
-
                 startActivityForResult(intent, 1);
-                finish();
                 break;
 
             case(R.id.nav_requests):
@@ -344,22 +335,18 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 Intent friendsIntent = new Intent(this, AddNewFriendActivity.class);
                 friendsIntent.putExtra("username", username);
                 startActivityForResult(friendsIntent, 1);
-                finish();
                 break;
 
             case(R.id.nav_map):
                 setResult(RESULT_OK);
                 Intent mapIntent = new Intent(this, Osm_mapView.class);
-
                 mapIntent.putExtra("username", username);
                 startActivity(mapIntent);
-                finish();
                 break;
 
             case(R.id.nav_logout):
                 setResult(RESULT_OK);
                 Intent loginIntent = new Intent(this, LoginPage.class);
-
                 startActivity(loginIntent);
                 finish();
                 break;
