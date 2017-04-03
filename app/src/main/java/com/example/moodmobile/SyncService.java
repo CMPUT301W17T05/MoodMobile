@@ -19,11 +19,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
- * TODO Default File Template
  * Created by zindi on 3/16/17.
+ * This service uploads moods from the syncmood.sav file when it is started.
+ * It continually checks that internet connectivity is being maintained during the uploading process.
+ * If internet connectivity is lost, the remaining moods will be saved back into the file and synced later.
  */
 
 public class SyncService extends IntentService {
@@ -35,6 +38,11 @@ public class SyncService extends IntentService {
         super("SyncService");
     }
 
+    /**
+     * This mandatory method controls this classes and serves as its main method.
+     *
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent){
         serviceIntent = intent;
@@ -46,6 +54,10 @@ public class SyncService extends IntentService {
         EndService(true);
     }
 
+    /**
+     * The syncmood.sav file is loaded and the moods are put into an ArrayList of SyncMoods.
+     * The file is saved in a Json format. Gson is used to produce the SyncMoods.
+     */
     private void LoadFromFile(){
         try {
             FileInputStream fis = openFileInput(SYNC_FILE);
@@ -58,6 +70,10 @@ public class SyncService extends IntentService {
         }
     }
 
+    /**
+     * The ArrayList of SyncMoods is saved when connection is lost.
+     * The format of the file is Json. Gson is used to convert the SyncMoods into this format.
+     */
     private void SaveToFile(){
         try {
             FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
@@ -70,7 +86,10 @@ public class SyncService extends IntentService {
         }
     }
 
-
+    /**
+     * This method adds a new Mood to the Elasticsearch server.
+     * @param currentMood
+     */
     private void AddToServer(Mood currentMood){
         ElasticsearchMoodController.AddMoodsTask addMoodTask =
                 new ElasticsearchMoodController.AddMoodsTask();
@@ -81,6 +100,10 @@ public class SyncService extends IntentService {
         }
     }
 
+    /**
+     * This method is used to update an existing Mood on the Elasticsearch server.
+     * @param currentMood
+     */
     private void UpdateOnServer(Mood currentMood){
         ElasticsearchMoodController.UpdateMoodsTask updateMoodsTask =
                 new ElasticsearchMoodController.UpdateMoodsTask();
@@ -91,6 +114,10 @@ public class SyncService extends IntentService {
         }
     }
 
+    /**
+     * This method is used to delete and existing Mood from the Elasticsearch server.
+     * @param currentMood
+     */
     private void DeleteFromServer(Mood currentMood){
         ElasticsearchMoodController.DeleteMoodsTask deleteMoodsTask =
                 new ElasticsearchMoodController.DeleteMoodsTask();
@@ -101,27 +128,47 @@ public class SyncService extends IntentService {
         }
     }
 
+    /**
+     * This method checks the SyncMood task
+     * It then calls the appropriate method to Add, Update or Delete the Mood.
+     */
     private void SyncWithServer(){
         while (syncList.size() != 0){
             SyncMood currentSyncMood = syncList.get(0);
             if (currentSyncMood.getSyncTask() == 1){
                 AddToServer(currentSyncMood.getSyncMood());
-            }else if (currentSyncMood.getSyncTask() == 2){
+            } else if (currentSyncMood.getSyncTask() == 2){
                 UpdateOnServer(currentSyncMood.getSyncMood());
-            } else if (currentSyncMood.getSyncTask() == 3) {
+            } else if (currentSyncMood.getSyncTask() == 3){
                 DeleteFromServer(currentSyncMood.getSyncMood());
             }
             syncList.remove(0);
         }
     }
 
+    /**
+     * This Method checks if there is internet connection.
+     * @return True if there is an internet connection.
+     * @return False if there is no internet connection.
+     */
     private boolean IsConnected(){
         Context context = this;
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        try {
+            //TODO get server address
+            InetAddress inetAddress = InetAddress.getByName("google.com");
+            return !inetAddress.equals("");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
+
+    /**
+     * This method updates the Log as well as ends the SyncService.
+     * @param isFinished determines how the log should be updated.
+     */
     private void EndService(Boolean isFinished){
         if (isFinished){
             Log.i("SyncService", "Completed service @ " + SystemClock.elapsedRealtime());
