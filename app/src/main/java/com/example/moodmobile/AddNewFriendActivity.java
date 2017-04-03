@@ -72,7 +72,8 @@ public class AddNewFriendActivity extends AppCompatActivity {
         Button getFriendRequests =  (Button) findViewById(R.id.GetFriendRequests);
         ListView requestsList =     (ListView) findViewById(R.id.RequestsList);
 
-        followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
+        followRequestsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, followRequestsList);
+        //followRequestsList = new CustomListAdapter(this, followRequestsList);
         requestsList.setAdapter(followRequestsAdapter);
 
         ElasticsearchAccountController.GetUser loggedInUserTask = new ElasticsearchAccountController.GetUser();
@@ -165,7 +166,7 @@ public class AddNewFriendActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
 
-        followRequestsAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followRequestsList);
+        followRequestsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, followRequestsList);
         //requestsList.setAdapter(followRequestsAdapter); //Causes error
         followRequestsAdapter.notifyDataSetChanged();
 

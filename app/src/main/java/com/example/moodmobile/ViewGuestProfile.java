@@ -97,18 +97,19 @@ public class ViewGuestProfile extends AppCompatActivity {
 
         try {
             LatestMood = (Mood) getUserLatestMood.execute(guestUsername).get().get(0);//Should get latest mood
+            guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
 
             /**
              * TODO
              * change getLatitude,Longiture to
              * getLocation once location functionality is implimented.
              */
-            guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
+            /**guestLatestMoodTextview.setText("Latest Mood: " + LatestMood.toString());
             guestLatestLocationTextview.setText("Latest Location: "
                     + "Latitude: " + LatestMood.getLatitude() + " "
-                    + "Longitude: " + LatestMood.getLongitude());
+                    + "Longitude: " + LatestMood.getLongitude());**/
 
-            //guestLatestLocationTextview.setText("Latest Location: " + LatestMood.getLocation().toString());
+            guestLatestLocationTextview.setText("Latest Location: " + LatestMood.getLocation().toString());
         } catch (Exception e) {
             /**
              */

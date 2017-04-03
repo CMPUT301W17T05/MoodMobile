@@ -39,8 +39,9 @@ public class FriendsActivity extends AppCompatActivity {
     private TextView NumberFriendsTextView;
 
     private ListView FriendsListView;
-    private ArrayList<String> FriendsList;
-    private ArrayAdapter<String> FriendsListViewAdapter;
+    private ArrayList<String> FriendsNames;
+    private ArrayList<Mood> FriendsList;
+    private ArrayAdapter<Mood> FriendsListViewAdapter;
 
 
     /**
@@ -58,7 +59,18 @@ public class FriendsActivity extends AppCompatActivity {
 
         }
 
-        FriendsList.addAll(userAccount.getFollowing());
+        FriendsNames.addAll(userAccount.getFollowing());
+
+        /**for (String FriendName : FriendsNames)**/{
+            ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
+            getMoodsTask.execute("sydia");
+            try {
+                FriendsList = getMoodsTask.get();
+            } catch (Exception e) {
+
+            }
+        }
+
         NumberFriendsTextView.setText("You are following " + FriendsList.size() + " people");
     }
 
@@ -74,37 +86,41 @@ public class FriendsActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
 
         FriendsList = new ArrayList<>();
+        FriendsNames = new ArrayList<>();
 
-        NumberFriendsTextView =         (TextView) findViewById(R.id.NumberFriendsTextView);
-        AddNewFriendButton =            (Button) findViewById(R.id.AddNewFriendButton);
-        FilterFollowingListButton =     (Button) findViewById(R.id.FilterFollowingListButton);
+        NumberFriendsTextView = (TextView) findViewById(R.id.NumberFriendsTextView);
+        AddNewFriendButton = (Button) findViewById(R.id.AddNewFriendButton);
+        FilterFollowingListButton = (Button) findViewById(R.id.FilterFollowingListButton);
 
         FriendsListView = (ListView) findViewById(R.id.FriendsListView);
-        FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
+        //FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
+        FriendsListViewAdapter = new CustomListAdapter(this, FriendsList);
+
         FriendsListView.setAdapter(FriendsListViewAdapter);
 
         /** Will populate friendlist**/
         getFriends();
         FriendsListViewAdapter.notifyDataSetChanged();
 
-        FriendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        AddNewFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onClick(View view) {
                 FriendsListViewAdapter.notifyDataSetChanged();
-
             }
         });
+
     }
 
-    /**
-     * onStart called every time activity is entered.
-     * It will create a new ArrayAdapter
-     */
-    @Override
+                /**
+                 * onStart called every time activity is entered.
+                 * It will create a new ArrayAdapter
+                 */
+        @Override
     public void onStart(){
         super.onStart();
 
-        FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
+        FriendsListViewAdapter = new CustomListAdapter(this, FriendsList);
+        //FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
         FriendsListViewAdapter.notifyDataSetChanged();
 
     }
