@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * This class controlls the functionality of displaying your following list.
@@ -61,17 +62,19 @@ public class FriendsActivity extends AppCompatActivity {
 
         FriendsNames.addAll(userAccount.getFollowing());
 
-        /**for (String FriendName : FriendsNames)**/{
+        for (String FriendName : FriendsNames){
             ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
-            getMoodsTask.execute("sydia");
+            getMoodsTask.execute(FriendName);
             try {
-                FriendsList = getMoodsTask.get();
+                FriendsList.add(getMoodsTask.get().get(0));
             } catch (Exception e) {
 
             }
         }
 
-        NumberFriendsTextView.setText("You are following " + FriendsList.size() + " people");
+        if (FriendsNames.size() != 1 )
+            NumberFriendsTextView.setText("You are following " + FriendsNames.size() + " people");
+        else NumberFriendsTextView.setText("You are following " + FriendsNames.size() + " person");
     }
 
     /**
@@ -94,12 +97,15 @@ public class FriendsActivity extends AppCompatActivity {
 
         FriendsListView = (ListView) findViewById(R.id.FriendsListView);
         //FriendsListViewAdapter = new ArrayAdapter<>(this, R.layout.list_item, FriendsList);
+
+        // Must be performed *before* creating the adapter
+        getFriends();
         FriendsListViewAdapter = new CustomListAdapter(this, FriendsList);
 
         FriendsListView.setAdapter(FriendsListViewAdapter);
 
         /** Will populate friendlist**/
-        getFriends();
+        //getFriends();
         FriendsListViewAdapter.notifyDataSetChanged();
 
         AddNewFriendButton.setOnClickListener(new View.OnClickListener() {

@@ -181,6 +181,7 @@ public class ViewGuestProfile extends AppCompatActivity {
                     displayRequestNotSent();
                 }
 
+                setResult(RESULT_OK);
                 finish();
             }
         });
