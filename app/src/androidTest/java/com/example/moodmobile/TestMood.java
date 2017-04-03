@@ -23,18 +23,18 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         String shortMessage = "This is good";
         String noMessage = "";
 
-        assertTrue(mood.toString() == null);
+        assertTrue(mood.toString() != null);
 
         try {
             mood.setMessage(shortMessage);
-            assertTrue(mood.toString() == shortMessage);
+            assertTrue(mood.getMessage() == shortMessage);
         } catch (ReasonTooLongException e) {
             //TODO add something
         }
 
         try {
             mood.setMessage(noMessage);
-            assertTrue(mood.toString() == noMessage);
+            assertTrue(mood.getMessage() == noMessage);
         } catch (ReasonTooLongException e) {
             //TODO add something
         }
@@ -45,12 +45,12 @@ public class TestMood extends ActivityInstrumentationTestCase2{
         Mood mood = new Mood("Happy");
         String longMessage = "This Message is way too long and should be shortened";
 
-        assertTrue(mood.toString() == null);
+        assertTrue(mood.toString() != null);
 
         try {
             mood.setMessage(longMessage);
         } catch (ReasonTooLongException e){
-            assertTrue(mood.toString() == null);
+            assertTrue(mood.toString() != null);
         }
     }
 

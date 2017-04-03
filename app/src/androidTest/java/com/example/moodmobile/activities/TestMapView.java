@@ -1,4 +1,5 @@
 package com.example.moodmobile.activities;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import com.example.moodmobile.Osm_mapView;
 import com.robotium.solo.Solo;
@@ -12,6 +13,8 @@ public class TestMapView extends ActivityInstrumentationTestCase2 <Osm_mapView> 
     }
 
     public void setUp() throws Exception{
+        Intent intent = new Intent();
+        intent.putExtra("username", "haozhou");setActivityIntent(intent);
         solo = new Solo(getInstrumentation(), getActivity());
     }
 

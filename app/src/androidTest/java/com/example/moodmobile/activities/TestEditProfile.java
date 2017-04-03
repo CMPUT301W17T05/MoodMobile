@@ -1,4 +1,5 @@
 package com.example.moodmobile.activities;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.EditText;
 
@@ -17,6 +18,8 @@ public class TestEditProfile extends ActivityInstrumentationTestCase2 <UserProfi
     }
 
     public void setUp() throws Exception{
+        Intent intent = new Intent();
+        intent.putExtra("username", "haozhou");setActivityIntent(intent);
         solo = new Solo(getInstrumentation(), getActivity());
     }
 
