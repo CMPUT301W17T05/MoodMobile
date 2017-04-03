@@ -199,9 +199,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
                 JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
                 scheduler.schedule(job);
 
-                moodsList.remove(index);
 
-                adapter.notifyDataSetChanged();
                 /** TODO notify elasticsearch
                  */
 
@@ -216,7 +214,11 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+                moodsList.remove(index);
+                adapter = new CustomListAdapter(MainPageActivity.this , moodsList);
+                moodsListView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
+
                 return false;
             }
         });
@@ -237,6 +239,20 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
         moodsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+    }
+    protected void onStart(){
+        super.onStart();
+        ElasticsearchMoodController.GetMoodsTaskByName getMoodsTask = new ElasticsearchMoodController.GetMoodsTaskByName();
+        getMoodsTask.execute(username);
+
+        try {
+            moodsList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the moods out of the async object");
+        }
+        adapter = new CustomListAdapter(this, moodsList);
+        moodsListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
