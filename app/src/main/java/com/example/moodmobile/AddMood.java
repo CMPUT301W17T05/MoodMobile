@@ -381,13 +381,7 @@ public class AddMood extends AppCompatActivity implements LocationListener {
         Context context = this;
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        try {
-            //TODO get server address
-            InetAddress inetAddress = InetAddress.getByName("google.com");
-            return !inetAddress.equals("");
-        } catch (Exception e) {
-            return false;
-        }
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
 
     private void SaveToFile(Mood mood){
