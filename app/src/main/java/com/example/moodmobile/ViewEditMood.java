@@ -1,11 +1,15 @@
 package com.example.moodmobile;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +54,8 @@ public class ViewEditMood extends AppCompatActivity {
     private Mood selectedMood;
     private Geocoder gcd;
     private List<Address> addresses;
+    private Context context = this;
+
 
 
     @Override
@@ -99,10 +105,14 @@ public class ViewEditMood extends AppCompatActivity {
          * but non-emptyness should be guaranteed.
          */
 
-        moodReason.setText(selectedMood.getMessage());
-        moodDate.setText(selectedMood.getDate().toString());
-        moodSpinner.setSelection(adapter.getPosition(selectedMood.getFeeling()));
-        ssSpinner.setSelection(adapter2.getPosition(selectedMood.getSituation()));
+        try {
+            moodReason.setText(selectedMood.getMessage());
+            moodDate.setText(selectedMood.getDate().toString());
+            moodSpinner.setSelection(adapter.getPosition(selectedMood.getFeeling()));
+            ssSpinner.setSelection(adapter2.getPosition(selectedMood.getSituation()));
+        } catch (NullPointerException e){
+            //Do Nothing
+        }
         try {
             addresses = gcd.getFromLocation(selectedMood.getLatitude(), selectedMood.getLongitude(), 1);
             moodLocation.setText(addresses.get(0).getLocality());
@@ -175,46 +185,22 @@ public class ViewEditMood extends AppCompatActivity {
              *
              * **/
             //setResult(RESULT_OK, intent);
-            if (IsConnected()){
-                updateMoodTask.execute(selectedMood);
-            } else {
-                SaveToFile(selectedMood);
-            }
+
+                Gson gson = new Gson();
+                String json = gson.toJson(selectedMood);
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putString("mood", json);
+                int jobid = (int) System.currentTimeMillis();
+                JobInfo job = new JobInfo.Builder(jobid, new ComponentName(context, UpdateJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPersisted(true)
+                        .setExtras(bundle)
+                        .build();
+                JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                scheduler.schedule(job);
             finish();
             }
 
         });
-
     }
-
-    private boolean IsConnected(){
-        Context context = this;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
-
-    private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 2);
-        ArrayList<SyncMood> syncList;
-
-        try {
-            FileInputStream fis = openFileInput(SYNC_FILE);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
-            syncList = gson.fromJson(in, listType);
-
-            syncList.add(syncMood);
-
-            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            gson = new Gson();
-            gson.toJson(syncList, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-    }
-
 }

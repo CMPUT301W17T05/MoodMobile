@@ -3,6 +3,9 @@ package com.example.moodmobile;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -71,6 +75,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
     private EditText reasonText;
     private CheckBox chkDate;
     private String username;
+    private Context context = this;
 
     private static final int MY_PERMISSIONS_REQUEST_FOR_FINE_LOCATION = 1;
 
@@ -181,13 +186,19 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int index, long l) {
                 setResult(RESULT_OK);
 
-                ElasticsearchMoodController.DeleteMoodsTask deletemood = new ElasticsearchMoodController.DeleteMoodsTask();
+                Gson gson = new Gson();
+                String json = gson.toJson(moodsList.get(index));
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putString("mood", json);
+                int jobid = (int) System.currentTimeMillis();
+                JobInfo job = new JobInfo.Builder(jobid, new ComponentName(context, DeleteJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setPersisted(true)
+                        .setExtras(bundle)
+                        .build();
+                JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                scheduler.schedule(job);
 
-                if (IsConnected()) {
-                    deletemood.execute(moodsList.get(index));
-                } else {
-                    SaveToFile(moodsList.get(index));
-                }
                 moodsList.remove(index);
 
                 adapter.notifyDataSetChanged();
@@ -205,6 +216,7 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+                adapter.notifyDataSetChanged();
                 return false;
             }
         });
@@ -447,36 +459,6 @@ public class MainPageActivity extends AppCompatActivity implements NavigationVie
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    private boolean IsConnected(){
-        Context context = this;
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
-    }
-
-    private void SaveToFile(Mood mood){
-        SyncMood syncMood = new SyncMood(mood, 3);
-        ArrayList<SyncMood> syncList;
-
-        try {
-            FileInputStream fis = openFileInput(SYNC_FILE);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<SyncMood>>(){}.getType();
-            syncList = gson.fromJson(in, listType);
-
-            syncList.add(syncMood);
-
-            FileOutputStream fos = openFileOutput(SYNC_FILE, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            gson = new Gson();
-            gson.toJson(syncList, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException();
         }
     }
 }
